@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
-import Button from './ui/Button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/Card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from "sonner";
 
 const TermsAndConditions: React.FC = () => {
