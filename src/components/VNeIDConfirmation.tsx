@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
@@ -135,18 +134,16 @@ const VNeIDConfirmation: React.FC = () => {
             
             <div className="space-y-3">
               <Button
-                fullWidth
+                className="w-full justify-center"
                 onClick={handleConfirmSharing}
                 disabled={!agreed}
-                className="justify-center"
               >
                 Confirm sharing
               </Button>
               <Button
-                fullWidth
+                className="w-full justify-center"
                 variant="outline"
                 onClick={() => navigate('/')}
-                className="justify-center"
               >
                 Do not share
               </Button>

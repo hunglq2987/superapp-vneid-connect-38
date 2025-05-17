@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
@@ -63,17 +62,15 @@ const RegistrationFlow: React.FC = () => {
           <p className="text-center mb-6">Do you have a bank account at NCB?</p>
           <div className="space-y-3">
             <Button
-              fullWidth
+              className="w-full justify-center"
               onClick={() => handleHasAccountSelection(true)}
-              className="justify-center"
             >
               Yes, I have an NCB account
             </Button>
             <Button
-              fullWidth
+              className="w-full justify-center"
               variant="secondary"
               onClick={() => handleHasAccountSelection(false)}
-              className="justify-center"
             >
               No, I don't have an account
             </Button>
@@ -111,10 +108,9 @@ const RegistrationFlow: React.FC = () => {
             </div>
 
             <Button 
-              fullWidth
+              className="w-full mt-6"
               onClick={handleNextStep}
               disabled={!nationalId}
-              className="mt-6"
             >
               Next
             </Button>

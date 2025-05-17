@@ -83,7 +83,7 @@ const BiometricAuth: React.FC = () => {
           </ul>
         </div>
         
-        <Button fullWidth onClick={handleStartScan}>
+        <Button className="w-full" onClick={handleStartScan}>
           Start Face Scan
         </Button>
       </CardContent>
@@ -165,7 +165,7 @@ const BiometricAuth: React.FC = () => {
           </p>
         </div>
         
-        <Button fullWidth onClick={handleComplete}>
+        <Button className="w-full" onClick={handleComplete}>
           Continue
         </Button>
       </CardContent>

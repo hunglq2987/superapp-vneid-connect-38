@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/Card';
-import Button from './ui/Button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const NfcVerification: React.FC = () => {
   const navigate = useNavigate();
@@ -85,7 +84,10 @@ const NfcVerification: React.FC = () => {
           </ul>
         </div>
 
-        <Button fullWidth onClick={handleInitiateScan}>
+        <Button 
+          className="w-full" 
+          onClick={handleInitiateScan}
+        >
           Start Verification
         </Button>
       </CardContent>
@@ -122,10 +124,17 @@ const NfcVerification: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          <Button fullWidth onClick={handleCaptureId}>
+          <Button 
+            className="w-full" 
+            onClick={handleCaptureId}
+          >
             Capture ID Photo
           </Button>
-          <Button fullWidth variant="outline" onClick={() => setStep(3)}>
+          <Button 
+            className="w-full" 
+            variant="outline" 
+            onClick={() => setStep(3)}
+          >
             Skip this step
           </Button>
         </div>
@@ -197,7 +206,7 @@ const NfcVerification: React.FC = () => {
         )}
         
         <Button 
-          fullWidth
+          className="w-full"
           onClick={isScanning ? () => {} : handleInitiateScan}
           disabled={isScanning}
         >
@@ -206,7 +215,7 @@ const NfcVerification: React.FC = () => {
         
         {!isScanning && (
           <Button 
-            fullWidth
+            className="w-full"
             variant="outline"
             onClick={handleNfcComplete}
           >
@@ -257,7 +266,10 @@ const NfcVerification: React.FC = () => {
           </div>
         </div>
         
-        <Button fullWidth onClick={handleBiometricValidation}>
+        <Button 
+          className="w-full" 
+          onClick={handleBiometricValidation}
+        >
           Continue with Biometric Verification
         </Button>
       </CardContent>
@@ -269,7 +281,7 @@ const NfcVerification: React.FC = () => {
       <div className="py-4">
         <h1 className="text-2xl font-bold mb-6 text-center">NFC Verification</h1>
         
-        <Card elevated>
+        <Card className="shadow-md">
           {step === 1 && renderStep1()}
           {step === 2 && renderStep2()}
           {step === 3 && renderStep3()}

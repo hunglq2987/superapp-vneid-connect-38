@@ -141,9 +141,8 @@ const DetailedRegistration: React.FC = () => {
             
             <div className="pt-4">
               <Button
-                fullWidth
+                className="w-full mt-2"
                 onClick={handleConfirm}
-                className="mt-2"
               >
                 Confirm Information
               </Button>
