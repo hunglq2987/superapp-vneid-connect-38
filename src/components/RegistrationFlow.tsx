@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
-import Button from './ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const RegistrationFlow: React.FC = () => {
   const navigate = useNavigate();
@@ -128,7 +128,7 @@ const RegistrationFlow: React.FC = () => {
     <Layout>
       <div className="py-6">
         <h1 className="text-2xl font-bold mb-6 text-center">Customer Registration</h1>
-        <Card elevated>
+        <Card className="shadow-md">
           {hasAccount === null ? renderInitialQuestion() : renderNationalIdInput()}
         </Card>
       </div>

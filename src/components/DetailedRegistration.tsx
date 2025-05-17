@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
-import Button from './ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 interface UserData {
   nationalId: string;

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from './ui/Card';
-import Button from './ui/Button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const BiometricAuth: React.FC = () => {
   const navigate = useNavigate();
@@ -177,7 +177,7 @@ const BiometricAuth: React.FC = () => {
       <div className="py-4">
         <h1 className="text-2xl font-bold mb-6 text-center">Biometric Verification</h1>
         
-        <Card elevated className="overflow-hidden">
+        <Card className="shadow-md overflow-hidden">
           {stage === 'initial' && renderInitialStage()}
           {stage === 'scanning' && renderScanningStage()}
           {stage === 'success' && renderSuccessStage()}

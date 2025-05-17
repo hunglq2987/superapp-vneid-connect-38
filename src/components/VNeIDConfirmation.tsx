@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/Card';
-import Button from './ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const VNeIDConfirmation: React.FC = () => {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ const VNeIDConfirmation: React.FC = () => {
       <div className="py-4">
         <h1 className="text-2xl font-bold mb-6 text-center">VNeID Integration</h1>
         
-        <Card elevated>
+        <Card className="shadow-md">
           <CardHeader>
             <CardTitle className="text-center">Data Sharing Confirmation</CardTitle>
           </CardHeader>
