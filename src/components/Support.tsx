@@ -1,252 +1,275 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Users, GitBranch, Phone, MessageSquare, Laptop, BarChart2, Share2 } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, MessageCircle, Phone, Video, MousePointer, CheckCircle, Users } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
-enum SupportChannel {
-  CHAT = 'chat',
-  CALL = 'call',
-  VIDEO = 'video',
-  COBROWSE = 'cobrowse',
-}
-
-const Support: React.FC = () => {
+const Support = () => {
   const navigate = useNavigate();
-  const [activeChannel, setActiveChannel] = useState<SupportChannel>(SupportChannel.CHAT);
-  const [query, setQuery] = useState('');
-  const [isCobrowsingRequested, setCobrowsingRequested] = useState(false);
-  const [cobrowsingCode, setCobrowsingCode] = useState('');
-  const [customerConsent, setCustomerConsent] = useState(false);
+  const [activeSupportTab, setActiveSupportTab] = useState('connect');
+  const [isCoBrowsingActive, setIsCoBrowsingActive] = useState(false);
   
-  const handleBackToHome = () => {
-    navigate('/');
+  const handleStartCoBrowsing = () => {
+    toast.success("Co-browsing session initiated", {
+      description: "A support agent will connect to your session shortly."
+    });
+    setIsCoBrowsingActive(true);
   };
   
-  const handleSubmitQuery = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim()) {
-      toast.error("Please enter your question or issue");
-      return;
-    }
-    
-    toast.success("Your request has been submitted. A support agent will assist you shortly.");
-    setQuery('');
+  const handleEndCoBrowsing = () => {
+    toast("Co-browsing session ended", {
+      description: "Thank you for using our co-browsing support."
+    });
+    setIsCoBrowsingActive(false);
   };
   
-  const handleCobrowsingRequest = () => {
-    // Generate a random 6-digit code
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
-    setCobrowsingCode(code);
-    setCobrowsingRequested(true);
-    
-    toast.success("Co-browsing session ready to start. Share this code with the support agent.");
+  const handleGoBack = () => {
+    navigate(-1);
   };
-  
-  const handleStartCobrowsing = () => {
-    if (!customerConsent) {
-      toast.error("You must consent to the terms before starting a co-browsing session");
-      return;
-    }
-    
-    toast.success("Co-browsing session initiated. An agent will join shortly.");
-    // Here you would implement the actual co-browsing connection
-  };
-  
+
   return (
     <Layout>
-      <div className="py-4">
-        <div className="flex items-center justify-between mb-4">
+      <div className="py-6">
+        <div className="flex items-center mb-6">
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={handleBackToHome}
+            onClick={handleGoBack}
             className="gap-1"
           >
             <ArrowLeft size={16} />
-            Back to home
+            Back
           </Button>
         </div>
-        
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-14 w-14 rounded-full bg-banking-lightGrey flex items-center justify-center">
-            <Users size={26} className="text-banking-blue" />
+
+        <h1 className="text-2xl font-bold mb-6 text-center">Customer Support</h1>
+
+        {isCoBrowsingActive && (
+          <div className="bg-banking-yellow/20 border border-banking-yellow rounded-lg p-3 mb-6 animate-pulse-soft">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Share2 className="h-5 w-5 text-banking-yellow" />
+                <p className="font-medium text-sm">Co-browsing session active</p>
+              </div>
+              <Button size="sm" variant="outline" onClick={handleEndCoBrowsing}>End Session</Button>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-banking-blue via-banking-darkBlue to-banking-blue bg-clip-text text-transparent">Customer Support</h1>
-            <p className="text-muted-foreground">How can we assist you today?</p>
-          </div>
-        </div>
-        
-        <Tabs defaultValue={activeChannel} onValueChange={(v) => setActiveChannel(v as SupportChannel)} className="w-full">
-          <TabsList className="grid grid-cols-4 mb-4">
-            <TabsTrigger value={SupportChannel.CHAT} className="flex flex-col items-center py-3">
-              <MessageCircle size={18} className={activeChannel === SupportChannel.CHAT ? "text-banking-blue" : "text-muted-foreground"} />
-              <span className="text-xs mt-1">Chat</span>
+        )}
+
+        <Tabs defaultValue="connect" value={activeSupportTab} onValueChange={setActiveSupportTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="connect" className="data-[state=active]:bg-banking-blue data-[state=active]:text-white">
+              Connect
             </TabsTrigger>
-            <TabsTrigger value={SupportChannel.CALL} className="flex flex-col items-center py-3">
-              <Phone size={18} className={activeChannel === SupportChannel.CALL ? "text-banking-blue" : "text-muted-foreground"} />
-              <span className="text-xs mt-1">Call</span>
+            <TabsTrigger value="tracking" className="data-[state=active]:bg-banking-blue data-[state=active]:text-white">
+              Tracking
             </TabsTrigger>
-            <TabsTrigger value={SupportChannel.VIDEO} className="flex flex-col items-center py-3">
-              <Video size={18} className={activeChannel === SupportChannel.VIDEO ? "text-banking-blue" : "text-muted-foreground"} />
-              <span className="text-xs mt-1">Video</span>
-            </TabsTrigger>
-            <TabsTrigger value={SupportChannel.COBROWSE} className="flex flex-col items-center py-3">
-              <MousePointer size={18} className={activeChannel === SupportChannel.COBROWSE ? "text-banking-blue" : "text-muted-foreground"} />
-              <span className="text-xs mt-1">Co-Browse</span>
+            <TabsTrigger value="co-browse" className="data-[state=active]:bg-banking-blue data-[state=active]:text-white">
+              Co-Browse
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value={SupportChannel.CHAT}>
+          <TabsContent value="connect" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Chat with Support</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle>Customer Data Connection</CardTitle>
                 <CardDescription>
-                  Tell us about your issue and a customer support agent will assist you.
+                  Connect with our systems for seamless assistance
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmitQuery}>
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label htmlFor="query" className="text-sm font-medium">Your question or issue</label>
-                      <Input
-                        id="query"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="How can we help you today?"
-                        className="h-24"
-                      />
+              <CardContent className="space-y-4">
+                <div className="space-y-4">
+                  <div className="bg-banking-lightGrey p-4 rounded-lg transition-all hover:shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-banking-blue/10 p-2 rounded-full">
+                        <Users className="h-5 w-5 text-banking-blue" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">CRM Integration</h3>
+                        <p className="text-sm text-muted-foreground">Bi-directional data flow with core CRM systems</p>
+                      </div>
                     </div>
                   </div>
-                </form>
-              </CardContent>
-              <CardFooter>
-                <Button onClick={handleSubmitQuery} className="w-full">
-                  Start Chat Support
+                  
+                  <div className="bg-banking-lightGrey p-4 rounded-lg transition-all hover:shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-banking-blue/10 p-2 rounded-full">
+                        <GitBranch className="h-5 w-5 text-banking-blue" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Pipeline Integration</h3>
+                        <p className="text-sm text-muted-foreground">Funnel stage mapping to CRM pipeline stages</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-banking-lightGrey p-4 rounded-lg transition-all hover:shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-banking-blue/10 p-2 rounded-full">
+                        <BarChart2 className="h-5 w-5 text-banking-blue" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Lead Scoring</h3>
+                        <p className="text-sm text-muted-foreground">Lead scoring adjustments based on funnel progression</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <Button className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:scale-105 transition-transform">
+                  Connect to Support Agent
                 </Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value={SupportChannel.CALL}>
-            <Card>
-              <CardHeader>
-                <CardTitle>Call Support</CardTitle>
-                <CardDescription>
-                  Connect with a support agent by phone for immediate assistance.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="rounded-lg border p-4 text-center">
-                  <p className="text-lg font-medium">Support Hotline</p>
-                  <p className="text-2xl font-bold text-banking-blue">1800-123-4567</p>
-                  <p className="text-sm text-muted-foreground mt-2">Available 24/7</p>
-                </div>
-                
-                <div className="rounded-lg border p-4">
-                  <p className="font-medium">Request a callback</p>
-                  <p className="text-sm text-muted-foreground mb-2">We'll call you back as soon as possible</p>
-                  <Button className="w-full mt-2">Request Callback</Button>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
           
-          <TabsContent value={SupportChannel.VIDEO}>
+          <TabsContent value="tracking" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Video Support</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle>Cross-Channel Tracking</CardTitle>
                 <CardDescription>
-                  Schedule a video call with our support team for face-to-face assistance.
+                  Track your customer journey across channels
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="rounded-lg border p-4">
-                  <p className="font-medium">Schedule a video appointment</p>
-                  <p className="text-sm text-muted-foreground mb-2">Select a date and time that works for you</p>
-                  <Button className="w-full mt-2">Schedule Now</Button>
+                <div className="space-y-4">
+                  <div className="bg-banking-lightGrey p-4 rounded-lg transition-all hover:shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-banking-blue/10 p-2 rounded-full">
+                        <Laptop className="h-5 w-5 text-banking-blue" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Device Tracking</h3>
+                        <p className="text-sm text-muted-foreground">Track customer journey across different devices</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-banking-lightGrey p-4 rounded-lg transition-all hover:shadow-md">
+                    <div className="flex items-start gap-3">
+                      <div className="bg-banking-blue/10 p-2 rounded-full">
+                        <Phone className="h-5 w-5 text-banking-blue" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium">Channel Attribution</h3>
+                        <p className="text-sm text-muted-foreground">Track journey initiation and completion across channels</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
-                <div className="rounded-lg border p-4">
-                  <p className="font-medium">Immediate video assistance</p>
-                  <p className="text-sm text-muted-foreground mb-2">Connect with the next available agent</p>
-                  <Button variant="secondary" className="w-full mt-2">Connect Now</Button>
+                <div className="bg-banking-blue/5 p-4 rounded-lg border border-banking-blue/20">
+                  <p className="text-sm font-medium">Your Unified Customer ID</p>
+                  <p className="text-banking-blue font-mono mt-1">CID-284751936</p>
+                  <p className="text-xs text-muted-foreground mt-2">This unique identifier follows you across all our channels and services</p>
                 </div>
+                
+                <Button className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:scale-105 transition-transform">
+                  View Journey History
+                </Button>
               </CardContent>
             </Card>
           </TabsContent>
           
-          <TabsContent value={SupportChannel.COBROWSE}>
+          <TabsContent value="co-browse" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Co-Browsing Support</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle>Co-Browsing Capability</CardTitle>
                 <CardDescription>
-                  Allow a support agent to view your screen and guide you through the process.
+                  Get real-time help from our support agents
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                {!isCobrowsingRequested ? (
-                  <div className="space-y-4">
-                    <div className="rounded-lg border p-4">
-                      <h3 className="font-medium">How Co-Browsing Works:</h3>
-                      <ul className="text-sm text-muted-foreground mt-2 space-y-2">
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-banking-green mt-0.5" />
-                          <span>Agent can only see what's on your banking app screen</span>
+              <CardContent className="space-y-4">
+                {!isCoBrowsingActive ? (
+                  <>
+                    <div className="bg-banking-lightGrey p-4 rounded-lg">
+                      <h3 className="font-medium">Session Initiation</h3>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Start a co-browsing session to get real-time assistance from our support team.
+                      </p>
+                      
+                      <div className="mt-4 space-y-2">
+                        <div className="flex items-center">
+                          <input type="checkbox" id="consent" className="mr-2" />
+                          <label htmlFor="consent" className="text-sm">
+                            I consent to sharing my screen with the support agent
+                          </label>
+                        </div>
+                        <div className="flex items-center">
+                          <input type="checkbox" id="terms" className="mr-2" />
+                          <label htmlFor="terms" className="text-sm">
+                            I agree to the co-browsing terms and conditions
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-medium">What to expect:</h4>
+                      <ul className="text-sm space-y-1 text-muted-foreground">
+                        <li className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-banking-blue"></span>
+                          A support agent will see your screen
                         </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-banking-green mt-0.5" />
-                          <span>Sensitive information is automatically masked</span>
+                        <li className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-banking-blue"></span>
+                          Sensitive information will be automatically masked
                         </li>
-                        <li className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-banking-green mt-0.5" />
-                          <span>You can end the session at any time</span>
+                        <li className="flex items-center gap-2">
+                          <span className="h-1.5 w-1.5 rounded-full bg-banking-blue"></span>
+                          You can end the session at any time
                         </li>
                       </ul>
                     </div>
                     
-                    <Button onClick={handleCobrowsingRequest} className="w-full">
-                      Request Co-Browsing Session
+                    <Button className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:scale-105 transition-transform" onClick={handleStartCoBrowsing}>
+                      Start Co-Browsing
                     </Button>
-                  </div>
+                  </>
                 ) : (
                   <div className="space-y-4">
-                    <div className="rounded-lg border p-4 text-center">
-                      <p className="text-lg font-medium">Your Co-Browsing Code</p>
-                      <p className="text-3xl font-bold tracking-widest mt-2 text-banking-blue">
-                        {cobrowsingCode}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        Share this code with the support agent
-                      </p>
+                    <div className="bg-banking-green/10 p-4 rounded-lg border border-banking-green/30 animate-pulse-soft">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 rounded-full bg-banking-green"></div>
+                          <p className="font-medium">Session Active</p>
+                        </div>
+                        <p className="text-sm">Agent: John D.</p>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-2">Co-browsing session ID: SES-57291034</p>
                     </div>
                     
-                    <div className="flex items-start gap-2">
-                      <input 
-                        type="checkbox" 
-                        id="consent" 
-                        checked={customerConsent}
-                        onChange={(e) => setCustomerConsent(e.target.checked)}
-                        className="mt-1"
-                      />
-                      <label htmlFor="consent" className="text-sm">
-                        I consent to allow the support agent to view my screen and guide me through the banking application. I understand I can end the session at any time.
-                      </label>
+                    <div className="bg-banking-lightGrey p-4 rounded-lg">
+                      <h3 className="font-medium">Interaction Controls</h3>
+                      
+                      <div className="mt-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm">View-only mode</label>
+                          <div className="relative inline-flex h-6 w-11 items-center rounded-full bg-banking-grey transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=checked]:bg-banking-green">
+                            <span className="pointer-events-none block h-5 w-5 translate-x-1 rounded-full bg-background shadow-lg ring-0 transition-transform data-[state=checked]:translate-x-6"></span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm">Mask sensitive fields</label>
+                          <div className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background bg-banking-green">
+                            <span className="pointer-events-none block h-5 w-5 translate-x-6 rounded-full bg-background shadow-lg ring-0 transition-transform"></span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     
-                    <Button 
-                      onClick={handleStartCobrowsing} 
-                      disabled={!customerConsent}
-                      className="w-full"
-                    >
-                      Start Co-Browsing Session
+                    <div className="flex items-center justify-center">
+                      <MessageSquare className="h-6 w-6 text-banking-blue mr-2" />
+                      <p className="text-sm">Agent is requesting to chat with you</p>
+                    </div>
+                    
+                    <Button variant="destructive" className="w-full" onClick={handleEndCoBrowsing}>
+                      End Co-Browsing Session
                     </Button>
                   </div>
                 )}
