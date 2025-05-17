@@ -56,8 +56,12 @@ const HomeScreen: React.FC = () => {
   
   const handleNoAccount = () => {
     setShowAccountQuestion(false);
-    // Navigate to a different flow for non-account holders
-    navigate('/registration', { state: { hasAccount: false } });
+    // Navigate to VNeID confirmation for non-account holders
+    navigate('/vneid-confirmation');
+  };
+  
+  const handleSupportClick = () => {
+    navigate('/support');
   };
   
   const buttonVariants = {
@@ -153,6 +157,46 @@ const HomeScreen: React.FC = () => {
             </Button>
           </motion.div>
         </div>
+
+        <motion.div 
+          className="fixed bottom-16 w-full flex justify-center gap-6 px-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+          <motion.button
+            className="flex flex-col items-center text-muted-foreground text-xs"
+            whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            onClick={() => navigate('/user-guide')}
+          >
+            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            Guide
+          </motion.button>
+          
+          <motion.button
+            className="flex flex-col items-center text-muted-foreground text-xs"
+            whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            onClick={handleSupportClick}
+          >
+            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1">
+              <HelpCircle className="h-5 w-5" />
+            </div>
+            Support
+          </motion.button>
+          
+          <motion.button
+            className="flex flex-col items-center text-muted-foreground text-xs"
+            whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            onClick={() => navigate('/faq')}
+          >
+            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1">
+              <Info className="h-5 w-5" />
+            </div>
+            FAQ
+          </motion.button>
+        </motion.div>
 
         <motion.div 
           className="text-sm text-muted-foreground text-center mt-8"

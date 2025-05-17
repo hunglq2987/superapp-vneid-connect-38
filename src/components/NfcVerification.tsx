@@ -1,263 +1,400 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Smartphone, CheckCircle, Camera, ShieldCheck, Shield, ScanLine, Fingerprint } from 'lucide-react';
-import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Smartphone, CreditCard, Fingerprint, Camera, Check, X, ArrowLeft, ArrowRight } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
-import { Stepper, StepperContent, StepperItem } from '@/components/ui/stepper';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Stepper, StepperItem, StepperContent } from './ui/stepper';
 
 const NfcVerification: React.FC = () => {
   const navigate = useNavigate();
-  const [verificationStep, setVerificationStep] = useState<number>(1);
-  const [isVerifying, setIsVerifying] = useState<boolean>(false);
-  const [verificationComplete, setVerificationComplete] = useState<boolean>(false);
-  const [capturedId, setCapturedId] = useState<string>('');
-  const [idInfo, setIdInfo] = useState({
-    idNumber: '',
-    name: '',
-    dob: '',
-    issueDate: ''
-  });
-  const [showIdPreview, setShowIdPreview] = useState<boolean>(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [captureMode, setCaptureMode] = useState<'front' | 'nfc' | 'selfie' | null>(null);
+  const [verificationResult, setVerificationResult] = useState<'success' | 'fail' | null>(null);
+  const totalSteps = 5;
   
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    
-    if (isVerifying) {
-      timer = setTimeout(() => {
-        setIsVerifying(false);
-        
-        if (verificationStep < 6) {
-          setVerificationStep(prev => prev + 1);
-        } else {
-          setVerificationComplete(true);
-          toast.success("NFC Verification completed successfully!");
-          // Wait 2 seconds before navigating back to home
-          setTimeout(() => {
-            navigate('/', { state: { nfcSuccess: true } });
-          }, 2000);
+    if (captureMode === 'nfc') {
+      // Simulate NFC reading process
+      setIsProcessing(true);
+      const timer = setTimeout(() => {
+        setIsProcessing(false);
+        setCaptureMode(null);
+        // Move to next step after NFC reading
+        if (currentStep === 3) {
+          setCurrentStep(4);
         }
-      }, 2000);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
     }
-    
-    return () => clearTimeout(timer);
-  }, [isVerifying, verificationStep, navigate]);
+  }, [captureMode, currentStep]);
   
-  const handleStartScan = () => {
-    if (verificationStep === 2 && !capturedId) {
-      toast.warning("Please capture or skip ID photo");
-      return;
-    }
-    setIsVerifying(true);
-  };
-  
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-  
-  const handleBackToHome = () => {
-    navigate('/');
-  };
-  
-  const handleCaptureId = () => {
-    // Simulate ID capture
-    setCapturedId("captured_id_photo");
-    setIdInfo({
-      idNumber: '123456789012',
-      name: 'Nguyen Van A',
-      dob: '01/01/1990',
-      issueDate: '01/01/2020'
-    });
-    setShowIdPreview(true);
-    toast.success("ID captured successfully");
-  };
-  
-  const handleSkipCapture = () => {
-    // Skip ID capture and move to next step
-    setVerificationStep(3);
-  };
-
-  const getStepTitle = (step: number) => {
-    switch (step) {
-      case 1: return "Initiate Verification";
-      case 2: return "Capture ID Front (Optional)";
-      case 3: return "NFC Communication";
-      case 4: return "Data Verification";
-      case 5: return "Biometric Comparison";
-      case 6: return "Complete Verification";
-      default: return "Verification";
+  const handleNextStep = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      // Complete verification and go back to home
+      navigate('/', { state: { nfcSuccess: true } });
     }
   };
-
-  const getStepDescription = (step: number) => {
-    switch (step) {
-      case 1:
-        return "Prepare your ID card and ensure NFC is enabled on your device";
-      case 2:
-        return "Take a photo of your ID to extract basic information";
-      case 3:
-        return "Place your ID card on the back of your phone to read chip data";
-      case 4:
-        return "System is verifying the data from your ID chip";
-      case 5:
-        return "Take a selfie to compare with your ID photo";
-      case 6:
-        return "Finalizing your verification process";
-      default:
-        return "Follow the instructions to complete verification";
+  
+  const handlePreviousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    } else {
+      navigate('/');
     }
   };
-
-  const getStepAction = (step: number) => {
-    switch (step) {
-      case 1: return "Begin Verification";
-      case 2: return capturedId ? "Continue" : "Capture ID";
-      case 3: return "Start NFC Scan";
-      case 4: return "Continue";
-      case 5: return "Take Selfie";
-      case 6: return "Complete";
-      default: return "Continue";
-    }
+  
+  const startCapture = (mode: 'front' | 'nfc' | 'selfie') => {
+    setCaptureMode(mode);
+    // Simulate camera/nfc capture process
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+      setCaptureMode(null);
+      
+      // For biometric verification in step 4, we'll simulate success/fail
+      if (mode === 'selfie' && currentStep === 4) {
+        // 90% chance of success for demo purposes
+        const isSuccess = Math.random() < 0.9;
+        setVerificationResult(isSuccess ? 'success' : 'fail');
+        
+        // If success, proceed to final step after a delay
+        if (isSuccess) {
+          setTimeout(() => {
+            setVerificationResult(null);
+            setCurrentStep(5); // Move to completion step
+          }, 1500);
+        }
+      } else if (mode === 'front') {
+        // Automatically proceed to step 3 after capturing front
+        setTimeout(() => {
+          setCurrentStep(3);
+        }, 1000);
+      }
+    }, 2000);
   };
-
-  const getStepContent = (step: number) => {
-    switch (step) {
+  
+  const renderStepContent = () => {
+    switch (currentStep) {
       case 1:
         return (
-          <div className="flex flex-col items-center space-y-4">
-            <div className="h-24 w-24 rounded-full bg-banking-blue/10 flex items-center justify-center animate-pulse-soft">
-              <ShieldCheck className="h-12 w-12 text-banking-blue" />
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center space-y-6"
+          >
+            <div className="flex justify-center">
+              <div className="w-20 h-20 bg-banking-blue/10 rounded-full flex items-center justify-center">
+                <Smartphone className="h-10 w-10 text-banking-blue" />
+              </div>
             </div>
-            <div className="text-center space-y-2">
-              <p className="font-medium">Welcome to NFC ID Verification</p>
-              <p className="text-sm text-muted-foreground">
-                This process will verify your identity using your NFC-enabled ID card.
-                Please ensure your device has NFC enabled.
+            <h3 className="text-xl font-medium">Initiate NFC Verification</h3>
+            <p className="text-muted-foreground">To verify your identity using your ID card, we'll use NFC technology to securely read your information.</p>
+            <div className="space-y-3 text-sm text-left text-muted-foreground">
+              <p className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                Ensure your phone supports NFC technology
+              </p>
+              <p className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                Keep your ID card ready for scanning
+              </p>
+              <p className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                Enable NFC on your device before proceeding
               </p>
             </div>
-          </div>
+            <Button className="w-full" onClick={handleNextStep}>
+              Start Verification
+            </Button>
+          </motion.div>
         );
+      
       case 2:
         return (
-          <div className="flex flex-col items-center space-y-4">
-            {showIdPreview ? (
-              <div className="space-y-4 w-full">
-                <div className="h-40 w-full bg-banking-lightGrey rounded-lg border-2 border-dashed border-banking-blue flex items-center justify-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-banking-blue/10 flex items-center justify-center">
-                    <CheckCircle className="h-8 w-8 text-banking-green" />
-                  </div>
-                </div>
-                <div className="bg-banking-lightGrey p-3 rounded-lg text-sm space-y-2">
-                  <div><span className="font-medium">ID Number:</span> {idInfo.idNumber}</div>
-                  <div><span className="font-medium">Name:</span> {idInfo.name}</div>
-                  <div><span className="font-medium">Date of Birth:</span> {idInfo.dob}</div>
-                  <div><span className="font-medium">Issue Date:</span> {idInfo.issueDate}</div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center space-y-6"
+          >
+            <div className="flex justify-center">
+              <div className="w-20 h-20 bg-banking-blue/10 rounded-full flex items-center justify-center">
+                <Camera className="h-10 w-10 text-banking-blue" />
+              </div>
+            </div>
+            <h3 className="text-xl font-medium">Capture ID Card</h3>
+            <p className="text-muted-foreground">Take a photo of the front side of your ID card.</p>
+            <div className="space-y-3 text-sm text-left text-muted-foreground">
+              <p className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                Ensure all four corners are visible
+              </p>
+              <p className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                Avoid glare or shadows on the card
+              </p>
+              <p className="flex items-start gap-2">
+                <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                Place card on a dark, non-reflective surface
+              </p>
+            </div>
+            
+            {captureMode === 'front' ? (
+              <div className="relative h-40 bg-black rounded-lg overflow-hidden flex items-center justify-center">
+                <motion.div 
+                  animate={{ 
+                    y: [-10, 10],
+                    opacity: [0.5, 1, 0.5]
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 2,
+                  }}
+                  className="absolute w-full h-1 bg-banking-blue"
+                />
+                <p className="text-white text-sm">Scanning ID card...</p>
+              </div>
+            ) : (
+              <Button 
+                className="w-full" 
+                onClick={() => startCapture('front')}
+              >
+                Capture Image
+              </Button>
+            )}
+          </motion.div>
+        );
+      
+      case 3:
+        return (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center space-y-6"
+          >
+            <div className="flex justify-center">
+              <div className="w-20 h-20 bg-banking-blue/10 rounded-full flex items-center justify-center">
+                <CreditCard className="h-10 w-10 text-banking-blue" />
+              </div>
+            </div>
+            <h3 className="text-xl font-medium">NFC Communication</h3>
+            <p className="text-muted-foreground">Place your ID card against the back of your phone to read the embedded chip.</p>
+            
+            {captureMode === 'nfc' ? (
+              <div className="relative bg-black/5 p-6 rounded-lg">
+                <motion.div 
+                  className="flex flex-col items-center"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                >
+                  <Smartphone className="h-16 w-16 text-banking-grey mb-2" />
+                  <motion.div 
+                    className="h-1 w-20 bg-banking-blue rounded-full"
+                    animate={{ 
+                      opacity: [0.3, 1, 0.3],
+                      scale: [1, 1.1, 1]
+                    }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  />
+                  <CreditCard className="h-12 w-12 text-banking-blue my-2" />
+                </motion.div>
+                <p className="text-sm text-muted-foreground mt-4">Reading data from chip...</p>
+                <div className="mt-2 w-full bg-gray-200 rounded-full h-2.5">
+                  <motion.div 
+                    className="bg-banking-blue h-2.5 rounded-full"
+                    initial={{ width: '0%' }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 3 }}
+                  />
                 </div>
               </div>
             ) : (
-              <div className="h-40 w-full bg-banking-lightGrey rounded-lg border-2 border-dashed border-muted-foreground flex items-center justify-center">
-                <Camera className="h-12 w-12 text-muted-foreground" />
-              </div>
+              <>
+                <div className="space-y-3 text-sm text-left text-muted-foreground">
+                  <p className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                    Position your ID card against the NFC reader on your phone
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                    Hold still until the reading is complete
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                    Do not move your phone during the process
+                  </p>
+                </div>
+                <Button 
+                  className="w-full" 
+                  onClick={() => startCapture('nfc')}
+                >
+                  Start NFC Reading
+                </Button>
+              </>
             )}
-          </div>
+          </motion.div>
         );
-      case 3:
-        return (
-          <div className="flex flex-col items-center space-y-4">
-            <div className={`relative ${isVerifying ? 'animate-pulse' : ''}`}>
-              <div className="h-40 w-64 bg-banking-lightGrey rounded-lg border-2 border-dashed border-banking-blue flex items-center justify-center relative">
-                <Smartphone className="h-20 w-20 text-banking-blue" />
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-banking-blue rounded-full flex items-center justify-center">
-                  <ScanLine className="h-5 w-5 text-white" />
-                </div>
-              </div>
-              
-              {isVerifying && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="h-24 w-24 rounded-full border-4 border-banking-blue border-t-transparent animate-spin"></div>
-                </div>
-              )}
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              Place your ID card directly on the back of your phone and hold steady
-            </p>
-          </div>
-        );
+      
       case 4:
         return (
-          <div className="flex flex-col items-center space-y-4">
-            <div className="space-y-4 w-full">
-              <div className="relative h-32 flex items-center justify-center">
-                {isVerifying ? (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="h-16 w-16 rounded-full border-4 border-banking-blue border-t-transparent animate-spin"></div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center space-y-2">
-                    <Shield className="h-16 w-16 text-banking-blue animate-pulse-soft" />
-                    <p className="font-medium">Verifying data...</p>
-                  </div>
-                )}
-              </div>
-              
-              <div className="bg-banking-lightGrey p-4 rounded-lg">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span>ID Data Integrity</span>
-                    <CheckCircle className="h-5 w-5 text-banking-green" />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Digital Signature</span>
-                    <CheckCircle className="h-5 w-5 text-banking-green" />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span>Issuer Validation</span>
-                    <CheckCircle className="h-5 w-5 text-banking-green" />
-                  </div>
-                </div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center space-y-6"
+          >
+            <div className="flex justify-center">
+              <div className="w-20 h-20 bg-banking-blue/10 rounded-full flex items-center justify-center">
+                <Fingerprint className="h-10 w-10 text-banking-blue" />
               </div>
             </div>
-          </div>
+            <h3 className="text-xl font-medium">Biometric Verification</h3>
+            <p className="text-muted-foreground">Take a selfie to compare with your ID photo.</p>
+            
+            {verificationResult ? (
+              <motion.div 
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className={`p-6 rounded-lg ${verificationResult === 'success' ? 'bg-green-50' : 'bg-red-50'}`}
+              >
+                <div className="flex justify-center mb-4">
+                  {verificationResult === 'success' ? (
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                      <Check className="h-8 w-8 text-banking-green" />
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                      <X className="h-8 w-8 text-banking-red" />
+                    </div>
+                  )}
+                </div>
+                
+                <h4 className="text-lg font-medium">
+                  {verificationResult === 'success' ? 'Verification Successful' : 'Verification Failed'}
+                </h4>
+                
+                <p className="text-sm text-muted-foreground mt-2">
+                  {verificationResult === 'success' 
+                    ? 'Your selfie matched with your ID photo.' 
+                    : 'Your selfie did not match with your ID photo. Please try again.'}
+                </p>
+                
+                {verificationResult === 'fail' && (
+                  <Button 
+                    className="w-full mt-4" 
+                    onClick={() => {
+                      setVerificationResult(null);
+                      setCaptureMode(null);
+                    }}
+                  >
+                    Try Again
+                  </Button>
+                )}
+              </motion.div>
+            ) : captureMode === 'selfie' ? (
+              <div className="relative h-40 bg-black rounded-lg overflow-hidden flex items-center justify-center">
+                <motion.div 
+                  animate={{ 
+                    scale: [1, 1.1, 1],
+                    opacity: [0.5, 1, 0.5],
+                    borderColor: ["rgba(59, 130, 246, 0.5)", "rgba(59, 130, 246, 1)", "rgba(59, 130, 246, 0.5)"]
+                  }}
+                  transition={{ 
+                    repeat: Infinity, 
+                    duration: 2,
+                  }}
+                  className="absolute w-32 h-32 rounded-full border-2 border-banking-blue"
+                />
+                <p className="text-white text-sm">Capturing selfie...</p>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-3 text-sm text-left text-muted-foreground">
+                  <p className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                    Ensure good lighting for clear capture
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                    Center your face in the frame
+                  </p>
+                  <p className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-banking-green shrink-0 mt-1" />
+                    Remove glasses or accessories that cover your face
+                  </p>
+                </div>
+                <Button 
+                  className="w-full" 
+                  onClick={() => startCapture('selfie')}
+                >
+                  Take Selfie
+                </Button>
+              </>
+            )}
+          </motion.div>
         );
+      
       case 5:
         return (
-          <div className="flex flex-col items-center space-y-4">
-            <div className="h-40 w-40 rounded-full bg-banking-lightGrey border-2 border-dashed border-muted-foreground flex items-center justify-center relative">
-              {isVerifying ? (
-                <div className="absolute inset-0 rounded-full bg-banking-blue/10 flex items-center justify-center animate-pulse">
-                  <div className="h-16 w-16 rounded-full border-4 border-banking-blue border-t-transparent animate-spin"></div>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="text-center space-y-6"
+          >
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 10 }}
+              className="w-20 h-20 mx-auto bg-banking-green/10 rounded-full flex items-center justify-center"
+            >
+              <Check className="h-10 w-10 text-banking-green" />
+            </motion.div>
+            <h3 className="text-xl font-medium">Verification Complete</h3>
+            <div className="bg-green-50 p-4 rounded-lg">
+              <p className="text-sm">Your identity has been successfully verified using your ID card and biometrics.</p>
+            </div>
+            
+            <div className="space-y-2">
+              <p className="text-sm font-medium">Verification Details:</p>
+              <div className="space-y-2 text-sm text-left">
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-muted-foreground">Name</span>
+                  <span className="font-medium">Nguyen Van A</span>
                 </div>
-              ) : (
-                <>
-                  <Fingerprint className="h-16 w-16 text-muted-foreground" />
-                  <div className="absolute bottom-0 right-0 w-10 h-10 bg-banking-blue rounded-full flex items-center justify-center">
-                    <Camera className="h-6 w-6 text-white" />
-                  </div>
-                </>
-              )}
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-muted-foreground">ID Type</span>
+                  <span className="font-medium">National ID</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-muted-foreground">Verification Method</span>
+                  <span className="font-medium">NFC + Biometric</span>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <span className="text-muted-foreground">Status</span>
+                  <span className="text-banking-green font-medium">Verified</span>
+                </div>
+              </div>
             </div>
-            <p className="text-center text-sm text-muted-foreground">
-              Position your face in the frame for biometric comparison
-            </p>
-          </div>
+            
+            <Button 
+              className="w-full"
+              onClick={() => navigate('/', { state: { nfcSuccess: true } })}
+            >
+              Complete
+            </Button>
+          </motion.div>
         );
-      case 6:
-        return (
-          <div className="flex flex-col items-center space-y-4">
-            <div className="h-24 w-24 rounded-full bg-banking-green/10 flex items-center justify-center animate-pulse-soft">
-              <CheckCircle className="h-12 w-12 text-banking-green" />
-            </div>
-            <div className="text-center space-y-2">
-              <p className="font-medium">Verification Complete!</p>
-              <p className="text-sm text-muted-foreground">
-                Your identity has been successfully verified.
-                You can now proceed with your application.
-              </p>
-            </div>
-          </div>
-        );
+      
       default:
         return null;
     }
@@ -265,96 +402,38 @@ const NfcVerification: React.FC = () => {
   
   return (
     <Layout>
-      <div className="py-6">
+      <div className="py-4">
         <div className="flex items-center mb-6">
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={handleBackToHome}
+            onClick={handlePreviousStep}
             className="gap-1"
           >
             <ArrowLeft size={16} />
-            Back to home
+            Back
           </Button>
         </div>
 
-        <h1 className="text-2xl font-bold mb-6 text-center">NFC Verification</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center">NFC ID Verification</h1>
         
-        <Stepper value={verificationStep} className="mb-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <StepperItem key={i} className={verificationStep > i + 1 ? "bg-banking-blue text-white" : ""} />
-          ))}
-        </Stepper>
-        
-        <Card className="shadow-md max-w-md mx-auto">
-          <CardHeader className="text-center">
-            <CardTitle>{getStepTitle(verificationStep)}</CardTitle>
-            <CardDescription>{getStepDescription(verificationStep)}</CardDescription>
+        <Card className="shadow-md">
+          <CardHeader className="pb-0">
+            <Stepper value={currentStep} className="mb-2">
+              {Array.from({ length: totalSteps }).map((_, i) => (
+                <StepperItem key={i} />
+              ))}
+            </Stepper>
+            <CardTitle className="text-lg text-center mt-3">
+              Step {currentStep} of {totalSteps}
+            </CardTitle>
           </CardHeader>
-          
-          <CardContent className="flex flex-col items-center justify-center py-8">
-            {verificationComplete ? (
-              <div className="flex flex-col items-center space-y-4">
-                <div className="h-24 w-24 rounded-full bg-banking-green/10 flex items-center justify-center">
-                  <CheckCircle className="h-12 w-12 text-banking-green" />
-                </div>
-                <p className="text-lg font-medium">Verification Complete!</p>
-                <p className="text-center text-muted-foreground">
-                  Your identity has been successfully verified.
-                  Redirecting to homepage...
-                </p>
-              </div>
-            ) : (
-              getStepContent(verificationStep)
-            )}
+          <CardContent className="pt-6">
+            <AnimatePresence mode="wait">
+              {renderStepContent()}
+            </AnimatePresence>
           </CardContent>
-          
-          {!verificationComplete && (
-            <CardFooter className="flex flex-col space-y-4">
-              {verificationStep === 2 && !showIdPreview ? (
-                <div className="grid grid-cols-2 gap-3 w-full">
-                  <Button 
-                    className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue"
-                    onClick={handleCaptureId}
-                    disabled={isVerifying}
-                  >
-                    Capture ID
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={handleSkipCapture}
-                    disabled={isVerifying}
-                    className="w-full"
-                  >
-                    Skip
-                  </Button>
-                </div>
-              ) : (
-                <Button 
-                  className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:scale-105 transition-transform"
-                  onClick={handleStartScan}
-                  disabled={isVerifying}
-                >
-                  {isVerifying ? "Processing..." : getStepAction(verificationStep)}
-                </Button>
-              )}
-              
-              <Button 
-                variant="ghost" 
-                onClick={handleGoBack}
-                className="w-full hover:bg-banking-lightGrey"
-                disabled={isVerifying}
-              >
-                Cancel
-              </Button>
-            </CardFooter>
-          )}
         </Card>
-        
-        <div className="mt-6 text-sm text-muted-foreground text-center">
-          <p>Make sure NFC is enabled on your device.</p>
-          <p className="mt-2">Position your ID card directly on the back of your phone.</p>
-        </div>
       </div>
     </Layout>
   );

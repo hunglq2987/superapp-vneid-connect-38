@@ -5,12 +5,15 @@ import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from "sonner";
+import { CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const TermsAndConditions: React.FC = () => {
   const navigate = useNavigate();
   const [accepted, setAccepted] = useState(false);
   const [language, setLanguage] = useState<'en' | 'vi'>('en');
   const [showingSection, setShowingSection] = useState<string | null>('general');
+  const [showCompletion, setShowCompletion] = useState(false);
   
   const handleAcceptTerms = () => {
     if (!accepted) {
@@ -18,15 +21,15 @@ const TermsAndConditions: React.FC = () => {
       return;
     }
     
-    // Simulate successful registration
-    toast.success("Registration successful!");
+    // Show completion screen
+    setShowCompletion(true);
     
-    // Navigate to home with success message
+    // Navigate to home with success message after a delay
     setTimeout(() => {
       navigate('/', { 
         state: { registrationComplete: true } 
       });
-    }, 1500);
+    }, 3000);
   };
 
   const renderTermsSection = () => {
@@ -151,6 +154,28 @@ const TermsAndConditions: React.FC = () => {
     
     return null;
   };
+
+  if (showCompletion) {
+    return (
+      <Layout>
+        <div className="py-4 flex flex-col items-center justify-center min-h-[80vh]">
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-banking-green/10 text-banking-green rounded-full mb-6">
+              <CheckCircle size={48} />
+            </div>
+            <h1 className="text-3xl font-bold mb-4">Registration Complete!</h1>
+            <p className="text-muted-foreground mb-8">Your account has been successfully registered.</p>
+            <p className="text-sm text-muted-foreground">Redirecting to home page...</p>
+          </motion.div>
+        </div>
+      </Layout>
+    );
+  }
   
   return (
     <Layout>
