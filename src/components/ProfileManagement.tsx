@@ -5,7 +5,7 @@ import Layout from './Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, User, Fingerprint, Settings, Shield, FaceId } from 'lucide-react';
+import { ArrowLeft, User, Fingerprint, Settings, Shield, Scan } from 'lucide-react';
 import BiometricConfig from './profile/BiometricConfig';
 import DeviceManagement from './profile/DeviceManagement';
 import SecurityControls from './profile/SecurityControls';
@@ -52,7 +52,7 @@ const ProfileManagement: React.FC = () => {
           <Tabs defaultValue="biometric" className="w-full" onValueChange={(value) => setActiveTab(value as TabId)}>
             <TabsList className="grid grid-cols-4 mb-2">
               <TabsTrigger value="biometric" className="flex flex-col items-center py-3">
-                <FaceId size={20} className={activeTab === 'biometric' ? 'text-banking-blue' : 'text-muted-foreground'} />
+                <Scan size={20} className={activeTab === 'biometric' ? 'text-banking-blue' : 'text-muted-foreground'} />
                 <span className="text-xs mt-1">Biometric</span>
               </TabsTrigger>
               <TabsTrigger value="devices" className="flex flex-col items-center py-3">

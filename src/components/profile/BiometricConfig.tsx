@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Switch } from '@/components/ui/switch';
-import { FaceId, Fingerprint, Mic, Eye, Hand } from 'lucide-react';
+import { Scan, Fingerprint, Mic, Eye, Hand } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface BiometricMethod {
@@ -28,7 +28,7 @@ const BiometricConfig: React.FC = () => {
     {
       id: 'faceid',
       name: 'Facial Recognition (Face ID)',
-      icon: <FaceId className="h-5 w-5" />,
+      icon: <Scan className="h-5 w-5" />,
       supported: true,
       enabled: false,
       lastUsed: '1 day ago',
