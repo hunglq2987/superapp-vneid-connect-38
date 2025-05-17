@@ -5,16 +5,18 @@ import Layout from './Layout';
 import Logo from './ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { User, ArrowRight, Fingerprint } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { User, ArrowRight, Fingerprint, ChevronsRight, HelpCircle, BookOpen, Info, CheckCircle, XCircle } from 'lucide-react';
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showAccountQuestion, setShowAccountQuestion] = useState(false);
   const [nationalId, setNationalId] = useState('');
   const [error, setError] = useState('');
 
   const handleRegistration = () => {
-    navigate('/registration');
+    setShowAccountQuestion(true);
   };
 
   const handleNfcVerification = () => {
@@ -41,19 +43,41 @@ const HomeScreen: React.FC = () => {
     setNationalId('');
     setError('');
   };
+
+  const handleCloseAccountQuestion = () => {
+    setShowAccountQuestion(false);
+  };
+  
+  const handleHasAccount = () => {
+    setShowAccountQuestion(false);
+    navigate('/registration');
+  };
+  
+  const handleNoAccount = () => {
+    setShowAccountQuestion(false);
+    // Navigate to a different flow for non-account holders
+    navigate('/registration', { state: { hasAccount: false } });
+  };
   
   return (
     <Layout footer={true}>
       <div className="flex flex-col items-center justify-center min-h-[80vh] space-y-10 animate-fade-in">
         <div className="text-center space-y-4">
-          <Logo size="lg" />
-          <h1 className="text-3xl font-bold mt-6">SuperApp</h1>
+          <div className="relative">
+            <Logo size="lg" />
+            <div className="absolute -right-6 top-1/2 transform -translate-y-1/2">
+              <div className="animate-pulse-soft bg-banking-blue text-white px-2 py-1 rounded-full text-xs font-bold">
+                Secure
+              </div>
+            </div>
+          </div>
+          <h1 className="text-3xl font-bold mt-6 bg-gradient-to-r from-banking-blue to-banking-darkBlue bg-clip-text text-transparent">SuperApp</h1>
           <p className="text-muted-foreground">Modern Banking Experience</p>
         </div>
 
         <div className="space-y-4 w-full max-w-xs">
           <Button 
-            className="w-full hover:scale-105 transition-transform shadow-md"
+            className="w-full hover:scale-105 transition-transform shadow-lg bg-gradient-to-r from-banking-blue to-banking-darkBlue"
             size="lg" 
             onClick={handleRegistration}
           >
@@ -73,7 +97,7 @@ const HomeScreen: React.FC = () => {
           </div>
 
           <Button 
-            className="w-full hover:scale-105 transition-transform shadow-md"
+            className="w-full hover:scale-105 transition-transform shadow-lg"
             variant="secondary" 
             size="lg" 
             onClick={handleNfcVerification}
@@ -121,7 +145,12 @@ const HomeScreen: React.FC = () => {
                 </div>
 
                 <div className="pt-4 flex flex-col gap-2">
-                  <Button onClick={handleLogin}>Login</Button>
+                  <Button 
+                    onClick={handleLogin} 
+                    className="bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:opacity-90 transition-opacity"
+                  >
+                    Login
+                  </Button>
                   <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
                 </div>
               </div>
@@ -129,6 +158,53 @@ const HomeScreen: React.FC = () => {
           </Card>
         </div>
       )}
+      
+      <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Do you have a bank account at NCB?</DialogTitle>
+            <DialogDescription>
+              Please select one of the options below to continue with the appropriate registration process.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid grid-cols-1 gap-4 py-4">
+            <Button 
+              onClick={handleHasAccount}
+              className="flex justify-between items-center p-4 h-auto text-left"
+              variant="outline"
+            >
+              <div className="flex items-center gap-3">
+                <CheckCircle className="h-5 w-5 text-banking-green" />
+                <div>
+                  <p className="font-medium">Already have accounts</p>
+                  <p className="text-sm text-muted-foreground">Continue with existing account</p>
+                </div>
+              </div>
+              <ChevronsRight className="h-5 w-5 text-muted-foreground" />
+            </Button>
+            
+            <Button 
+              onClick={handleNoAccount}
+              className="flex justify-between items-center p-4 h-auto text-left"
+              variant="outline"
+            >
+              <div className="flex items-center gap-3">
+                <XCircle className="h-5 w-5 text-banking-red" />
+                <div>
+                  <p className="font-medium">Do not have an account</p>
+                  <p className="text-sm text-muted-foreground">Create a new banking relationship</p>
+                </div>
+              </div>
+              <ChevronsRight className="h-5 w-5 text-muted-foreground" />
+            </Button>
+          </div>
+          
+          <DialogFooter className="flex items-center justify-center">
+            <Button variant="ghost" onClick={handleCloseAccountQuestion}>Cancel</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

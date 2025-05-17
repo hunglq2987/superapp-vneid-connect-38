@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HelpCircle, BookOpen, Bell, Info } from 'lucide-react';
 
 interface LayoutProps {
@@ -8,6 +9,20 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, footer = false }) => {
+  const navigate = useNavigate();
+  
+  const handleSupportClick = () => {
+    navigate('/support');
+  };
+  
+  const handleUserGuideClick = () => {
+    navigate('/user-guide');
+  };
+  
+  const handleFaqClick = () => {
+    navigate('/faq');
+  };
+  
   return (
     <div className="mobile-container">
       <div className="flex-1 overflow-auto">
@@ -20,15 +35,24 @@ const Layout: React.FC<LayoutProps> = ({ children, footer = false }) => {
         <div className="border-t py-3 px-4">
           <div className="flex justify-between items-center">
             <div className="flex gap-6">
-              <button className="flex flex-col items-center text-banking-grey hover:text-banking-blue transition-colors">
+              <button 
+                className="flex flex-col items-center text-banking-grey hover:text-banking-blue transition-colors"
+                onClick={handleSupportClick}
+              >
                 <HelpCircle size={20} className="mb-1" />
                 <span className="text-xs">Support</span>
               </button>
-              <button className="flex flex-col items-center text-banking-grey hover:text-banking-blue transition-colors">
+              <button 
+                className="flex flex-col items-center text-banking-grey hover:text-banking-blue transition-colors"
+                onClick={handleUserGuideClick}
+              >
                 <BookOpen size={20} className="mb-1" />
                 <span className="text-xs">User Guide</span>
               </button>
-              <button className="flex flex-col items-center text-banking-grey hover:text-banking-blue transition-colors">
+              <button 
+                className="flex flex-col items-center text-banking-grey hover:text-banking-blue transition-colors"
+                onClick={handleFaqClick}
+              >
                 <Info size={20} className="mb-1" />
                 <span className="text-xs">FAQs</span>
               </button>

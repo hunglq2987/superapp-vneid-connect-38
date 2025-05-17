@@ -13,6 +13,10 @@ import NfcVerification from "./components/NfcVerification";
 import DetailedRegistration from "./components/DetailedRegistration";
 import TermsAndConditions from "./components/TermsAndConditions";
 import ProfileManagement from "./components/ProfileManagement";
+import OtpVerification from "./components/OtpVerification";
+import Support from "./components/Support";
+import UserGuide from "./components/UserGuide";
+import Faq from "./components/Faq";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +35,10 @@ const App = () => (
           <Route path="/detailed-registration" element={<DetailedRegistration />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/profile-management" element={<ProfileManagement />} />
+          <Route path="/otp-verification" element={<OtpVerification />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/user-guide" element={<UserGuide />} />
+          <Route path="/faq" element={<Faq />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

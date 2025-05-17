@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const RegistrationFlow: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const hasAccount = location.state?.hasAccount;
   const [nationalId, setNationalId] = useState('');
   const [error, setError] = useState('');
   
@@ -32,7 +34,10 @@ const RegistrationFlow: React.FC = () => {
         break;
       case '222222222222':
         // Multiple phone numbers, needs OTP
-        navigate('/otp-verification', { state: { nationalId, phones: ['+84981234567', '+84987654321'] } });
+        navigate('/otp-verification', { state: { 
+          nationalId, 
+          phones: ['+84 981 234 567', '+84 987 654 321'] 
+        }});
         break;
       case '333333333333':
         // No data, redirect to VNeID
@@ -66,7 +71,9 @@ const RegistrationFlow: React.FC = () => {
         <h1 className="text-2xl font-bold mb-6 text-center">Customer Registration</h1>
         <Card className="shadow-md">
           <CardHeader>
-            <CardTitle className="text-xl text-center">Enter National ID</CardTitle>
+            <CardTitle className="text-xl text-center">
+              {hasAccount === false ? 'New Account Registration' : 'Enter National ID'}
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
@@ -85,12 +92,12 @@ const RegistrationFlow: React.FC = () => {
                 />
                 {error && <p className="text-banking-red text-sm mt-1">{error}</p>}
                 <p className="text-xs text-muted-foreground mt-1">
-                  For testing: Use 111111111111, 222222222222, or 333333333333
+                  For testing: Use 111111111111 (biometric), 222222222222 (multiple phones), or 333333333333 (VNeID)
                 </p>
               </div>
 
               <Button 
-                className="w-full mt-6"
+                className="w-full mt-6 bg-gradient-to-r from-banking-blue to-banking-darkBlue"
                 onClick={handleNextStep}
                 disabled={!nationalId}
               >
