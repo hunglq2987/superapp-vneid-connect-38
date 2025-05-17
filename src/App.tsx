@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,6 +6,12 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import VNeIDConfirmation from "./components/VNeIDConfirmation";
+import RegistrationFlow from "./components/RegistrationFlow";
+import BiometricAuth from "./components/BiometricAuth";
+import NfcVerification from "./components/NfcVerification";
+import DetailedRegistration from "./components/DetailedRegistration";
+import TermsAndConditions from "./components/TermsAndConditions";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +23,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/registration" element={<RegistrationFlow />} />
+          <Route path="/vneid-confirmation" element={<VNeIDConfirmation />} />
+          <Route path="/biometric-auth" element={<BiometricAuth />} />
+          <Route path="/nfc-verification" element={<NfcVerification />} />
+          <Route path="/detailed-registration" element={<DetailedRegistration />} />
+          <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

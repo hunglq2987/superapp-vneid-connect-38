@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,18 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+                // Banking app custom colors
+                banking: {
+                    blue: '#0A84FF',
+                    darkBlue: '#147EFB',
+                    lightBlue: '#64D2FF',
+                    grey: '#8E8E93',
+                    lightGrey: '#F5F7FA',
+                    red: '#FF3B30',
+                    green: '#34C759',
+                    yellow: '#FFCC00',
+                }
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -84,12 +96,35 @@ export default {
 					to: {
 						height: '0'
 					}
-				}
+				},
+                'pulse-soft': {
+                    '0%, 100%': { opacity: '1' },
+                    '50%': { opacity: '0.7' },
+                },
+                'fade-in': {
+                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                'slide-in': {
+                    '0%': { transform: 'translateX(100%)' },
+                    '100%': { transform: 'translateX(0)' },
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
-			}
+				'accordion-up': 'accordion-up 0.2s ease-out',
+                'pulse-soft': 'pulse-soft 2s infinite ease-in-out',
+                'fade-in': 'fade-in 0.3s ease-out',
+                'slide-in': 'slide-in 0.3s ease-out',
+			},
+            fontFamily: {
+                sans: ['SF Pro Text', 'SF Pro', 'Inter', 'system-ui', 'sans-serif'],
+                display: ['SF Pro Display', 'Inter', 'system-ui', 'sans-serif'],
+            },
+            boxShadow: {
+                'card': '0px 2px 8px rgba(0, 0, 0, 0.05)',
+                'elevated': '0px 4px 12px rgba(0, 0, 0, 0.08)',
+            },
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
