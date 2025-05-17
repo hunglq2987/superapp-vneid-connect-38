@@ -1,8 +1,11 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import Layout from './Layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { toast } from "sonner";
 
 const NfcVerification: React.FC = () => {
   const navigate = useNavigate();
@@ -39,10 +42,15 @@ const NfcVerification: React.FC = () => {
     setStep(4);
   };
   
-  const handleBiometricValidation = () => {
-    navigate('/biometric-auth');
+  const handleBackToHome = () => {
+    navigate('/');
   };
   
+  const handleCompleteVerification = () => {
+    toast.success("NFC verification completed successfully!");
+    navigate('/', { state: { nfcVerified: true } });
+  };
+
   const renderStep1 = () => (
     <>
       <CardHeader>
@@ -268,9 +276,9 @@ const NfcVerification: React.FC = () => {
         
         <Button 
           className="w-full" 
-          onClick={handleBiometricValidation}
+          onClick={handleCompleteVerification}
         >
-          Continue with Biometric Verification
+          Complete Verification
         </Button>
       </CardContent>
     </>
@@ -279,6 +287,18 @@ const NfcVerification: React.FC = () => {
   return (
     <Layout>
       <div className="py-4">
+        <div className="flex items-center mb-4">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleBackToHome}
+            className="gap-1"
+          >
+            <ArrowLeft size={16} />
+            Back to home
+          </Button>
+        </div>
+        
         <h1 className="text-2xl font-bold mb-6 text-center">NFC Verification</h1>
         
         <Card className="shadow-md">

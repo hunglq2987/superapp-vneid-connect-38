@@ -1,24 +1,16 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const RegistrationFlow: React.FC = () => {
   const navigate = useNavigate();
-  const [hasAccount, setHasAccount] = useState<boolean | null>(null);
   const [nationalId, setNationalId] = useState('');
   const [error, setError] = useState('');
   
-  const handleHasAccountSelection = (value: boolean) => {
-    setHasAccount(value);
-    
-    if (!value) {
-      // Redirect to VNeID if they don't have a bank account
-      navigate('/vneid-confirmation');
-    }
-  };
-
   const validateNationalId = (id: string): boolean => {
     // Simple validation for 12-digit ID
     return /^\d{12}$/.test(id);
@@ -52,80 +44,60 @@ const RegistrationFlow: React.FC = () => {
     }
   };
 
-  const renderInitialQuestion = () => {
-    return (
-      <div className="animate-fade-in">
-        <CardHeader>
-          <CardTitle className="text-xl text-center">Account Verification</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center mb-6">Do you have a bank account at NCB?</p>
-          <div className="space-y-3">
-            <Button
-              className="w-full justify-center"
-              onClick={() => handleHasAccountSelection(true)}
-            >
-              Yes, I have an NCB account
-            </Button>
-            <Button
-              className="w-full justify-center"
-              variant="secondary"
-              onClick={() => handleHasAccountSelection(false)}
-            >
-              No, I don't have an account
-            </Button>
-          </div>
-        </CardContent>
-      </div>
-    );
-  };
-
-  const renderNationalIdInput = () => {
-    return (
-      <div className="animate-fade-in">
-        <CardHeader>
-          <CardTitle className="text-xl text-center">Enter National ID</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="nationalId" className="text-sm font-medium">
-                National ID Number
-              </label>
-              <input
-                id="nationalId"
-                type="text"
-                value={nationalId}
-                onChange={(e) => setNationalId(e.target.value)}
-                placeholder="Enter your 12-digit ID"
-                className="input-field"
-                maxLength={12}
-              />
-              {error && <p className="text-banking-red text-sm mt-1">{error}</p>}
-              <p className="text-xs text-muted-foreground mt-1">
-                For testing: Use 111111111111, 222222222222, or 333333333333
-              </p>
-            </div>
-
-            <Button 
-              className="w-full mt-6"
-              onClick={handleNextStep}
-              disabled={!nationalId}
-            >
-              Next
-            </Button>
-          </div>
-        </CardContent>
-      </div>
-    );
+  const handleBackToHome = () => {
+    navigate('/');
   };
 
   return (
     <Layout>
       <div className="py-6">
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleBackToHome}
+            className="gap-1"
+          >
+            <ArrowLeft size={16} />
+            Back to home
+          </Button>
+        </div>
+
         <h1 className="text-2xl font-bold mb-6 text-center">Customer Registration</h1>
         <Card className="shadow-md">
-          {hasAccount === null ? renderInitialQuestion() : renderNationalIdInput()}
+          <CardHeader>
+            <CardTitle className="text-xl text-center">Enter National ID</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="nationalId" className="text-sm font-medium">
+                  National ID Number
+                </label>
+                <input
+                  id="nationalId"
+                  type="text"
+                  value={nationalId}
+                  onChange={(e) => setNationalId(e.target.value)}
+                  placeholder="Enter your 12-digit ID"
+                  className="input-field"
+                  maxLength={12}
+                />
+                {error && <p className="text-banking-red text-sm mt-1">{error}</p>}
+                <p className="text-xs text-muted-foreground mt-1">
+                  For testing: Use 111111111111, 222222222222, or 333333333333
+                </p>
+              </div>
+
+              <Button 
+                className="w-full mt-6"
+                onClick={handleNextStep}
+                disabled={!nationalId}
+              >
+                Next
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       </div>
     </Layout>

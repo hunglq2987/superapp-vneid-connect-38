@@ -12,6 +12,7 @@ import BiometricAuth from "./components/BiometricAuth";
 import NfcVerification from "./components/NfcVerification";
 import DetailedRegistration from "./components/DetailedRegistration";
 import TermsAndConditions from "./components/TermsAndConditions";
+import ProfileManagement from "./components/ProfileManagement";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Route path="/nfc-verification" element={<NfcVerification />} />
           <Route path="/detailed-registration" element={<DetailedRegistration />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
+          <Route path="/profile-management" element={<ProfileManagement />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

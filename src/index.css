@@ -129,6 +129,16 @@
   .input-field {
     @apply block w-full rounded-lg border border-input bg-transparent px-3 py-2 ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
+  
+  /* Icon hover effects */
+  .icon-hover {
+    @apply transition-all duration-300 hover:scale-110 hover:text-banking-blue;
+  }
+
+  /* Button hover effects */
+  .btn-hover {
+    @apply transition-transform duration-300 hover:scale-105 hover:shadow-md;
+  }
 }
 
 /* Simulate SF Pro font with system fonts */
