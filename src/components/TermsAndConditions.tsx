@@ -157,7 +157,7 @@ const TermsAndConditions: React.FC = () => {
       <div className="py-4">
         <h1 className="text-2xl font-bold mb-6 text-center">Terms & Conditions</h1>
         
-        <Card elevated>
+        <Card className="shadow-md">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle>Terms of Service</CardTitle>
