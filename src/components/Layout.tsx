@@ -1,14 +1,16 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HelpCircle, BookOpen, Bell, Info } from 'lucide-react';
+import { HelpCircle, BookOpen, Bell, Info, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface LayoutProps {
   children: React.ReactNode;
   footer?: boolean;
+  showBackButton?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, footer = false }) => {
+const Layout: React.FC<LayoutProps> = ({ children, footer = false, showBackButton = false }) => {
   const navigate = useNavigate();
   
   const handleSupportClick = () => {
@@ -23,8 +25,26 @@ const Layout: React.FC<LayoutProps> = ({ children, footer = false }) => {
     navigate('/faq');
   };
   
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+  
   return (
     <div className="mobile-container">
+      {showBackButton && (
+        <div className="border-b p-3">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleBackToHome}
+            className="gap-1"
+          >
+            <ArrowLeft size={16} />
+            Back to home
+          </Button>
+        </div>
+      )}
+      
       <div className="flex-1 overflow-auto">
         <div className="safe-area">
           {children}

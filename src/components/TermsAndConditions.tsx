@@ -5,8 +5,8 @@ import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from "sonner";
-import { CheckCircle } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { CheckCircle, Info } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TermsAndConditions: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +35,13 @@ const TermsAndConditions: React.FC = () => {
   const renderTermsSection = () => {
     if (showingSection === 'general') {
       return (
-        <div className="space-y-4">
+        <motion.div 
+          className="space-y-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <h3 className="font-semibold text-lg">General Terms & Conditions</h3>
           
           <p>
@@ -76,11 +82,17 @@ const TermsAndConditions: React.FC = () => {
           <p>
             4.2 By using the App, you agree to our collection and use of your information as described in our Privacy Policy.
           </p>
-        </div>
+        </motion.div>
       );
     } else if (showingSection === 'security') {
       return (
-        <div className="space-y-4">
+        <motion.div 
+          className="space-y-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <h3 className="font-semibold text-lg">Security Terms</h3>
           
           <p>
@@ -114,11 +126,17 @@ const TermsAndConditions: React.FC = () => {
           <p>
             3.2 You must notify us immediately of any unauthorized use of your account or any other security breach.
           </p>
-        </div>
+        </motion.div>
       );
     } else if (showingSection === 'compliance') {
       return (
-        <div className="space-y-4">
+        <motion.div 
+          className="space-y-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+        >
           <h3 className="font-semibold text-lg">Regulatory Compliance</h3>
           
           <p>
@@ -148,7 +166,7 @@ const TermsAndConditions: React.FC = () => {
           <p>
             3.2 Any updates to SBV policies that affect our services will be communicated to you promptly.
           </p>
-        </div>
+        </motion.div>
       );
     }
     
@@ -157,7 +175,7 @@ const TermsAndConditions: React.FC = () => {
 
   if (showCompletion) {
     return (
-      <Layout>
+      <Layout showBackButton={true}>
         <div className="py-4 flex flex-col items-center justify-center min-h-[80vh]">
           <motion.div 
             initial={{ scale: 0.8, opacity: 0 }}
@@ -165,9 +183,15 @@ const TermsAndConditions: React.FC = () => {
             transition={{ duration: 0.5 }}
             className="text-center"
           >
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-banking-green/10 text-banking-green rounded-full mb-6">
+            <motion.div 
+              className="inline-flex items-center justify-center w-24 h-24 bg-banking-green/10 text-banking-green rounded-full mb-6"
+              animate={{ 
+                boxShadow: ['0 0 0 rgba(34, 197, 94, 0)', '0 0 20px rgba(34, 197, 94, 0.5)', '0 0 0 rgba(34, 197, 94, 0)']
+              }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            >
               <CheckCircle size={48} />
-            </div>
+            </motion.div>
             <h1 className="text-3xl font-bold mb-4">Registration Complete!</h1>
             <p className="text-muted-foreground mb-8">Your account has been successfully registered.</p>
             <p className="text-sm text-muted-foreground">Redirecting to home page...</p>
@@ -178,91 +202,127 @@ const TermsAndConditions: React.FC = () => {
   }
   
   return (
-    <Layout>
+    <Layout showBackButton={true}>
       <div className="py-4">
         <h1 className="text-2xl font-bold mb-6 text-center">Terms & Conditions</h1>
         
-        <Card className="shadow-md">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <CardTitle>Terms of Service</CardTitle>
-              <div className="flex items-center space-x-2 text-sm">
-                <button 
-                  className={`px-2 py-1 rounded ${language === 'en' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
-                  onClick={() => setLanguage('en')}
-                >
-                  English
-                </button>
-                <button 
-                  className={`px-2 py-1 rounded ${language === 'vi' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
-                  onClick={() => setLanguage('vi')}
-                >
-                  Tiếng Việt
-                </button>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Card className="shadow-md dark:bg-slate-800/95 backdrop-blur-xl border border-white/10">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Terms of Service</CardTitle>
+                <div className="flex items-center space-x-2 text-xs">
+                  <motion.button 
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-2 py-1 rounded ${language === 'en' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
+                    onClick={() => setLanguage('en')}
+                  >
+                    English
+                  </motion.button>
+                  <motion.button 
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-2 py-1 rounded ${language === 'vi' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
+                    onClick={() => setLanguage('vi')}
+                  >
+                    Tiếng Việt
+                  </motion.button>
+                </div>
               </div>
-            </div>
-          </CardHeader>
-          
-          <div className="flex border-b">
-            <button 
-              className={`flex-1 py-2 text-center text-sm font-medium ${showingSection === 'general' ? 'text-banking-blue border-b-2 border-banking-blue' : 'text-muted-foreground'}`}
-              onClick={() => setShowingSection('general')}
-            >
-              General
-            </button>
-            <button 
-              className={`flex-1 py-2 text-center text-sm font-medium ${showingSection === 'security' ? 'text-banking-blue border-b-2 border-banking-blue' : 'text-muted-foreground'}`}
-              onClick={() => setShowingSection('security')}
-            >
-              Security
-            </button>
-            <button 
-              className={`flex-1 py-2 text-center text-sm font-medium ${showingSection === 'compliance' ? 'text-banking-blue border-b-2 border-banking-blue' : 'text-muted-foreground'}`}
-              onClick={() => setShowingSection('compliance')}
-            >
-              Compliance
-            </button>
-          </div>
-          
-          <CardContent className="py-4">
-            <div className="h-64 overflow-y-auto pr-2 text-sm">
-              {renderTermsSection()}
+            </CardHeader>
+            
+            <div className="flex border-b">
+              {['general', 'security', 'compliance'].map((section) => (
+                <motion.button 
+                  key={section}
+                  className={`flex-1 py-2 text-center text-xs font-medium uppercase tracking-wide ${
+                    showingSection === section 
+                      ? 'text-banking-blue border-b-2 border-banking-blue' 
+                      : 'text-muted-foreground'
+                  }`}
+                  onClick={() => setShowingSection(section)}
+                  whileHover={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {section}
+                </motion.button>
+              ))}
             </div>
             
-            <div className="flex items-center gap-2 mt-4">
-              <input
-                type="checkbox"
-                id="acceptTerms"
-                checked={accepted}
-                onChange={() => setAccepted(!accepted)}
-                className="w-4 h-4 rounded border-gray-300"
-              />
-              <label htmlFor="acceptTerms" className="text-sm">
-                I have read and agree to the Terms and Conditions
-              </label>
-            </div>
+            <CardContent className="py-4">
+              <div className="h-64 overflow-y-auto pr-2 text-sm glass-scrollbar">
+                <AnimatePresence mode="wait">
+                  {renderTermsSection()}
+                </AnimatePresence>
+              </div>
+              
+              <div className="flex items-center gap-3 mt-4">
+                <motion.div 
+                  className={`w-5 h-5 border rounded flex items-center justify-center ${
+                    accepted ? 'bg-banking-blue border-banking-blue' : 'border-gray-300'
+                  }`}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setAccepted(!accepted)}
+                >
+                  {accepted && <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="text-white"
+                  >
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </motion.div>}
+                </motion.div>
+                <label htmlFor="acceptTerms" className="text-sm flex items-center cursor-pointer" onClick={() => setAccepted(!accepted)}>
+                  I have read and agree to the Terms and Conditions
+                  <motion.div 
+                    className="ml-1 text-muted-foreground cursor-help"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <Info size={14} />
+                  </motion.div>
+                </label>
+              </div>
+              
+              <div className="text-xs text-muted-foreground mt-2">
+                By accepting, you confirm your agreement to version 1.0 of our Terms and Conditions, dated May 17, 2025.
+              </div>
+            </CardContent>
             
-            <div className="text-xs text-muted-foreground mt-2">
-              By accepting, you confirm your agreement to version 1.0 of our Terms and Conditions, dated May 17, 2025.
-            </div>
-          </CardContent>
-          
-          <CardFooter className="flex justify-between space-x-2">
-            <Button
-              variant="outline"
-              onClick={() => navigate(-1)}
-              className="flex-1"
-            >
-              Back
-            </Button>
-            <Button
-              className="flex-1"
-              onClick={handleAcceptTerms}
-            >
-              Accept & Continue
-            </Button>
-          </CardFooter>
-        </Card>
+            <CardFooter className="flex justify-between space-x-2">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1"
+              >
+                <Button
+                  variant="outline"
+                  onClick={() => navigate(-1)}
+                  className="w-full dark:bg-transparent dark:hover:bg-slate-700/50"
+                >
+                  Back
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1"
+              >
+                <Button
+                  className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue"
+                  onClick={handleAcceptTerms}
+                >
+                  Accept & Continue
+                </Button>
+              </motion.div>
+            </CardFooter>
+          </Card>
+        </motion.div>
       </div>
     </Layout>
   );
