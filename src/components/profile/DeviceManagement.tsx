@@ -173,12 +173,12 @@ const DeviceManagement: React.FC = () => {
                 </div>
                 <div className="flex gap-2">
                   {!device.isPrimary && device.status === 'active' && (
-                    <Button size="sm" variant="outline" className="text-xs px-2 py-1 h-auto" onClick={() => handleSetPrimary(device.id)}>
+                    <Button size="sm" variant="outline" className="text-xs h-7 px-2">
                       Set as primary
                     </Button>
                   )}
                   {!device.isCurrentDevice && (
-                    <Button size="sm" variant="destructive" className="text-xs px-2 py-1 h-auto" onClick={() => handleDeactivate(device.id)}>
+                    <Button size="sm" variant="destructive" className="text-xs h-7 px-2">
                       Deactivate
                     </Button>
                   )}

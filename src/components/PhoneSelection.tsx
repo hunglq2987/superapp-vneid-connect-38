@@ -25,6 +25,10 @@ const PhoneSelection: React.FC = () => {
       } 
     });
   };
+
+  const handleVNeIDRegistration = () => {
+    navigate('/vneid-confirmation');
+  };
   
   return (
     <Layout showBackButton={true}>
@@ -86,6 +90,16 @@ const PhoneSelection: React.FC = () => {
                       <ArrowRight size={16} className="ml-1" />
                     </Button>
                   </motion.div>
+                  
+                  <div className="text-center mt-4">
+                    <Button 
+                      variant="link" 
+                      onClick={handleVNeIDRegistration}
+                      className="text-banking-blue"
+                    >
+                      Register with VNeID instead
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
