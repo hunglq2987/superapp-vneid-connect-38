@@ -19,6 +19,7 @@ import NoPhoneFound from "./components/NoPhoneFound";
 import Support from "./components/Support";
 import UserGuide from "./components/UserGuide";
 import Faq from "./components/Faq";
+import RegistrationDetailsPage from "./components/profile/RegistrationDetailsPage";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => (
           <Route path="/detailed-registration" element={<DetailedRegistration />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/profile-management" element={<ProfileManagement />} />
+          <Route path="/registration-details" element={<RegistrationDetailsPage />} />
           <Route path="/otp-verification" element={<OtpVerification />} />
           <Route path="/phone-selection" element={<PhoneSelection />} />
           <Route path="/no-phone-found" element={<NoPhoneFound />} />

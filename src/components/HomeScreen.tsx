@@ -276,10 +276,12 @@ const HomeScreen: React.FC = () => {
       )}
       
       <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
-        <DialogContent className="sm:max-w-[400px] dark:bg-slate-800/95 backdrop-blur-xl border border-white/10">
+        <DialogContent className="sm:max-w-[380px] dark:bg-slate-800/95 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.4)]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Do you have a bank account at NCB?</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+              Do you have a bank account at NCB?
+            </DialogTitle>
+            <DialogDescription className="text-gray-300/90 text-sm">
               Please select one of the options below to continue with the appropriate registration process.
             </DialogDescription>
           </DialogHeader>
@@ -291,24 +293,24 @@ const HomeScreen: React.FC = () => {
             >
               <Button 
                 onClick={handleHasAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full dark:bg-slate-700/80 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue"
+                className="flex justify-between items-center p-4 h-auto text-left w-full bg-slate-700/60 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue shadow-lg"
                 variant="outline"
               >
                 <div className="flex items-center gap-3">
                   <motion.div 
                     className="h-10 w-10 rounded-full bg-banking-green/10 flex items-center justify-center"
-                    animate={{ boxShadow: ['0 0 0 rgba(34, 197, 94, 0)', '0 0 8px rgba(34, 197, 94, 0.5)', '0 0 0 rgba(34, 197, 94, 0)'] }}
+                    animate={{ boxShadow: ['0 0 0 rgba(34, 197, 94, 0)', '0 0 12px rgba(34, 197, 94, 0.6)', '0 0 0 rgba(34, 197, 94, 0)'] }}
                     transition={{ repeat: Infinity, duration: 2 }}
                   >
                     <CheckCircle className="h-5 w-5 text-banking-green" />
                   </motion.div>
                   <div>
-                    <p className="font-medium">Already have accounts</p>
-                    <p className="text-sm text-muted-foreground">Continue with existing account</p>
+                    <p className="font-medium text-white">Already have accounts</p>
+                    <p className="text-sm text-gray-300/80">Continue with existing account</p>
                   </div>
                 </div>
                 <motion.div 
-                  animate={{ x: [0, 3, 0] }} 
+                  animate={{ x: [0, 4, 0] }} 
                   transition={{ repeat: Infinity, duration: 1.5 }}
                 >
                   <ChevronsRight className="h-5 w-5 text-banking-blue" />
@@ -322,24 +324,24 @@ const HomeScreen: React.FC = () => {
             >
               <Button 
                 onClick={handleNoAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full dark:bg-slate-700/80 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue"
+                className="flex justify-between items-center p-4 h-auto text-left w-full bg-slate-700/60 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue shadow-lg"
                 variant="outline"
               >
                 <div className="flex items-center gap-3">
                   <motion.div 
                     className="h-10 w-10 rounded-full bg-banking-red/10 flex items-center justify-center"
-                    animate={{ boxShadow: ['0 0 0 rgba(239, 68, 68, 0)', '0 0 8px rgba(239, 68, 68, 0.5)', '0 0 0 rgba(239, 68, 68, 0)'] }}
+                    animate={{ boxShadow: ['0 0 0 rgba(239, 68, 68, 0)', '0 0 12px rgba(239, 68, 68, 0.6)', '0 0 0 rgba(239, 68, 68, 0)'] }}
                     transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}
                   >
                     <XCircle className="h-5 w-5 text-banking-red" />
                   </motion.div>
                   <div>
-                    <p className="font-medium">Do not have an account</p>
-                    <p className="text-sm text-muted-foreground">Create a new banking relationship</p>
+                    <p className="font-medium text-white">Do not have an account</p>
+                    <p className="text-sm text-gray-300/80">Create a new banking relationship</p>
                   </div>
                 </div>
                 <motion.div 
-                  animate={{ x: [0, 3, 0] }} 
+                  animate={{ x: [0, 4, 0] }} 
                   transition={{ repeat: Infinity, duration: 1.5, delay: 0.25 }}
                 >
                   <ChevronsRight className="h-5 w-5 text-banking-blue" />
@@ -349,7 +351,13 @@ const HomeScreen: React.FC = () => {
           </div>
           
           <DialogFooter className="flex items-center justify-center">
-            <Button variant="ghost" onClick={handleCloseAccountQuestion} className="text-sm underline">Cancel</Button>
+            <Button 
+              variant="ghost" 
+              onClick={handleCloseAccountQuestion} 
+              className="text-sm text-gray-300/90 hover:text-white hover:bg-transparent underline decoration-gray-500 hover:decoration-white transition-all"
+            >
+              Cancel
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
