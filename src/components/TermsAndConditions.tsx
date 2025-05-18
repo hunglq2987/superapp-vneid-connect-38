@@ -5,7 +5,7 @@ import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from "sonner";
-import { CheckCircle, Info } from 'lucide-react';
+import { CheckCircle, Info, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TermsAndConditions: React.FC = () => {
@@ -44,44 +44,46 @@ const TermsAndConditions: React.FC = () => {
         >
           <h3 className="font-semibold text-lg">General Terms & Conditions</h3>
           
-          <p>
-            These Terms and Conditions govern your use of the SuperApp banking mobile application 
-            (the "App") and related services provided by SuperApp Financial Institution ("we", "us", or "our").
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">1. Acceptance of Terms</h4>
-          <p>
-            By registering, accessing or using the App, you agree to be bound by these Terms and Conditions. 
-            If you do not agree, please do not use the App.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">2. Account Registration</h4>
-          <p>
-            2.1 To use our services, you must register for an account. You agree to provide accurate and 
-            complete information during the registration process.
-          </p>
-          <p>
-            2.2 You are responsible for maintaining the confidentiality of your account credentials and for 
-            all activities that occur under your account.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">3. Services</h4>
-          <p>
-            3.1 The App provides banking services which may include viewing account balances, transferring funds, 
-            making payments, and applying for financial products.
-          </p>
-          <p>
-            3.2 We reserve the right to modify, suspend, or discontinue any service at any time without notice.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">4. Privacy</h4>
-          <p>
-            4.1 Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect 
-            your personal information.
-          </p>
-          <p>
-            4.2 By using the App, you agree to our collection and use of your information as described in our Privacy Policy.
-          </p>
+          <div className="bg-muted/30 p-4 rounded-lg">
+            <p className="mb-4">
+              These Terms and Conditions govern your use of the SuperApp banking mobile application 
+              (the "App") and related services provided by SuperApp Financial Institution ("we", "us", or "our").
+            </p>
+            
+            <h4 className="font-medium text-base mt-4 text-banking-blue">1. Acceptance of Terms</h4>
+            <p className="mb-2 pl-4">
+              By registering, accessing or using the App, you agree to be bound by these Terms and Conditions. 
+              If you do not agree, please do not use the App.
+            </p>
+            
+            <h4 className="font-medium text-base mt-4 text-banking-blue">2. Account Registration</h4>
+            <p className="mb-2 pl-4">
+              2.1 To use our services, you must register for an account. You agree to provide accurate and 
+              complete information during the registration process.
+            </p>
+            <p className="mb-2 pl-4">
+              2.2 You are responsible for maintaining the confidentiality of your account credentials and for 
+              all activities that occur under your account.
+            </p>
+            
+            <h4 className="font-medium text-base mt-4 text-banking-blue">3. Services</h4>
+            <p className="mb-2 pl-4">
+              3.1 The App provides banking services which may include viewing account balances, transferring funds, 
+              making payments, and applying for financial products.
+            </p>
+            <p className="mb-2 pl-4">
+              3.2 We reserve the right to modify, suspend, or discontinue any service at any time without notice.
+            </p>
+            
+            <h4 className="font-medium text-base mt-4 text-banking-blue">4. Privacy</h4>
+            <p className="mb-2 pl-4">
+              4.1 Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect 
+              your personal information.
+            </p>
+            <p className="mb-2 pl-4">
+              4.2 By using the App, you agree to our collection and use of your information as described in our Privacy Policy.
+            </p>
+          </div>
         </motion.div>
       );
     } else if (showingSection === 'security') {
@@ -212,20 +214,20 @@ const TermsAndConditions: React.FC = () => {
           transition={{ duration: 0.4 }}
         >
           <Card className="shadow-md dark:bg-slate-800/95 backdrop-blur-xl border border-white/10">
-            <CardHeader className="pb-2">
+            <CardHeader className="pb-2 border-b border-border/50">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Terms of Service</CardTitle>
+                <CardTitle className="text-lg font-bold">Terms of Service</CardTitle>
                 <div className="flex items-center space-x-2 text-xs">
                   <motion.button 
                     whileTap={{ scale: 0.95 }}
-                    className={`px-2 py-1 rounded ${language === 'en' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
+                    className={`px-3 py-1 rounded-full ${language === 'en' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
                     onClick={() => setLanguage('en')}
                   >
                     English
                   </motion.button>
                   <motion.button 
                     whileTap={{ scale: 0.95 }}
-                    className={`px-2 py-1 rounded ${language === 'vi' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
+                    className={`px-3 py-1 rounded-full ${language === 'vi' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
                     onClick={() => setLanguage('vi')}
                   >
                     Tiếng Việt
@@ -238,7 +240,7 @@ const TermsAndConditions: React.FC = () => {
               {['general', 'security', 'compliance'].map((section) => (
                 <motion.button 
                   key={section}
-                  className={`flex-1 py-2 text-center text-xs font-medium uppercase tracking-wide ${
+                  className={`flex-1 py-3 text-center text-sm font-medium tracking-wide ${
                     showingSection === section 
                       ? 'text-banking-blue border-b-2 border-banking-blue' 
                       : 'text-muted-foreground'
@@ -247,7 +249,7 @@ const TermsAndConditions: React.FC = () => {
                   whileHover={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  {section}
+                  {section.charAt(0).toUpperCase() + section.slice(1)}
                 </motion.button>
               ))}
             </div>
@@ -259,7 +261,7 @@ const TermsAndConditions: React.FC = () => {
                 </AnimatePresence>
               </div>
               
-              <div className="flex items-center gap-3 mt-4">
+              <div className="flex items-center gap-3 mt-6 bg-muted/20 p-4 rounded-lg">
                 <motion.div 
                   className={`w-5 h-5 border rounded flex items-center justify-center ${
                     accepted ? 'bg-banking-blue border-banking-blue' : 'border-gray-300'
@@ -272,12 +274,10 @@ const TermsAndConditions: React.FC = () => {
                     animate={{ scale: 1 }}
                     className="text-white"
                   >
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
+                    <CheckCircle size={12} />
                   </motion.div>}
                 </motion.div>
-                <label htmlFor="acceptTerms" className="text-sm flex items-center cursor-pointer" onClick={() => setAccepted(!accepted)}>
+                <label htmlFor="acceptTerms" className="text-sm font-medium flex items-center cursor-pointer" onClick={() => setAccepted(!accepted)}>
                   I have read and agree to the Terms and Conditions
                   <motion.div 
                     className="ml-1 text-muted-foreground cursor-help"
@@ -289,12 +289,12 @@ const TermsAndConditions: React.FC = () => {
                 </label>
               </div>
               
-              <div className="text-xs text-muted-foreground mt-2">
-                By accepting, you confirm your agreement to version 1.0 of our Terms and Conditions, dated May 17, 2025.
+              <div className="text-xs text-muted-foreground mt-2 text-center bg-muted/10 p-2 rounded">
+                By accepting, you confirm your agreement to version 1.0 of our Terms and Conditions, dated May 18, 2025.
               </div>
             </CardContent>
             
-            <CardFooter className="flex justify-between space-x-2">
+            <CardFooter className="flex justify-between space-x-2 border-t border-border/30 pt-4">
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -314,10 +314,11 @@ const TermsAndConditions: React.FC = () => {
                 className="flex-1"
               >
                 <Button
-                  className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue"
+                  className="w-full bg-banking-blue flex items-center justify-center gap-1"
                   onClick={handleAcceptTerms}
                 >
                   Accept & Continue
+                  <ChevronRight size={16} />
                 </Button>
               </motion.div>
             </CardFooter>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
@@ -165,63 +164,62 @@ const HomeScreen: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Sign in section moved above footer */}
-        <motion.div 
-          className="text-sm text-muted-foreground text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+      {/* Sign in section moved above footer */}
+      <motion.div 
+        className="text-sm text-muted-foreground text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+      >
+        <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
+        <motion.button
+          className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md mx-auto mt-3"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={handleLoginClick}
         >
-          <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
-          <motion.button
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md mx-auto mt-3"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleLoginClick}
-          >
-            <Fingerprint className="h-6 w-6 text-banking-blue" />
-          </motion.button>
-        </motion.div>
+          <Fingerprint className="h-6 w-6 text-banking-blue" />
+        </motion.button>
+      </motion.div>
 
-        <motion.div 
-          className="flex justify-center gap-8"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+      <motion.div 
+        className="flex justify-center gap-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8, duration: 0.5 }}
+      >
+        <motion.button
+          className="flex flex-col items-center text-muted-foreground text-xs"
+          whileHover={{ scale: 1.1, color: "#3B82F6" }}
+          onClick={handleUserGuideClick}
         >
-          <motion.button
-            className="flex flex-col items-center text-muted-foreground text-xs"
-            whileHover={{ scale: 1.1, color: "#3B82F6" }}
-            onClick={handleUserGuideClick}
-          >
-            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            Guide
-          </motion.button>
-          
-          <motion.button
-            className="flex flex-col items-center text-muted-foreground text-xs"
-            whileHover={{ scale: 1.1, color: "#3B82F6" }}
-            onClick={handleSupportClick}
-          >
-            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
-              <HelpCircle className="h-5 w-5" />
-            </div>
-            Support
-          </motion.button>
-          
-          <motion.button
-            className="flex flex-col items-center text-muted-foreground text-xs"
-            whileHover={{ scale: 1.1, color: "#3B82F6" }}
-            onClick={handleFaqClick}
-          >
-            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
-              <Info className="h-5 w-5" />
-            </div>
-            FAQ
-          </motion.button>
-        </motion.div>
+          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+            <BookOpen className="h-5 w-5" />
+          </div>
+          Guide
+        </motion.button>
+        
+        <motion.button
+          className="flex flex-col items-center text-muted-foreground text-xs"
+          whileHover={{ scale: 1.1, color: "#3B82F6" }}
+          onClick={handleSupportClick}
+        >
+          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+            <HelpCircle className="h-5 w-5" />
+          </div>
+          Support
+        </motion.button>
+        
+        <motion.button
+          className="flex flex-col items-center text-muted-foreground text-xs"
+          whileHover={{ scale: 1.1, color: "#3B82F6" }}
+          onClick={handleFaqClick}
+        >
+          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+            <Info className="h-5 w-5" />
+          </div>
+          FAQ
+        </motion.button>
       </motion.div>
 
       {showLoginModal && (
@@ -276,92 +274,74 @@ const HomeScreen: React.FC = () => {
       )}
       
       <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
-        <DialogContent className="sm:max-w-[380px] dark:bg-slate-800/95 backdrop-blur-xl border border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.4)]">
+        <DialogContent className="sm:max-w-[340px] bg-gradient-to-br from-banking-darkBlue to-[#001547] text-white border border-white/10 rounded-xl">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            <DialogTitle className="text-xl font-semibold tracking-tight text-white">
               Do you have a bank account at NCB?
             </DialogTitle>
-            <DialogDescription className="text-gray-300/90 text-sm">
-              Please select one of the options below to continue with the appropriate registration process.
+            <DialogDescription className="text-gray-300 text-sm">
+              Please select one option below to continue with the appropriate registration process.
             </DialogDescription>
           </DialogHeader>
           
           <div className="grid grid-cols-1 gap-4 py-4">
             <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <Button 
                 onClick={handleHasAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full bg-slate-700/60 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue shadow-lg"
+                className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
                 variant="outline"
               >
                 <div className="flex items-center gap-3">
-                  <motion.div 
-                    className="h-10 w-10 rounded-full bg-banking-green/10 flex items-center justify-center"
-                    animate={{ boxShadow: ['0 0 0 rgba(34, 197, 94, 0)', '0 0 12px rgba(34, 197, 94, 0.6)', '0 0 0 rgba(34, 197, 94, 0)'] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                  >
+                  <div className="h-10 w-10 rounded-full bg-banking-green/10 flex items-center justify-center">
                     <CheckCircle className="h-5 w-5 text-banking-green" />
-                  </motion.div>
+                  </div>
                   <div>
                     <p className="font-medium text-white">Already have accounts</p>
                     <p className="text-sm text-gray-300/80">Continue with existing account</p>
                   </div>
                 </div>
-                <motion.div 
-                  animate={{ x: [0, 4, 0] }} 
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  <ChevronsRight className="h-5 w-5 text-banking-blue" />
-                </motion.div>
+                <ChevronsRight className="h-5 w-5 text-gray-300" />
               </Button>
             </motion.div>
             
             <motion.div
-              whileHover={{ scale: 1.02, y: -2 }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
               <Button 
                 onClick={handleNoAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full bg-slate-700/60 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue shadow-lg"
+                className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
                 variant="outline"
               >
                 <div className="flex items-center gap-3">
-                  <motion.div 
-                    className="h-10 w-10 rounded-full bg-banking-red/10 flex items-center justify-center"
-                    animate={{ boxShadow: ['0 0 0 rgba(239, 68, 68, 0)', '0 0 12px rgba(239, 68, 68, 0.6)', '0 0 0 rgba(239, 68, 68, 0)'] }}
-                    transition={{ repeat: Infinity, duration: 2, delay: 0.5 }}
-                  >
+                  <div className="h-10 w-10 rounded-full bg-banking-red/10 flex items-center justify-center">
                     <XCircle className="h-5 w-5 text-banking-red" />
-                  </motion.div>
+                  </div>
                   <div>
                     <p className="font-medium text-white">Do not have an account</p>
                     <p className="text-sm text-gray-300/80">Create a new banking relationship</p>
                   </div>
                 </div>
-                <motion.div 
-                  animate={{ x: [0, 4, 0] }} 
-                  transition={{ repeat: Infinity, duration: 1.5, delay: 0.25 }}
-                >
-                  <ChevronsRight className="h-5 w-5 text-banking-blue" />
-                </motion.div>
+                <ChevronsRight className="h-5 w-5 text-gray-300" />
               </Button>
             </motion.div>
           </div>
           
-          <DialogFooter className="flex items-center justify-center">
+          <DialogFooter className="flex items-center justify-center sm:justify-center">
             <Button 
               variant="ghost" 
               onClick={handleCloseAccountQuestion} 
-              className="text-sm text-gray-300/90 hover:text-white hover:bg-transparent underline decoration-gray-500 hover:decoration-white transition-all"
+              className="text-sm text-gray-300 hover:text-white hover:bg-transparent hover:underline"
             >
               Cancel
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Layout>
+    </motion.div>
   );
 };
 

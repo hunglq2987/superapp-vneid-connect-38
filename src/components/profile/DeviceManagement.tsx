@@ -1,192 +1,183 @@
 
-import React, { useState } from 'react';
-import { Check, Smartphone, Laptop, Tablet, X, AlertTriangle } from 'lucide-react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-
-interface Device {
-  id: string;
-  name: string;
-  icon: React.ReactNode;
-  type: string;
-  os: string;
-  registered: string;
-  lastUsed: string;
-  isPrimary: boolean;
-  isCurrentDevice: boolean;
-  biometrics: string[];
-  status: 'active' | 'suspicious' | 'inactive';
-}
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from "sonner";
+import { Fingerprint, Smartphone, AlertTriangle, CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const DeviceManagement: React.FC = () => {
-  const [devices, setDevices] = useState<Device[]>([
+  const handleDeleteDevice = (deviceId: number) => {
+    toast.success(`Device removed successfully`);
+  };
+
+  const handleSetPrimary = (deviceId: number) => {
+    toast.success(`Device set as primary successfully`);
+  };
+
+  const handleDeactivate = (deviceId: number) => {
+    toast.success(`Biometric authentication deactivated`);
+  };
+
+  // Mock data for devices
+  const devices = [
     {
-      id: 'device1',
-      name: 'iPhone 14 Pro',
-      icon: <Smartphone className="h-5 w-5" />,
-      type: 'Mobile',
-      os: 'iOS 16.5',
-      registered: '15 May 2023',
-      lastUsed: 'Current session',
-      isPrimary: true,
-      isCurrentDevice: true,
-      biometrics: ['Face ID', 'Touch ID'],
-      status: 'active'
+      id: 1,
+      name: 'iPhone 15 Pro',
+      lastUsed: '2 hours ago',
+      status: 'active',
+      isPrimary: true
     },
     {
-      id: 'device2',
+      id: 2,
       name: 'MacBook Pro',
-      icon: <Laptop className="h-5 w-5" />,
-      type: 'Laptop',
-      os: 'MacOS 14.2',
-      registered: '23 Jan 2023',
-      lastUsed: '3 days ago',
-      isPrimary: false,
-      isCurrentDevice: false,
-      biometrics: ['Touch ID'],
-      status: 'active'
-    },
-    {
-      id: 'device3',
-      name: 'iPad Air',
-      icon: <Tablet className="h-5 w-5" />,
-      type: 'Tablet',
-      os: 'iPadOS 16.3',
-      registered: '10 Mar 2023',
-      lastUsed: '2 weeks ago',
-      isPrimary: false,
-      isCurrentDevice: false,
-      biometrics: ['Touch ID'],
-      status: 'inactive'
-    },
-    {
-      id: 'device4',
-      name: 'Unknown Android Device',
-      icon: <Smartphone className="h-5 w-5" />,
-      type: 'Mobile',
-      os: 'Android 12',
-      registered: '2 days ago',
-      lastUsed: '1 day ago',
-      isPrimary: false,
-      isCurrentDevice: false,
-      biometrics: ['Fingerprint'],
-      status: 'suspicious'
+      lastUsed: 'Today, 10:45 AM',
+      status: 'active',
+      isPrimary: false
     }
-  ]);
-
-  const handleDeactivate = (deviceId: string) => {
-    setDevices(prev => 
-      prev.map(device => 
-        device.id === deviceId 
-          ? { ...device, status: 'inactive' as const } 
-          : device
-      )
-    );
-  };
-
-  const handleSetPrimary = (deviceId: string) => {
-    setDevices(prev => 
-      prev.map(device => ({
-        ...device,
-        isPrimary: device.id === deviceId
-      }))
-    );
-  };
-
-  const getStatusBadge = (status: Device['status']) => {
-    switch (status) {
-      case 'active':
-        return <span className="text-banking-green flex items-center gap-1">
-          <Check className="h-3 w-3" /> Active
-        </span>;
-      case 'inactive':
-        return <span className="text-banking-grey flex items-center gap-1">
-          <X className="h-3 w-3" /> Inactive
-        </span>;
-      case 'suspicious':
-        return <span className="text-banking-red flex items-center gap-1">
-          <AlertTriangle className="h-3 w-3" /> Suspicious
-        </span>;
-    }
-  };
+  ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold mb-2">Device Management</h2>
-        <p className="text-muted-foreground">Manage the devices that can access your account</p>
+        <h2 className="text-xl font-semibold mb-1">Biometric Authentication</h2>
+        <p className="text-muted-foreground text-sm">Manage your biometric authentication methods</p>
+        
+        <div className="mt-4 space-y-4">
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-muted/30 py-3 px-4">
+              <CardTitle className="text-sm font-medium flex items-center">
+                <Fingerprint className="mr-2 h-4 w-4" />
+                Facial Recognition
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <div className="flex items-center mb-1">
+                    <h3 className="font-medium">Face ID</h3>
+                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                      Active
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Last used 2 hours ago</p>
+                </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={() => handleSetPrimary(1)}
+                    className="text-xs h-8"
+                  >
+                    Set as primary
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleDeactivate(1)}
+                    className="text-xs h-8 border-destructive/20 text-destructive hover:bg-destructive/10"
+                  >
+                    Deactivate
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-muted/30 py-3 px-4">
+              <CardTitle className="text-sm font-medium flex items-center">
+                <Fingerprint className="mr-2 h-4 w-4" />
+                Fingerprint
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-4">
+              <div className="flex items-center">
+                <div className="flex-1">
+                  <div className="flex items-center mb-1">
+                    <h3 className="font-medium">Touch ID</h3>
+                    <span className="ml-2 px-2 py-0.5 rounded-full text-xs bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
+                      Secondary
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Last used yesterday</p>
+                </div>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant="secondary" 
+                    size="sm"
+                    onClick={() => handleSetPrimary(2)}
+                    className="text-xs h-8"
+                  >
+                    Set as primary
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => handleDeactivate(2)}
+                    className="text-xs h-8 border-destructive/20 text-destructive hover:bg-destructive/10"
+                  >
+                    Deactivate
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {devices.map(device => (
-          <div key={device.id} className={`p-4 border rounded-lg ${
-            device.status === 'suspicious' ? 'border-banking-red/20 bg-banking-red/5' :
-            device.isCurrentDevice ? 'border-banking-blue/20 bg-banking-blue/5' : 'bg-white'
-          }`}>
-            <div className="flex items-start justify-between">
-              <div className="flex">
-                <div className={`p-2 rounded-full ${
-                  device.status === 'suspicious' ? 'bg-banking-red/10 text-banking-red' :
-                  device.status === 'inactive' ? 'bg-banking-grey/10 text-banking-grey' :
-                  'bg-banking-blue/10 text-banking-blue'
-                } mr-3`}>
-                  {device.icon}
+      <div className="pt-4">
+        <h2 className="text-xl font-semibold mb-1">Registered Devices</h2>
+        <p className="text-muted-foreground text-sm">Manage your registered devices</p>
+        
+        <div className="mt-4 space-y-3">
+          {devices.map((device) => (
+            <motion.div
+              key={device.id}
+              whileHover={{ scale: 1.01 }}
+              className="border rounded-lg p-4"
+            >
+              <div className="flex items-center">
+                <div className="mr-3 h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                  <Smartphone className="h-5 w-5 text-muted-foreground" />
                 </div>
-                <div>
-                  <div className="flex items-center">
-                    <p className="font-medium">{device.name}</p>
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2">
+                    <h3 className="font-medium">{device.name}</h3>
                     {device.isPrimary && (
-                      <span className="ml-2 px-2 py-0.5 bg-banking-blue/10 text-banking-blue rounded-full text-xs">Primary</span>
-                    )}
-                    {device.isCurrentDevice && (
-                      <span className="ml-2 px-2 py-0.5 bg-banking-blue/10 text-banking-blue rounded-full text-xs">Current</span>
-                    )}
-                  </div>
-                  <p className="text-xs text-muted-foreground">{device.type} • {device.os}</p>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <div className="text-xs">
-                      <span className="text-muted-foreground">Registered:</span> {device.registered}
-                    </div>
-                    <div className="text-xs">
-                      <span className="text-muted-foreground">Last used:</span> {device.lastUsed}
-                    </div>
-                  </div>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {device.biometrics.map((bio, index) => (
-                      <span key={index} className="text-xs bg-banking-lightGrey px-2 py-0.5 rounded">
-                        {bio}
+                      <span className="px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                        Primary
                       </span>
-                    ))}
+                    )}
                   </div>
+                  <p className="text-xs text-muted-foreground">Last active: {device.lastUsed}</p>
                 </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => handleDeleteDevice(device.id)}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  <AlertTriangle className="h-4 w-4" />
+                </Button>
               </div>
-              <div className="text-sm text-right">
-                {getStatusBadge(device.status)}
-              </div>
-            </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
 
-            {device.status !== 'inactive' && (
-              <div className="mt-3 flex items-center justify-between pt-3 border-t">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Biometric authentication:</span>
-                  <Switch checked={device.status === 'active'} disabled={device.status !== 'active'} />
-                </div>
-                <div className="flex gap-2">
-                  {!device.isPrimary && device.status === 'active' && (
-                    <Button size="sm" variant="outline" className="text-xs h-7 px-2">
-                      Set as primary
-                    </Button>
-                  )}
-                  {!device.isCurrentDevice && (
-                    <Button size="sm" variant="destructive" className="text-xs h-7 px-2">
-                      Deactivate
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )}
+      <div className="rounded-lg bg-muted/30 p-4">
+        <div className="flex items-start space-x-4">
+          <div className="mt-0.5">
+            <CheckCircle className="h-5 w-5 text-banking-blue" />
           </div>
-        ))}
+          <div>
+            <h3 className="font-medium">Security Tip</h3>
+            <p className="text-sm text-muted-foreground">
+              We recommend setting up at least two biometric authentication methods for improved account security and recovery options.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

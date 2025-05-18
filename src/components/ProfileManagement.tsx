@@ -5,7 +5,7 @@ import Layout from './Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, User, Fingerprint, Settings, Shield, Scan } from 'lucide-react';
+import { User, Fingerprint, Settings, Shield, Scan } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BiometricConfig from './profile/BiometricConfig';
 import DeviceManagement from './profile/DeviceManagement';
@@ -43,7 +43,7 @@ const ProfileManagement: React.FC = () => {
   };
 
   return (
-    <Layout showBackButton={true}>
+    <Layout showBackButton={false}>
       <div className="py-4">
         <Button 
           variant="outline" 
@@ -61,23 +61,16 @@ const ProfileManagement: React.FC = () => {
           whileTap={{ scale: 0.99 }}
         >
           <motion.div 
-            className="h-16 w-16 rounded-full bg-banking-blue/10 flex items-center justify-center"
+            className="h-14 w-14 rounded-full bg-banking-blue/10 flex items-center justify-center"
             whileHover={{ scale: 1.05 }}
             transition={{ type: 'spring', stiffness: 300, damping: 10 }}
           >
-            <User size={32} className="text-banking-blue" />
+            <User size={28} className="text-banking-blue" />
           </motion.div>
           <div className="flex-1">
-            <h1 className="text-2xl font-bold">Profile Management</h1>
-            <p className="text-muted-foreground">National ID: {nationalId.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3')}</p>
+            <h1 className="text-xl font-bold">Profile Management</h1>
+            <p className="text-sm text-muted-foreground">National ID: {nationalId.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3')}</p>
           </div>
-          <Button 
-            variant="ghost" 
-            className="text-banking-blue"
-            onClick={handleViewDetails}
-          >
-            View Details
-          </Button>
         </motion.div>
         
         <motion.div

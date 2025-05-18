@@ -1,110 +1,143 @@
 
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Phone, ArrowRight } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, Phone, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+
+interface PhoneOption {
+  id: string;
+  number: string;
+  type: string;
+}
 
 const PhoneSelection: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { nationalId, phones } = location.state || {};
-  const [selectedPhone, setSelectedPhone] = useState('');
+  const [selectedPhone, setSelectedPhone] = useState<string | null>(null);
+  const nationalId = location.state?.nationalId || '222222222222';
   
-  const handlePhoneSelection = (phone: string) => {
-    setSelectedPhone(phone);
+  // Demo phone data - for case with National ID 222222222222
+  const phoneOptions: PhoneOption[] = nationalId === '222222222222' 
+    ? [
+        { id: 'phone1', number: '+84 901 234 567', type: 'Personal' },
+        { id: 'phone2', number: '+84 902 345 678', type: 'Work' },
+      ] 
+    : [];
+  
+  const handleNext = () => {
+    if (selectedPhone) {
+      navigate('/otp-verification', { 
+        state: { 
+          nationalId,
+          phoneNumber: phoneOptions.find(p => p.id === selectedPhone)?.number || ""
+        } 
+      });
+    }
+  };
+  
+  const handleBack = () => {
+    navigate(-1);
   };
 
-  const handleNextStep = () => {
-    navigate('/otp-verification', { 
-      state: { 
-        nationalId,
-        phone: selectedPhone
-      } 
-    });
-  };
-
-  const handleVNeIDRegistration = () => {
-    navigate('/vneid-confirmation');
+  const handleRegisterWithVNeID = () => {
+    navigate('/vneid-confirmation', { state: { hasAccount: false } });
   };
   
   return (
     <Layout showBackButton={true}>
-      <div className="py-6">
-        <h1 className="text-2xl font-bold mb-6 text-center">Select Phone Number</h1>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+      <div className="py-4">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleBack} 
+          className="mb-6"
         >
-          <Card className="shadow-md dark:bg-slate-900/90 backdrop-blur-xl border border-white/10">
-            <CardHeader>
-              <CardTitle className="text-center">Phone Verification</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-5">
-                <p className="text-center text-muted-foreground">
-                  Please select a phone number to receive OTP verification code
-                </p>
-                
-                <div className="space-y-3 py-4">
-                  {phones && phones.map((phone: string, index: number) => (
-                    <motion.div
-                      key={phone}
-                      initial={{ opacity: 0, y: 5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
+          <ArrowLeft size={16} className="mr-2" />
+          Back
+        </Button>
+        
+        <div className="space-y-6">
+          <div>
+            <h1 className="text-2xl font-bold mb-2">Select Phone Number</h1>
+            <p className="text-muted-foreground">
+              Select a phone number for verification
+            </p>
+          </div>
+          
+          {phoneOptions.length > 0 ? (
+            <Card>
+              <CardContent className="pt-6">
+                <RadioGroup
+                  value={selectedPhone || ""}
+                  onValueChange={setSelectedPhone}
+                  className="space-y-3"
+                >
+                  {phoneOptions.map(phone => (
+                    <motion.div 
+                      key={phone.id}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.99 }}
+                      className="flex items-center space-x-2 cursor-pointer border rounded-lg p-3 hover:bg-secondary"
+                      onClick={() => setSelectedPhone(phone.id)}
                     >
-                      <Button
-                        variant={selectedPhone === phone ? "default" : "outline"}
-                        className={`w-full flex items-center justify-start gap-3 h-14 text-left ${
-                          selectedPhone === phone 
-                            ? "bg-banking-blue text-white"
-                            : "hover:border-banking-blue/50"
-                        }`}
-                        onClick={() => handlePhoneSelection(phone)}
+                      <RadioGroupItem value={phone.id} id={phone.id} />
+                      <Label 
+                        htmlFor={phone.id} 
+                        className="flex-1 flex items-center cursor-pointer"
                       >
-                        <div className={`w-10 h-10 rounded-full ${selectedPhone === phone ? "bg-white/20" : "bg-banking-lightGrey/20"} flex items-center justify-center`}>
-                          <Phone size={20} />
+                        <div className="rounded-full bg-secondary p-2 mr-3">
+                          <Phone size={18} className="text-muted-foreground" />
                         </div>
-                        <span>{phone}</span>
-                      </Button>
+                        <div>
+                          <div className="font-medium">{phone.number}</div>
+                          <div className="text-sm text-muted-foreground">{phone.type}</div>
+                        </div>
+                      </Label>
                     </motion.div>
                   ))}
-                </div>
-                
-                <div className="pt-4">
-                  <motion.div 
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <Button 
-                      className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue"
-                      onClick={handleNextStep}
-                      disabled={!selectedPhone}
-                    >
-                      <span>Continue</span>
-                      <ArrowRight size={16} className="ml-1" />
-                    </Button>
-                  </motion.div>
-                  
-                  <div className="text-center mt-4">
-                    <Button 
-                      variant="link" 
-                      onClick={handleVNeIDRegistration}
-                      className="text-banking-blue"
-                    >
-                      Register with VNeID instead
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+                </RadioGroup>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="text-center py-10 space-y-4">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mx-auto w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center"
+              >
+                <AlertTriangle className="h-8 w-8 text-amber-600" />
+              </motion.div>
+              <h2 className="text-xl font-semibold">No phone matched</h2>
+              <p className="text-muted-foreground max-w-xs mx-auto">
+                We couldn't find any registered phone numbers for your National ID.
+              </p>
+              <motion.div 
+                className="pt-4"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button onClick={handleRegisterWithVNeID} variant="outline" className="text-banking-blue">
+                  Register with VNeID instead
+                </Button>
+              </motion.div>
+            </div>
+          )}
+          
+          <div className="pt-4">
+            <Button 
+              onClick={handleNext} 
+              disabled={!selectedPhone} 
+              className="w-full"
+            >
+              Continue to Verification
+            </Button>
+          </div>
+        </div>
       </div>
     </Layout>
   );

@@ -13,7 +13,7 @@ const RegistrationDetailsPage: React.FC = () => {
   const nationalId = location.state?.nationalId;
 
   const handleBack = () => {
-    navigate(-1);
+    navigate('/profile-management', { state: { nationalId } });
   };
 
   return (
