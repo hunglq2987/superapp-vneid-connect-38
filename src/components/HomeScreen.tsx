@@ -56,7 +56,7 @@ const HomeScreen: React.FC = () => {
   
   const handleNoAccount = () => {
     setShowAccountQuestion(false);
-    navigate('/registration', { state: { hasAccount: false } });
+    navigate('/vneid-confirmation', { state: { hasAccount: false } });
   };
   
   const handleSupportClick = () => {
@@ -165,8 +165,26 @@ const HomeScreen: React.FC = () => {
           </motion.div>
         </div>
 
+        {/* Sign in section moved above footer */}
         <motion.div 
-          className="flex justify-center gap-8 pt-6"
+          className="text-sm text-muted-foreground text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+          <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
+          <motion.button
+            className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md mx-auto mt-3"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleLoginClick}
+          >
+            <Fingerprint className="h-6 w-6 text-banking-blue" />
+          </motion.button>
+        </motion.div>
+
+        <motion.div 
+          className="flex justify-center gap-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
@@ -202,30 +220,6 @@ const HomeScreen: React.FC = () => {
               <Info className="h-5 w-5" />
             </div>
             FAQ
-          </motion.button>
-        </motion.div>
-
-        <motion.div 
-          className="text-sm text-muted-foreground text-center mt-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        >
-          <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
-        </motion.div>
-        
-        <motion.div className="fixed bottom-8 space-x-2 flex items-center transition-opacity"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          <motion.button
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleLoginClick}
-          >
-            <Fingerprint className="h-6 w-6 text-banking-blue" />
           </motion.button>
         </motion.div>
       </motion.div>
@@ -282,7 +276,7 @@ const HomeScreen: React.FC = () => {
       )}
       
       <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
-        <DialogContent className="sm:max-w-md dark:bg-slate-900/90 backdrop-blur-xl border border-white/10">
+        <DialogContent className="sm:max-w-[400px] dark:bg-slate-800/95 backdrop-blur-xl border border-white/10">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">Do you have a bank account at NCB?</DialogTitle>
             <DialogDescription>
@@ -297,7 +291,7 @@ const HomeScreen: React.FC = () => {
             >
               <Button 
                 onClick={handleHasAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full dark:bg-slate-800/80 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue"
+                className="flex justify-between items-center p-4 h-auto text-left w-full dark:bg-slate-700/80 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue"
                 variant="outline"
               >
                 <div className="flex items-center gap-3">
@@ -328,7 +322,7 @@ const HomeScreen: React.FC = () => {
             >
               <Button 
                 onClick={handleNoAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full dark:bg-slate-800/80 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue"
+                className="flex justify-between items-center p-4 h-auto text-left w-full dark:bg-slate-700/80 backdrop-blur-xl border-banking-blue/20 hover:border-banking-blue"
                 variant="outline"
               >
                 <div className="flex items-center gap-3">

@@ -19,7 +19,7 @@ const ProfileManagement: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const nationalId = location.state?.nationalId || '111111111111';
-  const [activeTab, setActiveTab] = useState<TabId>('biometric');
+  const [activeTab, setActiveTab] = useState<TabId>('details');
 
   const handleBackToHome = () => {
     navigate('/');
@@ -63,9 +63,9 @@ const ProfileManagement: React.FC = () => {
           transition={{ duration: 0.4 }}
         >
           <Card className="shadow-md dark:bg-slate-900/90 backdrop-blur-xl border border-white/10">
-            <Tabs defaultValue="biometric" className="w-full" onValueChange={(value) => setActiveTab(value as TabId)}>
+            <Tabs defaultValue="details" className="w-full" onValueChange={(value) => setActiveTab(value as TabId)}>
               <TabsList className="grid grid-cols-5 mb-2">
-                {(['biometric', 'devices', 'security', 'permissions', 'details'] as TabId[]).map((tab) => (
+                {(['details', 'biometric', 'devices', 'security', 'permissions'] as TabId[]).map((tab) => (
                   <motion.div 
                     key={tab}
                     whileHover={{ scale: 1.05 }}
@@ -78,6 +78,10 @@ const ProfileManagement: React.FC = () => {
                   </motion.div>
                 ))}
               </TabsList>
+              
+              <TabsContent value="details" className="p-4 focus:outline-none">
+                <RegistrationDetails />
+              </TabsContent>
               
               <TabsContent value="biometric" className="p-4 focus:outline-none">
                 <BiometricConfig />
@@ -93,10 +97,6 @@ const ProfileManagement: React.FC = () => {
               
               <TabsContent value="permissions" className="p-4 focus:outline-none">
                 <FeatureAuthorization />
-              </TabsContent>
-              
-              <TabsContent value="details" className="p-4 focus:outline-none">
-                <RegistrationDetails />
               </TabsContent>
             </Tabs>
           </Card>

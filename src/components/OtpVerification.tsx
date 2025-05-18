@@ -7,14 +7,11 @@ import Layout from './Layout';
 import OtpInput from './ui/OtpInput';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 
 const OtpVerification: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { nationalId, phones = [] } = location.state || {};
-  const [selectedPhone, setSelectedPhone] = useState<string>(phones[0] || '');
+  const { nationalId, phone } = location.state || {};
   const [otp, setOtp] = useState<string>('');
   const [attempts, setAttempts] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(180); // 3 minutes
@@ -22,7 +19,7 @@ const OtpVerification: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   
   useEffect(() => {
-    if (!nationalId || !phones.length) {
+    if (!nationalId || !phone) {
       navigate('/registration');
       return;
     }
@@ -39,7 +36,7 @@ const OtpVerification: React.FC = () => {
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [nationalId, phones, navigate]);
+  }, [nationalId, phone, navigate]);
   
   // Handle resend cooldown
   useEffect(() => {
@@ -103,18 +100,11 @@ const OtpVerification: React.FC = () => {
     // Set resend cooldown to 1 minute
     setResendCooldown(60);
     
-    toast.success(`OTP sent to ${selectedPhone}`);
+    toast.success(`OTP sent to ${phone}`);
   };
   
-  const handlePhoneChange = (value: string) => {
-    setSelectedPhone(value);
-    // Reset OTP when changing phone
-    setOtp('');
-    setTimeLeft(180);
-  };
-  
-  const handleBackToRegistration = () => {
-    navigate('/registration');
+  const handleBackToPhoneSelection = () => {
+    navigate(-1);
   };
   
   const handleVNeIDRegistration = () => {
@@ -128,50 +118,27 @@ const OtpVerification: React.FC = () => {
   };
   
   return (
-    <Layout>
+    <Layout showBackButton={true}>
       <div className="py-6">
         <div className="flex items-center mb-6">
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={handleBackToRegistration}
+            onClick={handleBackToPhoneSelection}
             className="gap-1"
           >
             <ArrowLeft size={16} />
-            Back to registration
+            Back to phone selection
           </Button>
         </div>
 
         <h1 className="text-2xl font-bold mb-6 text-center">OTP Verification</h1>
         
-        <Card className="shadow-md mb-4">
-          <CardHeader>
-            <CardTitle className="text-xl">Select Phone Number for OTP</CardTitle>
-            <CardDescription>
-              Choose one of your registered phone numbers to receive the OTP code
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup 
-              value={selectedPhone} 
-              onValueChange={handlePhoneChange} 
-              className="space-y-3"
-            >
-              {phones.map((phone: string) => (
-                <div key={phone} className="flex items-center space-x-2">
-                  <RadioGroupItem value={phone} id={phone} />
-                  <Label htmlFor={phone} className="font-medium">{phone}</Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </CardContent>
-        </Card>
-        
         <Card className="shadow-md">
           <CardHeader>
             <CardTitle className="text-xl">Enter OTP Code</CardTitle>
             <CardDescription>
-              A 6-digit code has been sent to <span className="font-medium">{selectedPhone}</span>
+              A 6-digit code has been sent to <span className="font-medium">{phone}</span>
             </CardDescription>
           </CardHeader>
           <CardContent>
