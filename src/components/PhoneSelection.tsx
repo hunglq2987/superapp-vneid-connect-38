@@ -31,10 +31,11 @@ const PhoneSelection: React.FC = () => {
   
   const handleNext = () => {
     if (selectedPhone) {
+      const selectedPhoneNumber = phoneOptions.find(p => p.id === selectedPhone)?.number || "";
       navigate('/otp-verification', { 
         state: { 
           nationalId,
-          phoneNumber: phoneOptions.find(p => p.id === selectedPhone)?.number || ""
+          phone: selectedPhoneNumber // Using 'phone' as the key to match what OtpVerification expects
         } 
       });
     }

@@ -17,6 +17,7 @@ const OtpVerification: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(180); // 3 minutes
   const [resendCooldown, setResendCooldown] = useState<number>(0);
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [resetKey, setResetKey] = useState<number>(0); // Added to force re-render of OtpInput
   
   useEffect(() => {
     if (!nationalId || !phone) {
@@ -86,6 +87,8 @@ const OtpVerification: React.FC = () => {
         } else {
           toast.error(`Invalid OTP. ${3 - newAttempts} attempts remaining.`);
           setOtp('');
+          // Reset the OTP input by changing the key
+          setResetKey(prev => prev + 1);
         }
       }
       setIsVerifying(false);
@@ -145,8 +148,9 @@ const OtpVerification: React.FC = () => {
             <div className="space-y-6">
               <OtpInput 
                 length={6} 
-                onComplete={handleOtpComplete} 
-                className="mb-6" 
+                onComplete={handleOtpComplete}
+                className="mb-6"
+                key={resetKey} // Add key prop to force re-render when invalid OTP is entered
               />
               
               <div className="flex items-center justify-between">

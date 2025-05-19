@@ -62,12 +62,12 @@ const DeviceManagement: React.FC = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">Last used 2 hours ago</p>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex flex-col space-y-2">
                   <Button 
                     variant="secondary" 
                     size="sm"
                     onClick={() => handleSetPrimary(1)}
-                    className="text-xs h-8"
+                    className="text-xs h-8 w-full"
                   >
                     Set as primary
                   </Button>
@@ -75,7 +75,7 @@ const DeviceManagement: React.FC = () => {
                     variant="outline" 
                     size="sm" 
                     onClick={() => handleDeactivate(1)}
-                    className="text-xs h-8 border-destructive/20 text-destructive hover:bg-destructive/10"
+                    className="text-xs h-8 w-full border-destructive/20 text-destructive hover:bg-destructive/10"
                   >
                     Deactivate
                   </Button>
@@ -102,12 +102,12 @@ const DeviceManagement: React.FC = () => {
                   </div>
                   <p className="text-sm text-muted-foreground">Last used yesterday</p>
                 </div>
-                <div className="flex space-x-2">
+                <div className="flex flex-col space-y-2">
                   <Button 
                     variant="secondary" 
                     size="sm"
                     onClick={() => handleSetPrimary(2)}
-                    className="text-xs h-8"
+                    className="text-xs h-8 w-full"
                   >
                     Set as primary
                   </Button>
@@ -115,7 +115,7 @@ const DeviceManagement: React.FC = () => {
                     variant="outline" 
                     size="sm" 
                     onClick={() => handleDeactivate(2)}
-                    className="text-xs h-8 border-destructive/20 text-destructive hover:bg-destructive/10"
+                    className="text-xs h-8 w-full border-destructive/20 text-destructive hover:bg-destructive/10"
                   >
                     Deactivate
                   </Button>
