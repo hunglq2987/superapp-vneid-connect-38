@@ -8,6 +8,14 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, Phone, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface PhoneOption {
   id: string;
@@ -19,6 +27,7 @@ const PhoneSelection: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedPhone, setSelectedPhone] = useState<string | null>(null);
+  const [showNoMatchDialog, setShowNoMatchDialog] = useState(false);
   const nationalId = location.state?.nationalId || '222222222222';
   
   // Demo phone data - for case with National ID 222222222222
@@ -38,6 +47,9 @@ const PhoneSelection: React.FC = () => {
           phone: selectedPhoneNumber // Using 'phone' as the key to match what OtpVerification expects
         } 
       });
+    } else {
+      // If no phone is selected, show the "No phone matched" dialog
+      setShowNoMatchDialog(true);
     }
   };
   
@@ -47,6 +59,10 @@ const PhoneSelection: React.FC = () => {
 
   const handleRegisterWithVNeID = () => {
     navigate('/vneid-confirmation', { state: { hasAccount: false } });
+  };
+
+  const closeNoMatchDialog = () => {
+    setShowNoMatchDialog(false);
   };
   
   return (
@@ -132,7 +148,6 @@ const PhoneSelection: React.FC = () => {
           <div className="pt-4">
             <Button 
               onClick={handleNext} 
-              disabled={!selectedPhone} 
               className="w-full"
             >
               Continue to Verification
@@ -140,6 +155,33 @@ const PhoneSelection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* No Phone Match Dialog */}
+      <Dialog open={showNoMatchDialog} onOpenChange={setShowNoMatchDialog}>
+        <DialogContent className="apple-dialog">
+          <DialogHeader>
+            <DialogTitle className="apple-title">No Phone Matched</DialogTitle>
+            <DialogDescription className="apple-text pt-2">
+              None of the phone numbers on your device match our records. Would you like to register with VNeID instead?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2 pt-4">
+            <Button 
+              variant="outline" 
+              onClick={closeNoMatchDialog}
+              className="apple-button w-full sm:w-auto"
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleRegisterWithVNeID}
+              className="apple-button w-full sm:w-auto"
+            >
+              Register with VNeID
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
