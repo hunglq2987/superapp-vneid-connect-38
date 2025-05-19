@@ -1,187 +1,227 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, Shield, UserCheck } from 'lucide-react';
 import Layout from './Layout';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const BiometricAuth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [stage, setStage] = useState<'initial' | 'scanning' | 'success'>('initial');
-  const [progress, setProgress] = useState(0);
+  const [scanning, setScanning] = useState(false);
+  const [scanComplete, setScanComplete] = useState(false);
+  const { phoneNumber, nationalId, isExistingCustomer, hasBiometric, biometricSuccess, isLogin } = location.state || {};
   
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    // Auto-start scanning after a brief delay
+    const timer = setTimeout(() => {
+      handleStartScan();
+    }, 1000);
     
-    if (stage === 'scanning') {
-      timer = setInterval(() => {
-        setProgress((prev) => {
-          const newProgress = prev + 5;
-          if (newProgress >= 100) {
-            clearInterval(timer);
-            setTimeout(() => {
-              setStage('success');
-            }, 500);
-            return 100;
-          }
-          return newProgress;
-        });
-      }, 100);
-    }
-    
-    return () => clearInterval(timer);
-  }, [stage]);
+    return () => clearTimeout(timer);
+  }, []);
   
   const handleStartScan = () => {
-    setStage('scanning');
+    setScanning(true);
+    
+    // Simulate face scanning process (3 seconds)
+    setTimeout(() => {
+      setScanComplete(true);
+      setScanning(false);
+      
+      // Process scan result after a short delay
+      setTimeout(() => {
+        processBiometricResult();
+      }, 1000);
+    }, 3000);
   };
   
-  const handleComplete = () => {
-    // Determine where to navigate based on the flow
-    if (location.pathname.includes('nfc')) {
-      navigate('/detailed-registration', { 
-        state: { 
-          nationalId: '111111111111', 
-          hasValidBiometric: true, 
-          fromNfc: true 
-        }
+  const processBiometricResult = () => {
+    // For case 3: biometric verification fails
+    if (phoneNumber === '0323456789' || biometricSuccess === false) {
+      toast.error("Face ID is not matched with existing information", {
+        duration: 4000,
       });
-    } else {
-      navigate('/detailed-registration', {
+      
+      // Return to home screen after a delay
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+      return;
+    }
+    
+    // For login flow
+    if (isLogin) {
+      toast.success("Biometric authentication successful!");
+      
+      // Navigate to profile management
+      setTimeout(() => {
+        navigate('/profile-management', { 
+          state: { 
+            nationalId: '777777777777', // Default login ID
+            fromLogin: true 
+          } 
+        });
+      }, 1500);
+      return;
+    }
+    
+    // For case 4: biometric verification succeeds
+    if (phoneNumber === '0423456789' || biometricSuccess === true) {
+      toast.success("Biometric authentication successful!");
+      
+      // Navigate to OTP verification
+      setTimeout(() => {
+        navigate('/otp-verification', {
+          state: {
+            phoneNumber,
+            nationalId,
+            isExistingCustomer,
+            hasBiometric: true,
+            biometricSuccess: true
+          }
+        });
+      }, 1500);
+      return;
+    }
+    
+    // Default case - navigate to OTP
+    toast.success("Biometric authentication successful!");
+    
+    setTimeout(() => {
+      navigate('/otp-verification', { 
         state: { 
-          nationalId: '111111111111', 
-          hasValidBiometric: true 
-        }
+          phoneNumber, 
+          nationalId,
+          isExistingCustomer,
+          hasBiometric: true 
+        } 
       });
+    }, 1500);
+  };
+  
+  const handleBack = () => {
+    navigate(-1);
+  };
+  
+  const circleVariants = {
+    scanning: {
+      scale: [1, 1.05, 1],
+      opacity: [1, 0.8, 1],
+      boxShadow: [
+        "0 0 0 0 rgba(59, 130, 246, 0)",
+        "0 0 0 15px rgba(59, 130, 246, 0.3)",
+        "0 0 0 0 rgba(59, 130, 246, 0)",
+      ],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "loop"
+      }
+    },
+    success: {
+      scale: [1, 1.2, 1],
+      backgroundColor: ["#3b82f6", "#10b981", "#10b981"],
+      transition: { duration: 0.5 }
+    },
+    error: {
+      scale: [1, 1.2, 1],
+      backgroundColor: ["#3b82f6", "#ef4444", "#ef4444"],
+      transition: { duration: 0.5 }
     }
   };
   
-  const renderInitialStage = () => (
-    <>
-      <CardHeader>
-        <CardTitle>Facial Verification</CardTitle>
-        <CardDescription>We need to verify your identity using facial recognition</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex justify-center">
-          <div className="h-48 w-48 bg-banking-lightGrey rounded-full border-2 border-dashed border-banking-grey flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-banking-grey">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-          </div>
-        </div>
-        
-        <div className="text-sm space-y-2">
-          <p className="font-medium">Face verification guidelines:</p>
-          <ul className="list-disc list-inside text-muted-foreground pl-2">
-            <li>Ensure you are in a well-lit area</li>
-            <li>Remove glasses, hats, or face coverings</li>
-            <li>Look directly at the camera</li>
-            <li>Keep a neutral expression</li>
-          </ul>
-        </div>
-        
-        <Button className="w-full" onClick={handleStartScan}>
-          Start Face Scan
-        </Button>
-      </CardContent>
-    </>
-  );
-  
-  const renderScanningStage = () => (
-    <>
-      <CardHeader>
-        <CardTitle>Scanning in Progress</CardTitle>
-        <CardDescription>Please look at the camera and follow instructions</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex justify-center">
-          <div className="h-48 w-48 bg-banking-lightGrey rounded-full border-2 border-banking-blue flex items-center justify-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-banking-blue/10 flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-banking-blue animate-pulse-soft">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-              </svg>
-            </div>
-            
-            {/* Scanning effect */}
-            <div 
-              className="absolute left-0 w-full h-1 bg-banking-blue opacity-80" 
-              style={{ 
-                top: `${progress}%`,
-                transition: 'top 0.1s ease-out'
-              }}
-            />
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <div className="w-full bg-banking-lightGrey rounded-full h-2.5">
-            <div 
-              className="bg-banking-blue h-2.5 rounded-full transition-all duration-300 ease-out"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-          <p className="text-center text-sm text-muted-foreground">
-            {progress < 50 
-              ? "Scanning your face..." 
-              : progress < 90 
-                ? "Analyzing features..." 
-                : "Almost done..."}
-          </p>
-        </div>
-        
-        <p className="text-sm text-center text-banking-grey animate-pulse">
-          Please don't move until scan completes
-        </p>
-      </CardContent>
-    </>
-  );
-  
-  const renderSuccessStage = () => (
-    <>
-      <CardHeader>
-        <CardTitle>Verification Successful</CardTitle>
-        <CardDescription>Your identity has been verified</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="flex justify-center">
-          <div className="h-48 w-48 bg-banking-lightGrey rounded-full border-2 border-banking-green flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-banking-green">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-        </div>
-        
-        <div className="text-center">
-          <p className="text-banking-green font-medium">
-            Your face has been verified
-          </p>
-          <p className="text-sm text-muted-foreground">
-            You can now proceed with the registration
-          </p>
-        </div>
-        
-        <Button className="w-full" onClick={handleComplete}>
-          Continue
-        </Button>
-      </CardContent>
-    </>
-  );
-  
+  const getCircleVariant = () => {
+    if (scanning) return "scanning";
+    if (scanComplete) {
+      if (phoneNumber === '0323456789' || biometricSuccess === false) {
+        return "error";
+      }
+      return "success";
+    }
+    return "";
+  };
+
   return (
     <Layout>
-      <div className="py-4">
-        <h1 className="text-2xl font-bold mb-6 text-center">Biometric Verification</h1>
+      <div className="py-6">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleBack}
+          disabled={scanning}
+          className="mb-6"
+        >
+          <ArrowLeft size={16} className="mr-2" />
+          Back
+        </Button>
         
-        <Card className="shadow-md overflow-hidden">
-          {stage === 'initial' && renderInitialStage()}
-          {stage === 'scanning' && renderScanningStage()}
-          {stage === 'success' && renderSuccessStage()}
-        </Card>
+        <div className="text-center space-y-6">
+          <h1 className="text-2xl font-bold">Facial Verification</h1>
+          <p className="text-muted-foreground max-w-xs mx-auto">
+            {scanning ? "Please look at your camera" : scanComplete ? "Verification complete" : "Prepare for facial scan"}
+          </p>
+          
+          <div className="flex flex-col items-center justify-center py-10">
+            <motion.div
+              className="h-32 w-32 bg-banking-blue/20 rounded-full flex items-center justify-center"
+              variants={circleVariants}
+              animate={getCircleVariant()}
+            >
+              <div className="h-24 w-24 bg-banking-blue rounded-full flex items-center justify-center">
+                {scanComplete ? (
+                  phoneNumber === '0323456789' || biometricSuccess === false ? (
+                    <Shield className="h-12 w-12 text-white" />
+                  ) : (
+                    <UserCheck className="h-12 w-12 text-white" />
+                  )
+                ) : (
+                  <svg className="h-12 w-12 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 15C8.5 15.5 9.5 16 12 16C14.5 16 15.5 15.5 16 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <circle cx="9" cy="10" r="1" fill="currentColor" />
+                    <circle cx="15" cy="10" r="1" fill="currentColor" />
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                )}
+              </div>
+            </motion.div>
+            
+            <div className="mt-10 max-w-xs mx-auto w-full">
+              {!scanning && !scanComplete && (
+                <Button 
+                  className="w-full" 
+                  onClick={handleStartScan}
+                >
+                  Start Face Scan
+                </Button>
+              )}
+              
+              {scanning && (
+                <div className="relative pt-1">
+                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                    <motion.div 
+                      initial={{ width: "0%" }}
+                      animate={{ width: "100%" }}
+                      transition={{ duration: 3 }}
+                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-banking-blue"
+                    ></motion.div>
+                  </div>
+                  <p className="text-sm text-center text-muted-foreground">Scanning in progress...</p>
+                </div>
+              )}
+              
+              {scanComplete && (
+                <p className="text-sm text-center">
+                  {phoneNumber === '0323456789' || biometricSuccess === false ? 
+                    "Verification failed. Redirecting..." : 
+                    "Verification successful. Redirecting..."}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </Layout>
   );

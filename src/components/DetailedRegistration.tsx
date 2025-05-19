@@ -29,21 +29,55 @@ const DetailedRegistration: React.FC = () => {
   const location = useLocation();
   const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId } = location.state || {};
   
-  const [userData, setUserData] = useState<UserData>({
-    nationalId: nationalId || '',
-    fullName: isNewNationalId ? '' : 'Nguyen Van A',
-    dateOfBirth: isNewNationalId ? '' : '01/01/1990',
-    phone: phoneNumber || '',
-    email: isNewNationalId ? '' : 'user@example.com',
-    currentAddress: '',
-    permanentAddress: '',
-    accounts: isExistingCustomer ? [
-      { type: 'payment', name: 'Checking Account', balance: '10,000,000 VND' },
-      { type: 'deposit', name: 'Savings Account', balance: '50,000,000 VND' },
-      { type: 'credit', name: 'Credit Card', limit: '20,000,000 VND', balance: '5,000,000 VND' }
-    ] : []
-  });
+  // Pre-fill data based on VNeID results
+  const getInitialUserData = () => {
+    // Case 1: New to bank, new national ID (0123456789)
+    if (phoneNumber === '0123456789' && nationalId === '444444444444') {
+      return {
+        nationalId: nationalId || '',
+        fullName: 'New User',  // Pre-filled from VNeID
+        dateOfBirth: '01/01/1995', // Pre-filled from VNeID
+        phone: phoneNumber || '',
+        email: '',
+        currentAddress: '',
+        permanentAddress: '',
+        accounts: []
+      };
+    }
+    // Case 2: New to bank, existing national ID (0223456789)
+    // Case 4: Existing user with biometric success (0423456789)
+    else if ((phoneNumber === '0223456789' && nationalId === '555555555555') || phoneNumber === '0423456789') {
+      return {
+        nationalId: nationalId || '',
+        fullName: 'Nguyen Van A',
+        dateOfBirth: '01/01/1990',
+        phone: phoneNumber || '',
+        email: 'user@example.com',
+        currentAddress: '',
+        permanentAddress: '',
+        accounts: phoneNumber === '0423456789' ? [
+          { type: 'payment', name: 'Checking Account', balance: '10,000,000 VND' },
+          { type: 'deposit', name: 'Savings Account', balance: '50,000,000 VND' },
+          { type: 'credit', name: 'Credit Card', limit: '20,000,000 VND', balance: '5,000,000 VND' }
+        ] : []
+      };
+    }
+    // Default case
+    else {
+      return {
+        nationalId: nationalId || '',
+        fullName: '',
+        dateOfBirth: '',
+        phone: phoneNumber || '',
+        email: '',
+        currentAddress: '',
+        permanentAddress: '',
+        accounts: []
+      };
+    }
+  };
 
+  const [userData, setUserData] = useState<UserData>(getInitialUserData());
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange = (field: keyof UserData, value: string) => {
