@@ -139,6 +139,23 @@
   .btn-hover {
     @apply transition-transform duration-300 hover:scale-105 hover:shadow-md;
   }
+  
+  /* Apple-style dialog styles */
+  .apple-dialog {
+    @apply bg-white rounded-2xl border-0 shadow-sm p-6;
+  }
+  
+  .apple-title {
+    @apply text-xl font-semibold tracking-tight;
+  }
+  
+  .apple-text {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  .apple-button {
+    @apply rounded-lg font-medium text-sm py-2.5 px-4;
+  }
 }
 
 /* Simulate SF Pro font with system fonts */

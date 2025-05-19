@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
@@ -275,24 +274,24 @@ const HomeScreen: React.FC = () => {
         )}
         
         <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
-          <DialogContent className="sm:max-w-[340px] bg-gradient-to-br from-banking-darkBlue to-[#001547] text-white border border-white/10 rounded-xl">
+          <DialogContent className="sm:max-w-[340px] bg-background border-0 shadow-md sm:rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="text-xl font-semibold tracking-tight text-white">
+              <DialogTitle className="text-xl font-semibold tracking-tight">
                 Do you have a bank account at NCB?
               </DialogTitle>
-              <DialogDescription className="text-gray-300 text-sm">
+              <DialogDescription className="text-sm mt-1">
                 Please select one option below to continue with the appropriate registration process.
               </DialogDescription>
             </DialogHeader>
             
-            <div className="grid grid-cols-1 gap-4 py-4">
+            <div className="grid grid-cols-1 gap-3 py-3">
               <motion.div
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <Button 
                   onClick={handleHasAccount}
-                  className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
+                  className="flex justify-between items-center p-4 h-auto text-left w-full bg-secondary/50 hover:bg-secondary"
                   variant="outline"
                 >
                   <div className="flex items-center gap-3">
@@ -300,11 +299,11 @@ const HomeScreen: React.FC = () => {
                       <CheckCircle className="h-5 w-5 text-banking-green" />
                     </div>
                     <div>
-                      <p className="font-medium text-white">Already have accounts</p>
-                      <p className="text-sm text-gray-300/80">Continue with existing account</p>
+                      <p className="font-medium">Already have accounts</p>
+                      <p className="text-xs text-muted-foreground">Continue with existing account</p>
                     </div>
                   </div>
-                  <ChevronsRight className="h-5 w-5 text-gray-300" />
+                  <ChevronsRight className="h-5 w-5 text-muted-foreground" />
                 </Button>
               </motion.div>
               
@@ -314,7 +313,7 @@ const HomeScreen: React.FC = () => {
               >
                 <Button 
                   onClick={handleNoAccount}
-                  className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
+                  className="flex justify-between items-center p-4 h-auto text-left w-full bg-secondary/50 hover:bg-secondary"
                   variant="outline"
                 >
                   <div className="flex items-center gap-3">
@@ -322,11 +321,11 @@ const HomeScreen: React.FC = () => {
                       <XCircle className="h-5 w-5 text-banking-red" />
                     </div>
                     <div>
-                      <p className="font-medium text-white">Do not have an account</p>
-                      <p className="text-sm text-gray-300/80">Create a new banking relationship</p>
+                      <p className="font-medium">Do not have an account</p>
+                      <p className="text-xs text-muted-foreground">Create a new banking relationship</p>
                     </div>
                   </div>
-                  <ChevronsRight className="h-5 w-5 text-gray-300" />
+                  <ChevronsRight className="h-5 w-5 text-muted-foreground" />
                 </Button>
               </motion.div>
             </div>
@@ -335,7 +334,7 @@ const HomeScreen: React.FC = () => {
               <Button 
                 variant="ghost" 
                 onClick={handleCloseAccountQuestion} 
-                className="text-sm text-gray-300 hover:text-white hover:bg-transparent hover:underline"
+                className="text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               >
                 Cancel
               </Button>
