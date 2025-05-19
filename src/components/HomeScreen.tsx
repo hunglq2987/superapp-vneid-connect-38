@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
@@ -164,184 +165,185 @@ const HomeScreen: React.FC = () => {
           </motion.div>
         </div>
 
-      {/* Sign in section moved above footer */}
-      <motion.div 
-        className="text-sm text-muted-foreground text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-      >
-        <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
-        <motion.button
-          className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md mx-auto mt-3"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleLoginClick}
+        {/* Sign in section moved above footer */}
+        <motion.div 
+          className="text-sm text-muted-foreground text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
         >
-          <Fingerprint className="h-6 w-6 text-banking-blue" />
-        </motion.button>
-      </motion.div>
-
-      <motion.div 
-        className="flex justify-center gap-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-      >
-        <motion.button
-          className="flex flex-col items-center text-muted-foreground text-xs"
-          whileHover={{ scale: 1.1, color: "#3B82F6" }}
-          onClick={handleUserGuideClick}
-        >
-          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
-            <BookOpen className="h-5 w-5" />
-          </div>
-          Guide
-        </motion.button>
-        
-        <motion.button
-          className="flex flex-col items-center text-muted-foreground text-xs"
-          whileHover={{ scale: 1.1, color: "#3B82F6" }}
-          onClick={handleSupportClick}
-        >
-          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
-            <HelpCircle className="h-5 w-5" />
-          </div>
-          Support
-        </motion.button>
-        
-        <motion.button
-          className="flex flex-col items-center text-muted-foreground text-xs"
-          whileHover={{ scale: 1.1, color: "#3B82F6" }}
-          onClick={handleFaqClick}
-        >
-          <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
-            <Info className="h-5 w-5" />
-          </div>
-          FAQ
-        </motion.button>
-      </motion.div>
-
-      {showLoginModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in backdrop-blur-sm">
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", duration: 0.5 }}
+          <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
+          <motion.button
+            className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md mx-auto mt-3"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleLoginClick}
           >
-            <Card className="w-full max-w-md shadow-lg dark:bg-slate-900/90 backdrop-blur-xl border border-white/10">
-              <div className="pt-6 pb-4 px-6">
-                <div className="space-y-4">
-                  <div className="text-center mb-4">
-                    <h2 className="text-2xl font-bold">Login</h2>
-                    <p className="text-muted-foreground">Enter your National ID to continue</p>
-                  </div>
+            <Fingerprint className="h-6 w-6 text-banking-blue" />
+          </motion.button>
+        </motion.div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="nationalId" className="text-sm font-medium">National ID</label>
-                    <input
-                      id="nationalId"
-                      type="text"
-                      value={nationalId}
-                      onChange={(e) => setNationalId(e.target.value)}
-                      placeholder="Enter your 12-digit ID"
-                      className="input-field"
-                      maxLength={12}
-                    />
-                    {error && <p className="text-banking-red text-sm">{error}</p>}
-                  </div>
-
-                  <div className="pt-4 flex flex-col gap-2">
-                    <motion.div
-                      variants={buttonVariants}
-                      whileHover="hover"
-                      whileTap="tap"
-                    >
-                      <Button 
-                        onClick={handleLogin} 
-                        className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:opacity-90 transition-opacity"
-                      >
-                        Login
-                      </Button>
-                    </motion.div>
-                    <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </div>
-      )}
-      
-      <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
-        <DialogContent className="sm:max-w-[340px] bg-gradient-to-br from-banking-darkBlue to-[#001547] text-white border border-white/10 rounded-xl">
-          <DialogHeader>
-            <DialogTitle className="text-xl font-semibold tracking-tight text-white">
-              Do you have a bank account at NCB?
-            </DialogTitle>
-            <DialogDescription className="text-gray-300 text-sm">
-              Please select one option below to continue with the appropriate registration process.
-            </DialogDescription>
-          </DialogHeader>
+        <motion.div 
+          className="flex justify-center gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+        >
+          <motion.button
+            className="flex flex-col items-center text-muted-foreground text-xs"
+            whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            onClick={handleUserGuideClick}
+          >
+            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            Guide
+          </motion.button>
           
-          <div className="grid grid-cols-1 gap-4 py-4">
+          <motion.button
+            className="flex flex-col items-center text-muted-foreground text-xs"
+            whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            onClick={handleSupportClick}
+          >
+            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+              <HelpCircle className="h-5 w-5" />
+            </div>
+            Support
+          </motion.button>
+          
+          <motion.button
+            className="flex flex-col items-center text-muted-foreground text-xs"
+            whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            onClick={handleFaqClick}
+          >
+            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+              <Info className="h-5 w-5" />
+            </div>
+            FAQ
+          </motion.button>
+        </motion.div>
+
+        {showLoginModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 animate-fade-in backdrop-blur-sm">
             <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", duration: 0.5 }}
             >
-              <Button 
-                onClick={handleHasAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
-                variant="outline"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-banking-green/10 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-banking-green" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-white">Already have accounts</p>
-                    <p className="text-sm text-gray-300/80">Continue with existing account</p>
+              <Card className="w-full max-w-md shadow-lg dark:bg-slate-900/90 backdrop-blur-xl border border-white/10">
+                <div className="pt-6 pb-4 px-6">
+                  <div className="space-y-4">
+                    <div className="text-center mb-4">
+                      <h2 className="text-2xl font-bold">Login</h2>
+                      <p className="text-muted-foreground">Enter your National ID to continue</p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="nationalId" className="text-sm font-medium">National ID</label>
+                      <input
+                        id="nationalId"
+                        type="text"
+                        value={nationalId}
+                        onChange={(e) => setNationalId(e.target.value)}
+                        placeholder="Enter your 12-digit ID"
+                        className="input-field"
+                        maxLength={12}
+                      />
+                      {error && <p className="text-banking-red text-sm">{error}</p>}
+                    </div>
+
+                    <div className="pt-4 flex flex-col gap-2">
+                      <motion.div
+                        variants={buttonVariants}
+                        whileHover="hover"
+                        whileTap="tap"
+                      >
+                        <Button 
+                          onClick={handleLogin} 
+                          className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:opacity-90 transition-opacity"
+                        >
+                          Login
+                        </Button>
+                      </motion.div>
+                      <Button variant="outline" onClick={handleCloseModal}>Cancel</Button>
+                    </div>
                   </div>
                 </div>
-                <ChevronsRight className="h-5 w-5 text-gray-300" />
-              </Button>
-            </motion.div>
-            
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button 
-                onClick={handleNoAccount}
-                className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
-                variant="outline"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-banking-red/10 flex items-center justify-center">
-                    <XCircle className="h-5 w-5 text-banking-red" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-white">Do not have an account</p>
-                    <p className="text-sm text-gray-300/80">Create a new banking relationship</p>
-                  </div>
-                </div>
-                <ChevronsRight className="h-5 w-5 text-gray-300" />
-              </Button>
+              </Card>
             </motion.div>
           </div>
-          
-          <DialogFooter className="flex items-center justify-center sm:justify-center">
-            <Button 
-              variant="ghost" 
-              onClick={handleCloseAccountQuestion} 
-              className="text-sm text-gray-300 hover:text-white hover:bg-transparent hover:underline"
-            >
-              Cancel
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </motion.div>
+        )}
+        
+        <Dialog open={showAccountQuestion} onOpenChange={handleCloseAccountQuestion}>
+          <DialogContent className="sm:max-w-[340px] bg-gradient-to-br from-banking-darkBlue to-[#001547] text-white border border-white/10 rounded-xl">
+            <DialogHeader>
+              <DialogTitle className="text-xl font-semibold tracking-tight text-white">
+                Do you have a bank account at NCB?
+              </DialogTitle>
+              <DialogDescription className="text-gray-300 text-sm">
+                Please select one option below to continue with the appropriate registration process.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="grid grid-cols-1 gap-4 py-4">
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button 
+                  onClick={handleHasAccount}
+                  className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
+                  variant="outline"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-banking-green/10 flex items-center justify-center">
+                      <CheckCircle className="h-5 w-5 text-banking-green" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-white">Already have accounts</p>
+                      <p className="text-sm text-gray-300/80">Continue with existing account</p>
+                    </div>
+                  </div>
+                  <ChevronsRight className="h-5 w-5 text-gray-300" />
+                </Button>
+              </motion.div>
+              
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Button 
+                  onClick={handleNoAccount}
+                  className="flex justify-between items-center p-4 h-auto text-left w-full bg-white/10 backdrop-blur-sm border-white/10 hover:bg-white/15"
+                  variant="outline"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-banking-red/10 flex items-center justify-center">
+                      <XCircle className="h-5 w-5 text-banking-red" />
+                    </div>
+                    <div>
+                      <p className="font-medium text-white">Do not have an account</p>
+                      <p className="text-sm text-gray-300/80">Create a new banking relationship</p>
+                    </div>
+                  </div>
+                  <ChevronsRight className="h-5 w-5 text-gray-300" />
+                </Button>
+              </motion.div>
+            </div>
+            
+            <DialogFooter className="flex items-center justify-center sm:justify-center">
+              <Button 
+                variant="ghost" 
+                onClick={handleCloseAccountQuestion} 
+                className="text-sm text-gray-300 hover:text-white hover:bg-transparent hover:underline"
+              >
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </motion.div>
+    </Layout>
   );
 };
 
