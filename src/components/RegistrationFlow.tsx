@@ -7,47 +7,110 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { Input } from '@/components/ui/input';
 
 const RegistrationFlow: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const hasAccount = location.state?.hasAccount;
-  const [nationalId, setNationalId] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState('');
+  const [isValidPhone, setIsValidPhone] = useState(false);
   
-  const validateNationalId = (id: string): boolean => {
-    // Simple validation for 12-digit ID
-    return /^\d{12}$/.test(id);
+  const validatePhoneNumber = (phone: string): boolean => {
+    // Validation rules:
+    // - Start with 0
+    // - Length: 10 numbers
+    // - Number format only
+    return /^0\d{9}$/.test(phone);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    
+    // Only allow numbers
+    if (!/^\d*$/.test(value)) {
+      return;
+    }
+    
+    setPhoneNumber(value);
+    
+    // Check if the phone number is valid
+    const isValid = validatePhoneNumber(value);
+    setIsValidPhone(isValid);
+    
+    if (value && !isValid) {
+      setError('Please enter a valid 10-digit phone number starting with 0');
+    } else {
+      setError('');
+    }
   };
 
   const handleNextStep = () => {
-    if (!validateNationalId(nationalId)) {
-      setError('Please enter a valid 12-digit National ID');
+    if (!validatePhoneNumber(phoneNumber)) {
+      setError('Please enter a valid 10-digit phone number starting with 0');
       return;
     }
     
     setError('');
 
-    // Route to different flows based on National ID
-    switch (nationalId) {
-      case '111111111111':
-        // Biometric data exists
-        navigate('/detailed-registration', { state: { nationalId, hasValidBiometric: true } });
-        break;
-      case '222222222222':
-        // Multiple phone numbers, needs OTP
-        navigate('/phone-selection', { state: { 
-          nationalId, 
-          phones: ['+84 981 234 567', '+84 987 654 321'] 
+    // Route to different flows based on Phone Number
+    switch (phoneNumber) {
+      case '0123456789':
+        // Case 1: Phone number is not existing to bank, National ID from VNeID is new to bank
+        navigate('/verification-options', { state: { 
+          phoneNumber, 
+          nationalId: '444444444444',
+          isExistingCustomer: false,
+          isNewNationalId: true
         }});
         break;
-      case '333333333333':
-        // No data, redirect to No Phone Found screen
-        navigate('/no-phone-found', { state: { nationalId } });
+      case '0223456789':
+        // Case 2: Phone number is not existing to bank, National ID from VNeID is existing to bank
+        navigate('/verification-options', { state: { 
+          phoneNumber, 
+          nationalId: '555555555555',
+          isExistingCustomer: false,
+          isNewNationalId: false
+        }});
+        break;
+      case '0323456789':
+        // Case 3: Phone number exists in bank, has biometric but facial verification fails
+        navigate('/biometric-auth', { state: { 
+          phoneNumber, 
+          nationalId: '666666666666',
+          isExistingCustomer: true,
+          hasBiometric: true,
+          biometricSuccess: false
+        }});
+        break;
+      case '0423456789':
+        // Case 3: Phone number exists in bank, has biometric and facial verification succeeds
+        navigate('/biometric-auth', { state: { 
+          phoneNumber, 
+          nationalId: '777777777777',
+          isExistingCustomer: true,
+          hasBiometric: true,
+          biometricSuccess: true
+        }});
+        break;
+      case '0523456789':
+        // Case 4: Phone number exists in bank, no biometric data available
+        navigate('/verification-options', { state: { 
+          phoneNumber, 
+          nationalId: '888888888888',
+          isExistingCustomer: true,
+          hasBiometric: false
+        }});
         break;
       default:
-        // For demo purposes, let's assume it's case 1 (biometric exists)
-        navigate('/detailed-registration', { state: { nationalId, hasValidBiometric: true } });
+        // For demo purposes, default to Case 1
+        navigate('/verification-options', { state: { 
+          phoneNumber, 
+          nationalId: '444444444444',
+          isExistingCustomer: false,
+          isNewNationalId: true
+        }});
     }
   };
 
@@ -187,37 +250,39 @@ const RegistrationFlow: React.FC = () => {
           >
             <Card className="shadow-md dark:bg-slate-900/90 backdrop-blur-xl border border-white/10">
               <CardHeader>
-                <CardTitle className="text-xl text-center">Enter National ID</CardTitle>
+                <CardTitle className="text-xl text-center">Enter Phone Number</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="nationalId" className="text-sm font-medium">
-                      National ID Number
+                    <label htmlFor="phoneNumber" className="text-sm font-medium">
+                      Phone Number
                     </label>
-                    <input
-                      id="nationalId"
-                      type="text"
-                      value={nationalId}
-                      onChange={(e) => setNationalId(e.target.value)}
-                      placeholder="Enter your 12-digit ID"
+                    <Input
+                      id="phoneNumber"
+                      type="tel"
+                      inputMode="numeric"
+                      value={phoneNumber}
+                      onChange={handlePhoneChange}
+                      placeholder="Please enter your phone number"
                       className="input-field"
-                      maxLength={12}
+                      maxLength={10}
                     />
                     {error && <p className="text-banking-red text-sm mt-1">{error}</p>}
                     <p className="text-xs text-muted-foreground mt-1">
-                      For testing: Use 111111111111 (biometric), 222222222222 (multiple phones), or 333333333333 (VNeID)
+                      For testing: Use 0123456789, 0223456789, 0323456789, 0423456789, 0523456789
                     </p>
                   </div>
 
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
+                    className={!isValidPhone ? 'opacity-70' : ''}
                   >
                     <Button 
                       className="w-full mt-6 bg-gradient-to-r from-banking-blue to-banking-darkBlue hover:scale-105 transition-transform"
                       onClick={handleNextStep}
-                      disabled={!nationalId}
+                      disabled={!isValidPhone}
                     >
                       Next
                     </Button>

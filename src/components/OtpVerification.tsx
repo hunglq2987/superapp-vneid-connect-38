@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 const OtpVerification: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { nationalId, phone } = location.state || {};
+  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric, biometricSuccess } = location.state || {};
   const [otp, setOtp] = useState<string>('');
   const [attempts, setAttempts] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(180); // 3 minutes
@@ -20,7 +20,7 @@ const OtpVerification: React.FC = () => {
   const [resetKey, setResetKey] = useState<number>(0); // Added to force re-render of OtpInput
   
   useEffect(() => {
-    if (!nationalId || !phone) {
+    if (!phoneNumber) {
       navigate('/registration');
       return;
     }
@@ -37,7 +37,7 @@ const OtpVerification: React.FC = () => {
     }, 1000);
     
     return () => clearInterval(timer);
-  }, [nationalId, phone, navigate]);
+  }, [phoneNumber, navigate]);
   
   // Handle resend cooldown
   useEffect(() => {
@@ -76,7 +76,15 @@ const OtpVerification: React.FC = () => {
     setTimeout(() => {
       if (otp === '123456') {
         toast.success("OTP verification successful!");
-        navigate('/detailed-registration', { state: { nationalId, hasValidBiometric: true } });
+        navigate('/detailed-registration', { 
+          state: { 
+            phoneNumber,
+            nationalId, 
+            isExistingCustomer,
+            isNewNationalId,
+            hasValidBiometric: true 
+          }
+        });
       } else {
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);
@@ -103,15 +111,11 @@ const OtpVerification: React.FC = () => {
     // Set resend cooldown to 1 minute
     setResendCooldown(60);
     
-    toast.success(`OTP sent to ${phone}`);
+    toast.success(`OTP sent to ${phoneNumber}`);
   };
   
-  const handleBackToPhoneSelection = () => {
+  const handleBack = () => {
     navigate(-1);
-  };
-  
-  const handleVNeIDRegistration = () => {
-    navigate('/vneid-confirmation');
   };
   
   const formatTime = (seconds: number) => {
@@ -127,11 +131,11 @@ const OtpVerification: React.FC = () => {
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={handleBackToPhoneSelection}
+            onClick={handleBack}
             className="gap-1"
           >
             <ArrowLeft size={16} />
-            Back to phone selection
+            Back
           </Button>
         </div>
 
@@ -141,7 +145,7 @@ const OtpVerification: React.FC = () => {
           <CardHeader>
             <CardTitle className="text-xl">Enter OTP Code</CardTitle>
             <CardDescription>
-              A 6-digit code has been sent to <span className="font-medium">{phone}</span>
+              A 6-digit code has been sent to <span className="font-medium">{phoneNumber}</span>
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -180,7 +184,7 @@ const OtpVerification: React.FC = () => {
                 </Button>
               </div>
               
-              <div className="pt-4 space-y-4">
+              <div className="pt-4">
                 <Button 
                   className="w-full"
                   onClick={handleVerify}
@@ -189,16 +193,6 @@ const OtpVerification: React.FC = () => {
                   {isVerifying ? 'Verifying...' : 'Verify OTP'}
                   {!isVerifying && <ShieldCheck size={18} className="ml-1" />}
                 </Button>
-                
-                <div className="text-center">
-                  <Button 
-                    variant="link" 
-                    onClick={handleVNeIDRegistration}
-                    className="text-banking-blue"
-                  >
-                    Register with VNeID instead
-                  </Button>
-                </div>
               </div>
             </div>
           </CardContent>
