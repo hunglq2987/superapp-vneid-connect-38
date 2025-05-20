@@ -45,21 +45,49 @@ const DetailedRegistration: React.FC = () => {
       };
     }
     // Case 2: New to bank, existing national ID (0223456789)
-    // Case 4: Existing user with biometric success (0423456789)
-    else if ((phoneNumber === '0223456789' && nationalId === '555555555555') || phoneNumber === '0423456789') {
+    else if (phoneNumber === '0223456789' && nationalId === '555555555555') {
       return {
         nationalId: nationalId || '',
         fullName: 'Nguyen Van A',
         dateOfBirth: '01/01/1990',
         phone: phoneNumber || '',
-        email: 'user@example.com',
-        currentAddress: '',
-        permanentAddress: '',
-        accounts: phoneNumber === '0423456789' ? [
+        email: '',
+        currentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
+        permanentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
+        accounts: []
+      };
+    }
+    // Case 4: Existing user with biometric success (0423456789)
+    else if (phoneNumber === '0423456789' && nationalId === '777777777777') {
+      return {
+        nationalId: nationalId || '',
+        fullName: 'Nguyen Van A',
+        dateOfBirth: '01/01/1990',
+        phone: phoneNumber || '',
+        email: '',
+        currentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
+        permanentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
+        accounts: [
           { type: 'payment', name: 'Checking Account', balance: '10,000,000 VND' },
           { type: 'deposit', name: 'Savings Account', balance: '50,000,000 VND' },
           { type: 'credit', name: 'Credit Card', limit: '20,000,000 VND', balance: '5,000,000 VND' }
-        ] : []
+        ]
+      };
+    }
+    // Case 5: Existing user with no biometric data (0523456789)
+    else if (phoneNumber === '0523456789' && nationalId === '666666666666') {
+      return {
+        nationalId: nationalId || '',
+        fullName: 'Nguyen Van B',
+        dateOfBirth: '01/01/1992',
+        phone: phoneNumber || '',
+        email: '',
+        currentAddress: '456 Nguyen Hue Street, Ward 2, District 3, Ho Chi Minh City',
+        permanentAddress: '456 Nguyen Hue Street, Ward 2, District 3, Ho Chi Minh City',
+        accounts: [
+          { type: 'payment', name: 'Checking Account', balance: '8,000,000 VND' },
+          { type: 'deposit', name: 'Savings Account', balance: '30,000,000 VND' }
+        ]
       };
     }
     // Default case
@@ -99,17 +127,7 @@ const DetailedRegistration: React.FC = () => {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     
-    // Required fields validation
-    if (!userData.fullName) errors.fullName = 'Full name is required';
-    if (!userData.dateOfBirth) errors.dateOfBirth = 'Date of birth is required';
-    if (!userData.email) errors.email = 'Email is required';
-    if (!userData.currentAddress) errors.currentAddress = 'Current address is required';
-    if (!userData.permanentAddress) errors.permanentAddress = 'Permanent address is required';
-    
-    // Simple email validation
-    if (userData.email && !/\S+@\S+\.\S+/.test(userData.email)) {
-      errors.email = 'Please enter a valid email address';
-    }
+    // No need to validate read-only fields anymore
     
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -148,36 +166,30 @@ const DetailedRegistration: React.FC = () => {
             
             <div className="space-y-2">
               <Label htmlFor="fullName" className="text-sm font-medium">
-                Full Name <span className="text-banking-red">*</span>
+                Full Name
               </Label>
               <Input
                 id="fullName"
                 type="text"
                 value={userData.fullName}
-                onChange={(e) => handleChange('fullName', e.target.value)}
-                className={formErrors.fullName ? "border-banking-red" : ""}
-                placeholder="Enter your full name"
+                disabled
+                className="bg-muted text-muted-foreground"
               />
-              {formErrors.fullName && (
-                <p className="text-banking-red text-sm">{formErrors.fullName}</p>
-              )}
+              <p className="text-xs text-muted-foreground">Full name cannot be changed</p>
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="dateOfBirth" className="text-sm font-medium">
-                Date of Birth <span className="text-banking-red">*</span>
+                Date of Birth
               </Label>
               <Input
                 id="dateOfBirth"
                 type="text"
                 value={userData.dateOfBirth}
-                onChange={(e) => handleChange('dateOfBirth', e.target.value)}
-                className={formErrors.dateOfBirth ? "border-banking-red" : ""}
-                placeholder="DD/MM/YYYY"
+                disabled
+                className="bg-muted text-muted-foreground"
               />
-              {formErrors.dateOfBirth && (
-                <p className="text-banking-red text-sm">{formErrors.dateOfBirth}</p>
-              )}
+              <p className="text-xs text-muted-foreground">Date of birth cannot be changed</p>
             </div>
             
             <div className="space-y-2">
@@ -194,53 +206,41 @@ const DetailedRegistration: React.FC = () => {
             
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">
-                Email Address <span className="text-banking-red">*</span>
+                Email Address
               </Label>
               <Input
                 id="email"
                 type="email"
                 value={userData.email}
                 onChange={(e) => handleChange('email', e.target.value)}
-                className={formErrors.email ? "border-banking-red" : ""}
-                placeholder="Enter your email address"
+                placeholder="Enter your email address (optional)"
               />
-              {formErrors.email && (
-                <p className="text-banking-red text-sm">{formErrors.email}</p>
-              )}
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="currentAddress" className="text-sm font-medium">
-                Current Address <span className="text-banking-red">*</span>
+                Living Address
               </Label>
               <Input
                 id="currentAddress"
                 type="text"
                 value={userData.currentAddress}
                 onChange={(e) => handleChange('currentAddress', e.target.value)}
-                className={formErrors.currentAddress ? "border-banking-red" : ""}
-                placeholder="Enter your current address"
+                placeholder="Enter your living address"
               />
-              {formErrors.currentAddress && (
-                <p className="text-banking-red text-sm">{formErrors.currentAddress}</p>
-              )}
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="permanentAddress" className="text-sm font-medium">
-                Permanent Address <span className="text-banking-red">*</span>
+                Permanent Address
               </Label>
               <Input
                 id="permanentAddress"
                 type="text"
                 value={userData.permanentAddress}
                 onChange={(e) => handleChange('permanentAddress', e.target.value)}
-                className={formErrors.permanentAddress ? "border-banking-red" : ""}
                 placeholder="Enter your permanent address"
               />
-              {formErrors.permanentAddress && (
-                <p className="text-banking-red text-sm">{formErrors.permanentAddress}</p>
-              )}
             </div>
             
             {userData.accounts.length > 0 && (

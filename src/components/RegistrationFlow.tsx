@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 const RegistrationFlow: React.FC = () => {
   const navigate = useNavigate();
@@ -46,6 +47,7 @@ const RegistrationFlow: React.FC = () => {
   const handleNextStep = () => {
     if (!validatePhoneNumber(phoneNumber)) {
       setError('Please enter a valid 10-digit phone number starting with 0');
+      toast.error('Please enter a valid phone number');
       return;
     }
     
@@ -95,7 +97,7 @@ const RegistrationFlow: React.FC = () => {
         // Case 5: Phone exists, no biometric data available
         navigate('/verification-options', { state: { 
           phoneNumber, 
-          nationalId: '888888888888',
+          nationalId: '666666666666',
           isExistingCustomer: true,
           hasBiometric: false
         }});

@@ -59,7 +59,7 @@ const VNeIDConfirmation: React.FC = () => {
       
       toast.success("VNeID verification completed successfully!");
       
-      // If the user needs biometric authentication
+      // If the user needs biometric authentication (case 3 or 4)
       if (phoneNumber === '0323456789' || phoneNumber === '0423456789') {
         navigate('/biometric-auth', { 
           state: { 
@@ -81,7 +81,8 @@ const VNeIDConfirmation: React.FC = () => {
           } 
         });
       } else {
-        navigate('/verification-options', { 
+        // Default cases 1, 2, 5
+        navigate('/otp-verification', { 
           state: { 
             phoneNumber, 
             nationalId,
