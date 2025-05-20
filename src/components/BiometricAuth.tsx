@@ -106,6 +106,7 @@ const BiometricAuth: React.FC = () => {
     navigate(-1);
   };
   
+  // Fixed the variants type issue by using proper type for repeatType
   const circleVariants = {
     scanning: {
       scale: [1, 1.05, 1],
@@ -118,7 +119,7 @@ const BiometricAuth: React.FC = () => {
       transition: {
         duration: 2,
         repeat: Infinity,
-        repeatType: "loop"
+        repeatType: "loop" as const // Fixed: explicitly typed as "loop"
       }
     },
     success: {
