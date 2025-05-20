@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { ArrowLeft } from 'lucide-react';
 
 interface UserData {
   nationalId: string;
@@ -42,9 +43,10 @@ const DetailedRegistration: React.FC = () => {
         currentAddress: "123 Nguyen Hue, District 1, HCMC",
         permanentAddress: "123 Nguyen Hue, District 1, HCMC",
         accounts: [
-          { type: "Payment", name: "Checking Account", balance: "10,000,000 VND", limit: "N/A" },
-          { type: "Deposit", name: "Savings Account", balance: "50,000,000 VND", limit: "N/A" },
-          { type: "Credit", name: "Credit Card", balance: "5,000,000 VND", limit: "30,000,000 VND" }
+          { type: "Payment", name: "Premium Checking Account", balance: "25,000,000 VND", limit: "N/A" },
+          { type: "Deposit", name: "High Yield Savings", balance: "75,000,000 VND", limit: "N/A" },
+          { type: "Credit", name: "Platinum Credit Card", balance: "8,500,000 VND", limit: "50,000,000 VND" },
+          { type: "Investment", name: "Stock Portfolio", balance: "120,000,000 VND", limit: "N/A" }
         ]
       };
     }
@@ -109,6 +111,10 @@ const DetailedRegistration: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   const handleConfirm = () => {
     if (validateForm()) {
       toast.success("Registration details confirmed successfully!");
@@ -119,8 +125,18 @@ const DetailedRegistration: React.FC = () => {
   };
 
   return (
-    <Layout>
+    <Layout showBackButton={true}>
       <div className="py-4">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleBack}
+          className="mb-4 flex items-center gap-2"
+        >
+          <ArrowLeft size={16} />
+          Back
+        </Button>
+        
         <h1 className="text-2xl font-bold mb-6 text-center">Registration Details</h1>
         
         <Card>

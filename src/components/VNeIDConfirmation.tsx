@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Smartphone } from 'lucide-react';
+import { ArrowLeft, Smartphone, Clock, Check, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { Spinner } from '@/components/ui/spinner';
 import { Badge } from '@/components/ui/badge';
-import { Check } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Card,
   CardContent,
@@ -22,17 +23,40 @@ const VNeIDConfirmation: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<number>(300); // 5 minutes
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric } = location.state || {};
+  
+  // Timer for data sharing expiration
+  useEffect(() => {
+    if (timeLeft > 0) {
+      const timer = setTimeout(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [timeLeft]);
+  
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
   
   const handleBack = () => {
     navigate(-1);
   };
   
   const handleShowInfo = () => {
-    setShowInfo(true);
+    setShowInfo(!showInfo);
   };
   
   const handleConfirm = () => {
+    if (!termsAccepted) {
+      toast.error("Please accept the terms before continuing");
+      return;
+    }
+    
     setIsLoading(true);
     
     // Simulate loading and progress
@@ -103,59 +127,105 @@ const VNeIDConfirmation: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-6 mb-4">
-            <div className="flex flex-col items-center mb-6">
-              <div className="h-20 w-20 rounded-full border-4 border-banking-blue flex items-center justify-center mb-4">
-                <Smartphone className="h-10 w-10 text-banking-blue" />
-              </div>
-              <h2 className="text-lg font-bold text-center">VNeID Consent</h2>
-              <p className="text-sm text-center text-muted-foreground mt-1">
-                Allow SuperApp to access your information from VNeID
-              </p>
-            </div>
-            
-            <div className="text-center space-y-4">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={handleShowInfo}
-              >
-                Show Information
-              </Button>
-              
-              <Button
-                className="w-full"
-                onClick={handleConfirm}
-              >
-                Confirm Sharing
-              </Button>
-              
-              <Button
-                variant="secondary"
-                className="w-full"
-                onClick={handleReject}
-              >
-                Do not share
-              </Button>
-            </div>
-            
-            {showInfo && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="border rounded-lg p-4 mt-4 text-xs"
-              >
-                <h3 className="font-medium mb-2">Information to be shared:</h3>
-                <ul className="space-y-1 text-muted-foreground">
-                  <li>• Full Name</li>
-                  <li>• Date of Birth</li>
-                  <li>• National ID Number</li>
-                  <li>• Address Information</li>
-                  <li>• Phone Number</li>
-                  <li>• Biometric Data (Facial Recognition)</li>
-                </ul>
-              </motion.div>
-            )}
+          <div className="space-y-5 mb-4">
+            <Card className="shadow-sm border-banking-blue/20">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-lg text-center">Confirm information sharing</CardTitle>
+                <CardDescription className="text-center">to log in to SuperApp</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col items-center">
+                    <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                      <Smartphone className="h-6 w-6 text-blue-700" />
+                    </div>
+                    <span className="text-xs mt-1">VNeID</span>
+                  </div>
+                  
+                  <div className="flex-1 flex justify-center">
+                    <ArrowRight className="h-5 w-5 text-banking-blue mx-2" />
+                    <ArrowLeft className="h-5 w-5 text-banking-blue mx-2" />
+                  </div>
+                  
+                  <div className="flex flex-col items-center">
+                    <div className="h-12 w-12 rounded-full bg-banking-blue/10 flex items-center justify-center">
+                      <div className="font-bold text-banking-blue">S</div>
+                    </div>
+                    <span className="text-xs mt-1">SuperApp</span>
+                  </div>
+                </div>
+                
+                {showInfo && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="mb-4"
+                  >
+                    <div className="border rounded-lg p-4 text-sm">
+                      <h3 className="font-medium mb-2">Mandatory shared information:</h3>
+                      <ul className="space-y-1 text-muted-foreground">
+                        <li>• Personal Identification Number</li>
+                        <li>• Full name</li>
+                        <li>• Date of birth</li>
+                        <li>• Digital ID account level</li>
+                        <li>• Account type</li>
+                      </ul>
+                      
+                      <div className="mt-4">
+                        <h3 className="font-medium mb-2">Purpose of data sharing and processing:</h3>
+                        <p className="text-muted-foreground text-sm">
+                          The above information fields are shared to perform SuperApp login
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+                
+                <div className="flex items-start gap-2 mb-4">
+                  <Checkbox 
+                    id="terms" 
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                  />
+                  <label htmlFor="terms" className="text-xs text-muted-foreground cursor-pointer">
+                    I have read and understood the purpose content (as stated above); Rights and obligations of the data subject and agree with the above contents.
+                  </label>
+                </div>
+                
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-4">
+                  <div className="flex items-center gap-1">
+                    <Clock size={12} />
+                    <span>Data sharing expiration time: {formatTime(timeLeft)}</span>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col gap-3">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleShowInfo}
+                  >
+                    Show Information
+                  </Button>
+                  
+                  <Button
+                    className="w-full bg-banking-red hover:bg-banking-red/90 text-white"
+                    onClick={handleConfirm}
+                  >
+                    <Check className="mr-1 h-4 w-4" /> Confirm sharing
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={handleReject}
+                  >
+                    Do not share
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
       </div>

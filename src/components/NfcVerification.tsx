@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,8 +39,17 @@ const NfcVerification: React.FC = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Complete verification and go back to home
-      navigate('/', { state: { nfcSuccess: true } });
+      // Complete verification and navigate to OTP verification screen
+      navigate('/otp-verification', { 
+        state: { 
+          phoneNumber: phoneNumber || '', 
+          nationalId: nationalId || '',
+          isExistingCustomer: isExistingCustomer || false,
+          isNewNationalId: isNewNationalId || false,
+          hasBiometric: hasBiometric || false,
+          fromNfc: true
+        } 
+      });
     }
   };
   
@@ -572,18 +580,16 @@ const NfcVerification: React.FC = () => {
     toast.success("NFC Verification completed successfully!");
     
     // Navigate directly to OTP verification after NFC scan
-    setTimeout(() => {
-      navigate('/otp-verification', { 
-        state: { 
-          phoneNumber: phoneNumber || '', 
-          nationalId: nationalId || '',
-          isExistingCustomer: isExistingCustomer || false,
-          isNewNationalId: isNewNationalId || false,
-          hasBiometric: hasBiometric || false,
-          fromNfc: true
-        } 
-      });
-    }, 1500);
+    navigate('/otp-verification', { 
+      state: { 
+        phoneNumber, 
+        nationalId,
+        isExistingCustomer,
+        isNewNationalId,
+        hasBiometric,
+        fromNfc: true
+      } 
+    });
   };
   
   return (

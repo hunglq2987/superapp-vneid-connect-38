@@ -49,7 +49,7 @@ const HomeScreen: React.FC = () => {
   
   const iconButtonVariants = {
     hover: { 
-      scale: 1.08,
+      scale: 1.05,
       backgroundColor: "rgba(59, 130, 246, 0.1)"
     },
     tap: { 
@@ -67,7 +67,7 @@ const HomeScreen: React.FC = () => {
         transition={{ duration: 0.6 }}
       >
         <motion.div 
-          className="text-center space-y-3"
+          className="text-center space-y-2"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -127,11 +127,11 @@ const HomeScreen: React.FC = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <div className="text-center mb-3">
+          <div className="text-center mb-2">
             <p className="text-sm text-muted-foreground font-medium">Already have an account?</p>
           </div>
           
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <motion.div
               variants={buttonVariants}
               whileHover="hover"
@@ -140,16 +140,16 @@ const HomeScreen: React.FC = () => {
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2 shadow-sm"
+                className="w-full flex flex-col h-auto py-3 items-center justify-center gap-1 shadow-sm"
                 onClick={() => handleLoginClick('face')}
               >
                 <motion.div 
-                  className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  className="h-8 w-8 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
                   variants={iconButtonVariants}
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  <Fingerprint className="h-5 w-5 text-banking-blue" />
+                  <Fingerprint className="h-4 w-4 text-banking-blue" />
                 </motion.div>
                 <span className="text-xs font-medium">Face ID</span>
               </Button>
@@ -163,16 +163,16 @@ const HomeScreen: React.FC = () => {
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2 shadow-sm"
+                className="w-full flex flex-col h-auto py-3 items-center justify-center gap-1 shadow-sm"
                 onClick={() => handleLoginClick('touch')}
               >
                 <motion.div 
-                  className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  className="h-8 w-8 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
                   variants={iconButtonVariants}
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  <Lock className="h-5 w-5 text-banking-blue" />
+                  <Lock className="h-4 w-4 text-banking-blue" />
                 </motion.div>
                 <span className="text-xs font-medium">Touch ID</span>
               </Button>
@@ -181,7 +181,7 @@ const HomeScreen: React.FC = () => {
         </motion.div>
 
         <motion.div 
-          className="flex justify-center gap-8 mt-2"
+          className="flex justify-center gap-8 mt-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
@@ -193,10 +193,10 @@ const HomeScreen: React.FC = () => {
             onClick={handleUserGuideClick}
           >
             <motion.div 
-              className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
               whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
             >
-              <BookOpen className="h-5 w-5" />
+              <BookOpen className="h-4 w-4" />
             </motion.div>
             Guide
           </motion.button>
@@ -208,10 +208,10 @@ const HomeScreen: React.FC = () => {
             onClick={handleSupportClick}
           >
             <motion.div 
-              className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
               whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
             >
-              <HelpCircle className="h-5 w-5" />
+              <HelpCircle className="h-4 w-4" />
             </motion.div>
             Support
           </motion.button>
@@ -223,10 +223,10 @@ const HomeScreen: React.FC = () => {
             onClick={handleFaqClick}
           >
             <motion.div 
-              className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
               whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
             >
-              <Info className="h-5 w-5" />
+              <Info className="h-4 w-4" />
             </motion.div>
             FAQ
           </motion.button>
