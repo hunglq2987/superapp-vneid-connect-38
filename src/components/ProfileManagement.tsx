@@ -5,7 +5,7 @@ import Layout from './Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { User, Fingerprint, Settings, Shield, Scan } from 'lucide-react';
+import { User, Fingerprint, Settings, Shield, Scan, ArrowLeft } from 'lucide-react';
 import { motion } from 'framer-motion';
 import BiometricConfig from './profile/BiometricConfig';
 import DeviceManagement from './profile/DeviceManagement';
@@ -30,7 +30,7 @@ const ProfileManagement: React.FC = () => {
 
   const getTabIcon = (tabId: TabId, isActive: boolean) => {
     const iconProps = { 
-      size: 20, 
+      size: 18, // Reduced from 20 to make it more compact
       className: isActive ? 'text-banking-blue' : 'text-muted-foreground',
     };
     
@@ -49,8 +49,9 @@ const ProfileManagement: React.FC = () => {
           variant="outline" 
           size="sm" 
           onClick={handleBackToHome} 
-          className="mb-4"
+          className="mb-4 flex items-center gap-2"
         >
+          <ArrowLeft size={16} />
           Back to Home
         </Button>
         
@@ -61,15 +62,15 @@ const ProfileManagement: React.FC = () => {
           whileTap={{ scale: 0.99 }}
         >
           <motion.div 
-            className="h-14 w-14 rounded-full bg-banking-blue/10 flex items-center justify-center"
+            className="h-12 w-12 rounded-full bg-banking-blue/10 flex items-center justify-center"
             whileHover={{ scale: 1.05 }}
             transition={{ type: 'spring', stiffness: 300, damping: 10 }}
           >
-            <User size={28} className="text-banking-blue" />
+            <User size={24} className="text-banking-blue" />
           </motion.div>
           <div className="flex-1">
-            <h1 className="text-xl font-bold">Profile Management</h1>
-            <p className="text-sm text-muted-foreground">National ID: {nationalId.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3')}</p>
+            <h1 className="text-lg font-bold">Profile Management</h1>
+            <p className="text-xs text-muted-foreground">National ID: {nationalId.replace(/(\d{4})(\d{4})(\d{4})/, '$1 $2 $3')}</p>
           </div>
         </motion.div>
         
@@ -87,27 +88,27 @@ const ProfileManagement: React.FC = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <TabsTrigger value={tab} className="flex flex-col items-center py-3">
+                    <TabsTrigger value={tab} className="flex flex-col items-center py-2 px-1">
                       {getTabIcon(tab, activeTab === tab)}
-                      <span className="text-xs mt-1">{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
+                      <span className="text-[10px] mt-1">{tab.charAt(0).toUpperCase() + tab.slice(1)}</span>
                     </TabsTrigger>
                   </motion.div>
                 ))}
               </TabsList>
               
-              <TabsContent value="biometric" className="p-4 focus:outline-none">
+              <TabsContent value="biometric" className="p-3 focus:outline-none">
                 <BiometricConfig />
               </TabsContent>
               
-              <TabsContent value="devices" className="p-4 focus:outline-none">
+              <TabsContent value="devices" className="p-3 focus:outline-none">
                 <DeviceManagement />
               </TabsContent>
               
-              <TabsContent value="security" className="p-4 focus:outline-none">
+              <TabsContent value="security" className="p-3 focus:outline-none">
                 <SecurityControls />
               </TabsContent>
               
-              <TabsContent value="permissions" className="p-4 focus:outline-none">
+              <TabsContent value="permissions" className="p-3 focus:outline-none">
                 <FeatureAuthorization />
               </TabsContent>
             </Tabs>

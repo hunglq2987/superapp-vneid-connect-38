@@ -59,7 +59,7 @@ const VNeIDConfirmation: React.FC = () => {
       
       toast.success("VNeID verification completed successfully!");
       
-      // If the user needs biometric authentication (case 3 or 4)
+      // For cases 3 and 4, proceed to biometric auth
       if (phoneNumber === '0323456789' || phoneNumber === '0423456789') {
         navigate('/biometric-auth', { 
           state: { 
@@ -81,14 +81,15 @@ const VNeIDConfirmation: React.FC = () => {
           } 
         });
       } else {
-        // Default cases 1, 2, 5
-        navigate('/otp-verification', { 
+        // For cases that require biometric verification after VNeID
+        navigate('/biometric-auth', { 
           state: { 
             phoneNumber, 
             nationalId,
             isExistingCustomer,
             isNewNationalId,
-            hasBiometric 
+            hasBiometric,
+            fromVNeID: true
           } 
         });
       }
@@ -116,9 +117,9 @@ const VNeIDConfirmation: React.FC = () => {
           size="sm" 
           onClick={handleBack}
           disabled={loading}
-          className="mb-6"
+          className="mb-6 flex items-center gap-2"
         >
-          <ArrowLeft size={16} className="mr-2" />
+          <ArrowLeft size={16} />
           Back
         </Button>
         
@@ -126,7 +127,7 @@ const VNeIDConfirmation: React.FC = () => {
           <CardContent className="pt-6">
             <div className="text-center mb-6">
               <h1 className="text-xl font-bold">Confirm Information Sharing</h1>
-              <p className="text-muted-foreground text-sm mt-1">to log in to SuperApp</p>
+              <p className="text-muted-foreground text-sm">to log in to SuperApp</p>
             </div>
             
             <div className="flex items-center justify-center gap-5 my-8">
@@ -146,7 +147,7 @@ const VNeIDConfirmation: React.FC = () => {
             
             <div className="space-y-4 mb-6">
               <div>
-                <h2 className="text-md font-medium mb-2">Mandatory shared information:</h2>
+                <h2 className="text-md font-medium">Mandatory shared information:</h2>
                 <ul className="text-sm space-y-1 pl-1">
                   <li>• Personal Identification Number</li>
                   <li>• Full name</li>
@@ -154,11 +155,6 @@ const VNeIDConfirmation: React.FC = () => {
                   <li>• Digital ID account level</li>
                   <li>• Account type</li>
                 </ul>
-              </div>
-              
-              <div>
-                <h2 className="text-md font-medium mb-1">Purpose of data sharing and processing:</h2>
-                <p className="text-sm text-muted-foreground">The above information fields are shared to perform SuperApp login</p>
               </div>
               
               <div className="flex items-start space-x-2 pt-2">
@@ -173,7 +169,7 @@ const VNeIDConfirmation: React.FC = () => {
                   htmlFor="terms"
                   className="text-sm leading-tight cursor-pointer"
                 >
-                  I have read and understood the purpose content (as stated above); Rights and obligations of the data subject and agree with the above contents.
+                  I have read and understood the purpose content; Rights and obligations of the data subject and agree with the above contents.
                 </label>
               </div>
 
@@ -181,9 +177,35 @@ const VNeIDConfirmation: React.FC = () => {
                 <Clock size={16} />
                 <span>Data sharing expiration time: {formatTime(timeLeft)}</span>
               </div>
+              
+              <Button 
+                variant="link" 
+                className="text-sm text-banking-blue w-full"
+                onClick={toggleShowInfo}
+              >
+                <Info size={14} className="mr-1" />
+                {showInfo ? 'Hide Information' : 'Show Information'}
+              </Button>
+              
+              {showInfo && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-2 p-3 bg-muted/50 text-sm rounded-md text-left"
+                >
+                  <p className="font-medium mb-1">Shared Information Details:</p>
+                  <ul className="space-y-1 text-muted-foreground">
+                    <li>• ID Number: {nationalId || '444444444444'}</li>
+                    <li>• Name: {isNewNationalId ? 'New User' : 'Nguyen Van A'}</li>
+                    <li>• DOB: {isNewNationalId ? '01/01/1995' : '01/01/1990'}</li>
+                    <li>• VNeID Level: Level 2</li>
+                    <li>• Account Type: Personal</li>
+                  </ul>
+                </motion.div>
+              )}
             </div>
             
-            <div className="flex gap-3 pt-4">
+            <div className="flex gap-3 pt-2">
               <Button
                 className="w-full"
                 variant="outline"
@@ -199,34 +221,6 @@ const VNeIDConfirmation: React.FC = () => {
               >
                 {loading ? 'Processing...' : 'Confirm sharing'}
               </Button>
-            </div>
-            
-            <div className="mt-4 text-center">
-              <Button 
-                variant="link" 
-                className="text-sm text-banking-blue"
-                onClick={toggleShowInfo}
-              >
-                <Info size={14} className="mr-1" />
-                {showInfo ? 'Hide Information' : 'Show Information'}
-              </Button>
-              
-              {showInfo && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-3 p-3 bg-muted/50 text-sm rounded-md text-left"
-                >
-                  <p className="font-medium mb-1">Shared Information Details:</p>
-                  <ul className="space-y-1 text-muted-foreground">
-                    <li>• ID Number: {nationalId || '444444444444'}</li>
-                    <li>• Name: {isNewNationalId ? 'New User' : 'Nguyen Van A'}</li>
-                    <li>• DOB: {isNewNationalId ? '01/01/1995' : '01/01/1990'}</li>
-                    <li>• VNeID Level: Level 2</li>
-                    <li>• Account Type: Personal</li>
-                  </ul>
-                </motion.div>
-              )}
             </div>
           </CardContent>
         </Card>

@@ -5,12 +5,11 @@ import Layout from './Layout';
 import Logo from './ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { User, ArrowRight, ChevronsRight, HelpCircle, BookOpen, Info, Fingerprint } from 'lucide-react';
+import { User, ArrowRight, ChevronsRight, HelpCircle, BookOpen, Info, Fingerprint, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
-  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const handleRegistration = () => {
     navigate('/registration');
@@ -100,22 +99,52 @@ const HomeScreen: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Sign in section moved above footer */}
+        {/* Sign in section */}
         <motion.div 
-          className="text-sm text-muted-foreground text-center"
+          className="w-full max-w-xs"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
+          transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <p>Already have an account? <button className="text-banking-blue font-medium hover:underline" onClick={handleLoginClick}>Sign In</button></p>
-          <motion.button
-            className="flex items-center justify-center h-12 w-12 rounded-full bg-banking-lightGrey/20 backdrop-blur-md mx-auto mt-3"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={handleLoginClick}
-          >
-            <Fingerprint className="h-6 w-6 text-banking-blue" />
-          </motion.button>
+          <div className="text-center mb-4">
+            <p className="text-sm text-muted-foreground">Already have an account?</p>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <motion.div
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+            >
+              <Button
+                variant="outline"
+                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2"
+                onClick={handleLoginClick}
+              >
+                <div className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center">
+                  <Fingerprint className="h-5 w-5 text-banking-blue" />
+                </div>
+                <span className="text-xs">Face ID</span>
+              </Button>
+            </motion.div>
+            
+            <motion.div
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+            >
+              <Button
+                variant="outline"
+                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2"
+                onClick={handleLoginClick}
+              >
+                <div className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center">
+                  <Lock className="h-5 w-5 text-banking-blue" />
+                </div>
+                <span className="text-xs">Touch ID</span>
+              </Button>
+            </motion.div>
+          </div>
         </motion.div>
 
         <motion.div 

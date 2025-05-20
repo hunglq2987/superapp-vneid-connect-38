@@ -1,329 +1,127 @@
 
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { toast } from "sonner";
-import { CheckCircle, Info, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const TermsAndConditions: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [accepted, setAccepted] = useState(false);
-  const [language, setLanguage] = useState<'en' | 'vi'>('en');
-  const [showingSection, setShowingSection] = useState<string | null>('general');
-  const [showCompletion, setShowCompletion] = useState(false);
+  const userData = location.state || {};
   
   const handleAcceptTerms = () => {
     if (!accepted) {
-      toast.error("Please accept the terms and conditions to continue");
+      toast.error("Please accept the terms and conditions to proceed");
       return;
     }
     
-    // Show completion screen
-    setShowCompletion(true);
+    toast.success("Registration completed successfully!");
     
-    // Navigate to home with success message after a delay
-    setTimeout(() => {
-      navigate('/', { 
-        state: { registrationComplete: true } 
-      });
-    }, 3000);
+    // Navigate to a "Registration Complete" page
+    navigate('/registration-complete', { 
+      state: { 
+        ...userData,
+        registrationComplete: true 
+      } 
+    });
   };
-
-  const renderTermsSection = () => {
-    if (showingSection === 'general') {
-      return (
-        <motion.div 
-          className="space-y-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h3 className="font-semibold text-lg">General Terms & Conditions</h3>
-          
-          <div className="bg-muted/30 p-4 rounded-lg">
-            <p className="mb-4">
-              These Terms and Conditions govern your use of the SuperApp banking mobile application 
-              (the "App") and related services provided by SuperApp Financial Institution ("we", "us", or "our").
-            </p>
-            
-            <h4 className="font-medium text-base mt-4 text-banking-blue">1. Acceptance of Terms</h4>
-            <p className="mb-2 pl-4">
-              By registering, accessing or using the App, you agree to be bound by these Terms and Conditions. 
-              If you do not agree, please do not use the App.
-            </p>
-            
-            <h4 className="font-medium text-base mt-4 text-banking-blue">2. Account Registration</h4>
-            <p className="mb-2 pl-4">
-              2.1 To use our services, you must register for an account. You agree to provide accurate and 
-              complete information during the registration process.
-            </p>
-            <p className="mb-2 pl-4">
-              2.2 You are responsible for maintaining the confidentiality of your account credentials and for 
-              all activities that occur under your account.
-            </p>
-            
-            <h4 className="font-medium text-base mt-4 text-banking-blue">3. Services</h4>
-            <p className="mb-2 pl-4">
-              3.1 The App provides banking services which may include viewing account balances, transferring funds, 
-              making payments, and applying for financial products.
-            </p>
-            <p className="mb-2 pl-4">
-              3.2 We reserve the right to modify, suspend, or discontinue any service at any time without notice.
-            </p>
-            
-            <h4 className="font-medium text-base mt-4 text-banking-blue">4. Privacy</h4>
-            <p className="mb-2 pl-4">
-              4.1 Your privacy is important to us. Our Privacy Policy explains how we collect, use, and protect 
-              your personal information.
-            </p>
-            <p className="mb-2 pl-4">
-              4.2 By using the App, you agree to our collection and use of your information as described in our Privacy Policy.
-            </p>
-          </div>
-        </motion.div>
-      );
-    } else if (showingSection === 'security') {
-      return (
-        <motion.div 
-          className="space-y-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h3 className="font-semibold text-lg">Security Terms</h3>
-          
-          <p>
-            At SuperApp, we implement robust security measures to protect your banking data and transactions.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">1. Biometric Authentication</h4>
-          <p>
-            1.1 The App uses biometric authentication methods including facial recognition and fingerprint 
-            verification to ensure secure access to your account.
-          </p>
-          <p>
-            1.2 You agree to maintain the security of your biometric data and not allow others to register 
-            their biometrics for your account.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">2. NFC Technology</h4>
-          <p>
-            2.1 Our App uses Near Field Communication (NFC) technology to securely read data from your 
-            identification documents.
-          </p>
-          <p>
-            2.2 You consent to the App accessing your device's NFC capabilities to process your identification 
-            information during registration and verification.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">3. Security Obligations</h4>
-          <p>
-            3.1 You agree to install updates promptly when available, as they may contain critical security patches.
-          </p>
-          <p>
-            3.2 You must notify us immediately of any unauthorized use of your account or any other security breach.
-          </p>
-        </motion.div>
-      );
-    } else if (showingSection === 'compliance') {
-      return (
-        <motion.div 
-          className="space-y-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h3 className="font-semibold text-lg">Regulatory Compliance</h3>
-          
-          <p>
-            SuperApp adheres to all applicable banking regulations and compliance requirements.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">1. Vietnam Civil Code Compliance</h4>
-          <p>
-            1.1 These Terms form an electronic contract in accordance with the Vietnam Civil Code.
-          </p>
-          <p>
-            1.2 Your acceptance of these Terms constitutes a legally binding agreement between you and SuperApp.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">2. Consumer Protection</h4>
-          <p>
-            2.1 You have rights under consumer protection laws, which these Terms do not limit or exclude.
-          </p>
-          <p>
-            2.2 We provide transparent fee structures and service information in compliance with consumer protection regulations.
-          </p>
-          
-          <h4 className="font-medium text-base mt-4">3. State Bank of Vietnam (SBV) Policy</h4>
-          <p>
-            3.1 Our services comply with all SBV regulations regarding digital banking and financial transactions.
-          </p>
-          <p>
-            3.2 Any updates to SBV policies that affect our services will be communicated to you promptly.
-          </p>
-        </motion.div>
-      );
-    }
-    
-    return null;
+  
+  const handleBack = () => {
+    navigate(-1);
   };
-
-  if (showCompletion) {
-    return (
-      <Layout showBackButton={true}>
-        <div className="py-4 flex flex-col items-center justify-center min-h-[80vh]">
-          <motion.div 
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <motion.div 
-              className="inline-flex items-center justify-center w-24 h-24 bg-banking-green/10 text-banking-green rounded-full mb-6"
-              animate={{ 
-                boxShadow: ['0 0 0 rgba(34, 197, 94, 0)', '0 0 20px rgba(34, 197, 94, 0.5)', '0 0 0 rgba(34, 197, 94, 0)']
-              }}
-              transition={{ repeat: Infinity, duration: 2 }}
-            >
-              <CheckCircle size={48} />
-            </motion.div>
-            <h1 className="text-3xl font-bold mb-4">Registration Complete!</h1>
-            <p className="text-muted-foreground mb-8">Your account has been successfully registered.</p>
-            <p className="text-sm text-muted-foreground">Redirecting to home page...</p>
-          </motion.div>
-        </div>
-      </Layout>
-    );
-  }
   
   return (
     <Layout showBackButton={true}>
-      <div className="py-4">
-        <h1 className="text-2xl font-bold mb-6 text-center">Terms & Conditions</h1>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+      <div className="py-4 px-4">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={handleBack} 
+          className="mb-4 flex items-center gap-2"
         >
-          <Card className="shadow-md dark:bg-slate-800/95 backdrop-blur-xl border border-white/10">
-            <CardHeader className="pb-2 border-b border-border/50">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-bold">Terms of Service</CardTitle>
-                <div className="flex items-center space-x-2 text-xs">
-                  <motion.button 
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-3 py-1 rounded-full ${language === 'en' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
-                    onClick={() => setLanguage('en')}
-                  >
-                    English
-                  </motion.button>
-                  <motion.button 
-                    whileTap={{ scale: 0.95 }}
-                    className={`px-3 py-1 rounded-full ${language === 'vi' ? 'bg-banking-blue text-white' : 'bg-secondary'}`}
-                    onClick={() => setLanguage('vi')}
-                  >
-                    Tiếng Việt
-                  </motion.button>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <div className="flex border-b">
-              {['general', 'security', 'compliance'].map((section) => (
-                <motion.button 
-                  key={section}
-                  className={`flex-1 py-3 text-center text-sm font-medium tracking-wide ${
-                    showingSection === section 
-                      ? 'text-banking-blue border-b-2 border-banking-blue' 
-                      : 'text-muted-foreground'
-                  }`}
-                  onClick={() => setShowingSection(section)}
-                  whileHover={{ backgroundColor: 'rgba(255,255,255,0.03)' }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {section.charAt(0).toUpperCase() + section.slice(1)}
-                </motion.button>
-              ))}
+          <ArrowLeft size={16} />
+          Back
+        </Button>
+        
+        <h1 className="text-2xl font-bold mb-4 text-center">Terms & Conditions</h1>
+        
+        <Card className="mb-6 max-h-[50vh] overflow-y-auto">
+          <CardContent className="pt-6">
+            <div className="prose prose-sm dark:prose-invert">
+              <h3>Terms and Conditions for SuperApp</h3>
+              <p>Please read these terms and conditions carefully before using SuperApp services.</p>
+              
+              <h4>1. User Agreement</h4>
+              <p>By accessing or using SuperApp services, you agree to be bound by these Terms and Conditions. If you disagree with any part of the terms, you may not access the service.</p>
+              
+              <h4>2. Account Registration</h4>
+              <p>Users must register with accurate, complete, and updated information. You are solely responsible for maintaining the confidentiality of your account and password.</p>
+              
+              <h4>3. Privacy Policy</h4>
+              <p>Your use of SuperApp is also governed by our Privacy Policy, which is incorporated into these Terms by reference. Our Privacy Policy outlines how we collect, use, and share your personal information.</p>
+              
+              <h4>4. Service Modifications</h4>
+              <p>SuperApp reserves the right to modify or discontinue, temporarily or permanently, the service with or without notice.</p>
+              
+              <h4>5. User Obligations</h4>
+              <p>You agree not to use the service for any illegal or unauthorized purpose. You must not transmit worms or viruses or any code of a destructive nature.</p>
+              
+              <h4>6. Service Availability</h4>
+              <p>SuperApp will strive to ensure that its services are available 24 hours a day. However, we will not be liable if for any reason the service is unavailable at any time or for any period.</p>
+              
+              <h4>7. Security</h4>
+              <p>While we strive to protect your personal information, we cannot guarantee that unauthorized third parties will never be able to defeat our security measures.</p>
+              
+              <h4>8. Biometric Authentication</h4>
+              <p>SuperApp offers biometric authentication features. You understand that by enabling these features, your biometric data will be processed by your device and/or our application. The biometric data collected will be used solely for the purpose of authenticating your identity when accessing your account.</p>
+              
+              <h4>9. VNeID Integration</h4>
+              <p>SuperApp may integrate with VNeID for identity verification purposes. By using this feature, you consent to the sharing of personal information between VNeID and SuperApp as specified during the verification process.</p>
+              
+              <h4>10. Termination</h4>
+              <p>SuperApp reserves the right to terminate or suspend your account at any time without prior notice for conduct that we believe violates these Terms or is harmful to other users, us, or third parties, or for any other reason.</p>
+              
+              <h4>11. Governing Law</h4>
+              <p>These Terms shall be governed and construed in accordance with the laws of Vietnam, without regard to its conflict of law provisions.</p>
+              
+              <h4>12. Changes to Terms</h4>
+              <p>We reserve the right to modify these terms at any time. You are responsible for reviewing these Terms periodically to ensure you are aware of any changes.</p>
+              
+              <h4>13. Contact Information</h4>
+              <p>If you have any questions about these Terms, please contact us at support@superapp.com.</p>
             </div>
-            
-            <CardContent className="py-4">
-              <div className="h-64 overflow-y-auto pr-2 text-sm glass-scrollbar">
-                <AnimatePresence mode="wait">
-                  {renderTermsSection()}
-                </AnimatePresence>
-              </div>
-              
-              <div className="flex items-center gap-3 mt-6 bg-muted/20 p-4 rounded-lg">
-                <motion.div 
-                  className={`w-5 h-5 border rounded flex items-center justify-center ${
-                    accepted ? 'bg-banking-blue border-banking-blue' : 'border-gray-300'
-                  }`}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => setAccepted(!accepted)}
-                >
-                  {accepted && <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="text-white"
-                  >
-                    <CheckCircle size={12} />
-                  </motion.div>}
-                </motion.div>
-                <label htmlFor="acceptTerms" className="text-sm font-medium flex items-center cursor-pointer" onClick={() => setAccepted(!accepted)}>
-                  I have read and agree to the Terms and Conditions
-                  <motion.div 
-                    className="ml-1 text-muted-foreground cursor-help"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Info size={14} />
-                  </motion.div>
-                </label>
-              </div>
-              
-              <div className="text-xs text-muted-foreground mt-2 text-center bg-muted/10 p-2 rounded">
-                By accepting, you confirm your agreement to version 1.0 of our Terms and Conditions, dated May 18, 2025.
-              </div>
-            </CardContent>
-            
-            <CardFooter className="flex justify-between space-x-2 border-t border-border/30 pt-4">
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex-1"
-              >
-                <Button
-                  variant="outline"
-                  onClick={() => navigate(-1)}
-                  className="w-full dark:bg-transparent dark:hover:bg-slate-700/50"
-                >
-                  Back
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex-1"
-              >
-                <Button
-                  className="w-full bg-banking-blue flex items-center justify-center gap-1"
-                  onClick={handleAcceptTerms}
-                >
-                  Accept & Continue
-                  <ChevronRight size={16} />
-                </Button>
-              </motion.div>
-            </CardFooter>
-          </Card>
-        </motion.div>
+          </CardContent>
+        </Card>
+        
+        <div className="flex items-center space-x-2 mb-6">
+          <Checkbox 
+            id="terms" 
+            checked={accepted}
+            onCheckedChange={(checked) => {
+              setAccepted(checked === true);
+            }}
+          />
+          <label
+            htmlFor="terms"
+            className="text-sm leading-none cursor-pointer"
+          >
+            I have read and agree to the terms and conditions
+          </label>
+        </div>
+        
+        <Button 
+          className="w-full"
+          disabled={!accepted}
+          onClick={handleAcceptTerms}
+        >
+          Accept and Continue
+        </Button>
       </div>
     </Layout>
   );

@@ -75,7 +75,7 @@ const RegistrationFlow: React.FC = () => {
         break;
       case '0323456789':
         // Case 3: Phone exists, has biometric but facial verification fails
-        navigate('/vneid-confirmation', { state: { 
+        navigate('/biometric-auth', { state: { 
           phoneNumber, 
           nationalId: '666666666666',
           isExistingCustomer: true,
@@ -85,7 +85,7 @@ const RegistrationFlow: React.FC = () => {
         break;
       case '0423456789':
         // Case 4: Phone exists, has biometric and facial verification succeeds
-        navigate('/vneid-confirmation', { state: { 
+        navigate('/biometric-auth', { state: { 
           phoneNumber, 
           nationalId: '777777777777',
           isExistingCustomer: true,

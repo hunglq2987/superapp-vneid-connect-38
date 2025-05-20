@@ -12,7 +12,15 @@ const BiometricAuth: React.FC = () => {
   const location = useLocation();
   const [scanning, setScanning] = useState(false);
   const [scanComplete, setScanComplete] = useState(false);
-  const { phoneNumber, nationalId, isExistingCustomer, hasBiometric, biometricSuccess, isLogin } = location.state || {};
+  const { 
+    phoneNumber, 
+    nationalId, 
+    isExistingCustomer, 
+    hasBiometric, 
+    biometricSuccess, 
+    isLogin,
+    fromVNeID 
+  } = location.state || {};
   
   useEffect(() => {
     // Auto-start scanning after a brief delay
@@ -41,7 +49,7 @@ const BiometricAuth: React.FC = () => {
   const processBiometricResult = () => {
     // For case 3: biometric verification fails
     if (phoneNumber === '0323456789' || biometricSuccess === false) {
-      toast.error("Face ID is not matched with existing information", {
+      toast.error("Facial verification is not matched", {
         duration: 4000,
       });
       
@@ -87,6 +95,23 @@ const BiometricAuth: React.FC = () => {
       return;
     }
     
+    // Coming from VNeID flow, go to OTP
+    if (fromVNeID) {
+      toast.success("Biometric authentication successful!");
+      
+      setTimeout(() => {
+        navigate('/otp-verification', {
+          state: {
+            phoneNumber,
+            nationalId,
+            isExistingCustomer,
+            hasBiometric: true
+          }
+        });
+      }, 1500);
+      return;
+    }
+    
     // Default case - navigate to OTP
     toast.success("Biometric authentication successful!");
     
@@ -106,7 +131,7 @@ const BiometricAuth: React.FC = () => {
     navigate(-1);
   };
   
-  // Fixed the variants type issue by using proper type for repeatType
+  // Fixed type issue by using proper type for repeatType
   const circleVariants = {
     scanning: {
       scale: [1, 1.05, 1],
@@ -119,7 +144,7 @@ const BiometricAuth: React.FC = () => {
       transition: {
         duration: 2,
         repeat: Infinity,
-        repeatType: "loop" as const // Fixed: explicitly typed as "loop"
+        repeatType: "loop" as const
       }
     },
     success: {
@@ -153,9 +178,9 @@ const BiometricAuth: React.FC = () => {
           size="sm" 
           onClick={handleBack}
           disabled={scanning}
-          className="mb-6"
+          className="mb-6 flex items-center gap-2"
         >
-          <ArrowLeft size={16} className="mr-2" />
+          <ArrowLeft size={16} />
           Back
         </Button>
         

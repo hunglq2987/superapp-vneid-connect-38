@@ -12,6 +12,7 @@ import BiometricAuth from "./components/BiometricAuth";
 import NfcVerification from "./components/NfcVerification";
 import DetailedRegistration from "./components/DetailedRegistration";
 import TermsAndConditions from "./components/TermsAndConditions";
+import RegistrationComplete from "./components/RegistrationComplete";
 import ProfileManagement from "./components/ProfileManagement";
 import OtpVerification from "./components/OtpVerification";
 import PhoneSelection from "./components/PhoneSelection";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/nfc-verification" element={<NfcVerification />} />
           <Route path="/detailed-registration" element={<DetailedRegistration />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
+          <Route path="/registration-complete" element={<RegistrationComplete />} />
           <Route path="/profile-management" element={<ProfileManagement />} />
           <Route path="/registration-details" element={<RegistrationDetailsPage />} />
           <Route path="/otp-verification" element={<OtpVerification />} />
