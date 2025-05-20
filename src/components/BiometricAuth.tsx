@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Shield, UserCheck } from 'lucide-react';
+import { ArrowLeft, Shield, UserCheck, Fingerprint } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
@@ -19,22 +19,20 @@ const BiometricAuth: React.FC = () => {
     hasBiometric, 
     biometricSuccess, 
     isLogin,
+    authMethod = 'face',
     fromVNeID 
   } = location.state || {};
   
+  const isTouchId = authMethod === 'touch';
+  
   useEffect(() => {
-    // Auto-start scanning after a brief delay
-    const timer = setTimeout(() => {
-      handleStartScan();
-    }, 1000);
-    
-    return () => clearTimeout(timer);
+    // Don't auto-start scanning, wait for user to press button
   }, []);
   
   const handleStartScan = () => {
     setScanning(true);
     
-    // Simulate face scanning process (3 seconds)
+    // Simulate face/touch scanning process (3 seconds)
     setTimeout(() => {
       setScanComplete(true);
       setScanning(false);
@@ -49,20 +47,22 @@ const BiometricAuth: React.FC = () => {
   const processBiometricResult = () => {
     // For case 3: biometric verification fails
     if (phoneNumber === '0323456789' || biometricSuccess === false) {
-      toast.error("Facial verification is not matched", {
+      toast.error(`${isTouchId ? 'Fingerprint' : 'Facial'} verification failed`, {
         duration: 4000,
       });
       
-      // Return to home screen after a delay
+      // Navigate to verification failure screen
       setTimeout(() => {
-        navigate('/');
-      }, 2000);
+        navigate('/verification-failure', {
+          state: { authMethod }
+        });
+      }, 1500);
       return;
     }
     
     // For login flow
     if (isLogin) {
-      toast.success("Biometric authentication successful!");
+      toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
       
       // Navigate to profile management
       setTimeout(() => {
@@ -78,7 +78,7 @@ const BiometricAuth: React.FC = () => {
     
     // For case 4: biometric verification succeeds
     if (phoneNumber === '0423456789' || biometricSuccess === true) {
-      toast.success("Biometric authentication successful!");
+      toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
       
       // Navigate to OTP verification
       setTimeout(() => {
@@ -97,7 +97,7 @@ const BiometricAuth: React.FC = () => {
     
     // Coming from VNeID flow, go to OTP
     if (fromVNeID) {
-      toast.success("Biometric authentication successful!");
+      toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
       
       setTimeout(() => {
         navigate('/otp-verification', {
@@ -113,7 +113,7 @@ const BiometricAuth: React.FC = () => {
     }
     
     // Default case - navigate to OTP
-    toast.success("Biometric authentication successful!");
+    toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
     
     setTimeout(() => {
       navigate('/otp-verification', { 
@@ -131,7 +131,6 @@ const BiometricAuth: React.FC = () => {
     navigate(-1);
   };
   
-  // Fixed type issue by using proper type for repeatType
   const circleVariants = {
     scanning: {
       scale: [1, 1.05, 1],
@@ -185,9 +184,20 @@ const BiometricAuth: React.FC = () => {
         </Button>
         
         <div className="text-center space-y-6">
-          <h1 className="text-2xl font-bold">Facial Verification</h1>
+          <h1 className="text-2xl font-bold">
+            {isTouchId ? 'Touch ID Authentication' : 'Facial Verification'}
+          </h1>
           <p className="text-muted-foreground max-w-xs mx-auto">
-            {scanning ? "Please look at your camera" : scanComplete ? "Verification complete" : "Prepare for facial scan"}
+            {scanning 
+              ? isTouchId 
+                ? "Place your finger on the scanner" 
+                : "Please look at your camera"
+              : scanComplete 
+                ? "Verification complete" 
+                : isTouchId 
+                  ? "Prepare to scan your fingerprint"
+                  : "Prepare for facial scan"
+            }
           </p>
           
           <div className="flex flex-col items-center justify-center py-10">
@@ -204,24 +214,33 @@ const BiometricAuth: React.FC = () => {
                     <UserCheck className="h-12 w-12 text-white" />
                   )
                 ) : (
-                  <svg className="h-12 w-12 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 15C8.5 15.5 9.5 16 12 16C14.5 16 15.5 15.5 16 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                    <circle cx="9" cy="10" r="1" fill="currentColor" />
-                    <circle cx="15" cy="10" r="1" fill="currentColor" />
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" />
-                  </svg>
+                  isTouchId ? (
+                    <Fingerprint className="h-12 w-12 text-white" />
+                  ) : (
+                    <svg className="h-12 w-12 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M8 15C8.5 15.5 9.5 16 12 16C14.5 16 15.5 15.5 16 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      <circle cx="9" cy="10" r="1" fill="currentColor" />
+                      <circle cx="15" cy="10" r="1" fill="currentColor" />
+                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" />
+                    </svg>
+                  )
                 )}
               </div>
             </motion.div>
             
             <div className="mt-10 max-w-xs mx-auto w-full">
               {!scanning && !scanComplete && (
-                <Button 
-                  className="w-full" 
-                  onClick={handleStartScan}
+                <motion.div
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  Start Face Scan
-                </Button>
+                  <Button 
+                    className="w-full" 
+                    onClick={handleStartScan}
+                  >
+                    Start {isTouchId ? 'Touch ID' : 'Face Scan'}
+                  </Button>
+                </motion.div>
               )}
               
               {scanning && (

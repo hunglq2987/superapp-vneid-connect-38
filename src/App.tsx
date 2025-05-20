@@ -22,6 +22,7 @@ import UserGuide from "./components/UserGuide";
 import Faq from "./components/Faq";
 import RegistrationDetailsPage from "./components/profile/RegistrationDetailsPage";
 import VerificationOptions from "./components/VerificationOptions";
+import VerificationFailure from "./components/VerificationFailure";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +50,7 @@ const App = () => (
           <Route path="/user-guide" element={<UserGuide />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/verification-options" element={<VerificationOptions />} />
+          <Route path="/verification-failure" element={<VerificationFailure />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

@@ -5,6 +5,7 @@ import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, BookOpen, ChevronRight } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 
 const UserGuide: React.FC = () => {
   const navigate = useNavigate();
@@ -38,44 +39,51 @@ const UserGuide: React.FC = () => {
         </div>
         
         <div className="flex items-center gap-4 mb-6">
-          <div className="h-14 w-14 rounded-full bg-banking-lightGrey flex items-center justify-center">
-            <BookOpen size={26} className="text-banking-blue" />
+          <div className="h-12 w-12 rounded-full bg-banking-lightGrey flex items-center justify-center">
+            <BookOpen size={22} className="text-banking-blue" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">User Guide</h1>
-            <p className="text-muted-foreground">Everything you need to know</p>
+            <h1 className="text-xl font-bold">User Guide</h1>
+            <p className="text-xs text-muted-foreground">Everything you need to know</p>
           </div>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           {guideTopics.map((topic, index) => (
-            <Card key={index} className="hover:shadow-md transition-shadow">
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg flex items-center justify-between">
-                  <span>{topic.title}</span>
-                  <ChevronRight size={18} className="text-muted-foreground" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 pt-0">
-                <p className="text-muted-foreground">{topic.description}</p>
-              </CardContent>
-            </Card>
+            <motion.div 
+              key={index}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+            >
+              <Card className="hover:shadow-sm transition-shadow">
+                <CardHeader className="p-3">
+                  <CardTitle className="text-base flex items-center justify-between">
+                    <span>{topic.title}</span>
+                    <ChevronRight size={16} className="text-muted-foreground" />
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-3 pt-0">
+                  <p className="text-xs text-muted-foreground">{topic.description}</p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
         
-        <Card className="mt-6">
-          <CardHeader className="p-4">
-            <CardTitle className="text-lg">Need more help?</CardTitle>
+        <Card className="mt-5">
+          <CardHeader className="p-3">
+            <CardTitle className="text-base">Need more help?</CardTitle>
           </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <p className="text-muted-foreground">
+          <CardContent className="p-3 pt-0">
+            <p className="text-xs text-muted-foreground">
               If you can't find what you're looking for in the user guide, our support team is here to help.
             </p>
           </CardContent>
-          <CardFooter className="p-4">
+          <CardFooter className="p-3">
             <Button 
               onClick={() => navigate('/support')}
-              className="w-full"
+              className="w-full text-sm"
+              size="sm"
             >
               Contact Support
             </Button>

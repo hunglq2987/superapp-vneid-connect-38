@@ -1,142 +1,169 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Fingerprint, Scan, CheckCircle, ArrowLeft, Home } from 'lucide-react';
+import { CheckCircle, Fingerprint, Lock, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
 
 const RegistrationComplete: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const userData = location.state || {};
+  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric } = location.state || {};
   
+  // Add state for biometric setup
   const [faceIdEnabled, setFaceIdEnabled] = useState(false);
   const [touchIdEnabled, setTouchIdEnabled] = useState(false);
+  const [setupComplete, setSetupComplete] = useState(false);
   
+  // Handle biometric setup
   const handleEnableFaceId = () => {
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 1500)),
-      {
-        loading: 'Setting up Face ID...',
-        success: () => {
-          setFaceIdEnabled(true);
-          return 'Face ID has been successfully set up!';
-        },
-        error: 'Failed to set up Face ID. Please try again.',
-      }
-    );
+    setFaceIdEnabled(true);
+    toast.success("Face ID successfully enabled!");
   };
   
   const handleEnableTouchId = () => {
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 1500)),
-      {
-        loading: 'Setting up Touch ID...',
-        success: () => {
-          setTouchIdEnabled(true);
-          return 'Touch ID has been successfully set up!';
-        },
-        error: 'Failed to set up Touch ID. Please try again.',
-      }
-    );
+    setTouchIdEnabled(true);
+    toast.success("Touch ID successfully enabled!");
   };
   
-  const handleBackToHome = () => {
-    navigate('/', { 
-      state: { 
-        registrationComplete: true 
-      } 
-    });
+  // Complete setup and navigate to home
+  const handleCompleteSetup = () => {
+    setSetupComplete(true);
+    toast.success("Setup complete!");
+    
+    // Navigate to home with success message
+    setTimeout(() => {
+      navigate('/', { state: { registrationComplete: true } });
+    }, 1000);
   };
   
-  const handleBack = () => {
-    navigate(-1);
+  // Skip setup and navigate to home
+  const handleSkipSetup = () => {
+    toast.info("You can enable biometric authentication later in profile settings");
+    
+    // Navigate to home with success message
+    navigate('/', { state: { registrationComplete: true } });
   };
 
   return (
     <Layout>
-      <div className="py-6 px-4">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={handleBack}
-          className="mb-6 flex items-center gap-2"
-        >
-          <ArrowLeft size={16} />
-          Back
-        </Button>
-      
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-8"
-        >
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-banking-green/10 mb-4">
-            <CheckCircle size={32} className="text-banking-green" />
-          </div>
-          <h1 className="text-2xl font-bold">Registration Complete!</h1>
-          <p className="text-muted-foreground mt-2">
-            Your account has been successfully registered.
-          </p>
-        </motion.div>
+      <div className="py-6 px-4 flex flex-col min-h-[80vh]">
+        <h1 className="text-2xl font-bold text-center mb-2">Registration Complete</h1>
         
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <h2 className="text-lg font-semibold mb-4">Set Up Biometric Authentication</h2>
-            
-            <div className="space-y-6">
-              <div className="border rounded-lg p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-full bg-banking-blue/10 flex items-center justify-center mr-4">
-                    <Scan size={20} className="text-banking-blue" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Face ID</h3>
-                    <p className="text-xs text-muted-foreground">Log in quickly and securely with facial recognition</p>
-                  </div>
-                </div>
-                <Button 
-                  variant={faceIdEnabled ? "outline" : "default"}
-                  onClick={handleEnableFaceId}
-                  disabled={faceIdEnabled}
-                >
-                  {faceIdEnabled ? 'Enabled' : 'Enable'}
-                </Button>
-              </div>
-              
-              <div className="border rounded-lg p-4 flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-full bg-banking-blue/10 flex items-center justify-center mr-4">
-                    <Fingerprint size={20} className="text-banking-blue" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Touch ID</h3>
-                    <p className="text-xs text-muted-foreground">Log in quickly and securely with fingerprint</p>
-                  </div>
-                </div>
-                <Button 
-                  variant={touchIdEnabled ? "outline" : "default"}
-                  onClick={handleEnableTouchId}
-                  disabled={touchIdEnabled}
-                >
-                  {touchIdEnabled ? 'Enabled' : 'Enable'}
-                </Button>
-              </div>
+        <div className="flex-1 flex flex-col">
+          <div className="my-6 text-center">
+            <div className="inline-flex h-20 w-20 rounded-full bg-green-100 items-center justify-center mb-4">
+              <motion.div
+                animate={{
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{
+                  duration: 1.2,
+                  repeat: Infinity,
+                  repeatType: 'reverse',
+                }}
+              >
+                <CheckCircle size={48} className="text-green-500" />
+              </motion.div>
             </div>
-          </CardContent>
-        </Card>
-        
-        <Button 
-          className="w-full flex items-center justify-center gap-2"
-          onClick={handleBackToHome}
-        >
-          <Home size={18} />
-          Return to Home
-        </Button>
+            <h2 className="text-xl font-semibold">Success!</h2>
+            <p className="text-muted-foreground text-sm mt-1 max-w-xs mx-auto">
+              Your account has been successfully registered with SuperApp
+            </p>
+          </div>
+          
+          <Card className="mb-6">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Set Up Biometric Authentication</CardTitle>
+              <CardDescription className="text-xs">
+                Enable biometric authentication for faster and more secure login
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <Card className={`border ${faceIdEnabled ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+                  <CardContent className="p-4 flex flex-col items-center">
+                    <div className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center mb-3">
+                      <Fingerprint className="h-5 w-5 text-banking-blue" />
+                    </div>
+                    <h3 className="text-sm font-medium mb-1">Face ID</h3>
+                    {faceIdEnabled ? (
+                      <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200">
+                        <Check size={12} className="mr-1" />
+                        Enabled
+                      </Badge>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-xs mt-2"
+                        onClick={handleEnableFaceId}
+                      >
+                        Enable
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+                
+                <Card className={`border ${touchIdEnabled ? 'border-green-500 bg-green-50' : 'border-gray-200'}`}>
+                  <CardContent className="p-4 flex flex-col items-center">
+                    <div className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center mb-3">
+                      <Lock className="h-5 w-5 text-banking-blue" />
+                    </div>
+                    <h3 className="text-sm font-medium mb-1">Touch ID</h3>
+                    {touchIdEnabled ? (
+                      <Badge variant="outline" className="bg-green-100 text-green-700 border-green-200">
+                        <Check size={12} className="mr-1" />
+                        Enabled
+                      </Badge>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="text-xs mt-2"
+                        onClick={handleEnableTouchId}
+                      >
+                        Enable
+                      </Button>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <div className="mt-auto space-y-3">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button 
+                onClick={handleCompleteSetup} 
+                className="w-full"
+                disabled={setupComplete}
+              >
+                Complete Setup
+              </Button>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button 
+                onClick={handleSkipSetup} 
+                variant="outline"
+                className="w-full"
+                disabled={setupComplete}
+              >
+                Skip for Now
+              </Button>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </Layout>
   );

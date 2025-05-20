@@ -15,9 +15,14 @@ const HomeScreen: React.FC = () => {
     navigate('/registration');
   };
 
-  const handleLoginClick = () => {
-    // Go directly to biometric authentication for login
-    navigate('/biometric-auth', { state: { isLogin: true }});
+  const handleLoginClick = (method: 'face' | 'touch') => {
+    // Go directly to biometric authentication for login with the specific method
+    navigate('/biometric-auth', { 
+      state: { 
+        isLogin: true,
+        authMethod: method 
+      }
+    });
   };
   
   const handleSupportClick = () => {
@@ -42,25 +47,36 @@ const HomeScreen: React.FC = () => {
     }
   };
   
+  const iconButtonVariants = {
+    hover: { 
+      scale: 1.08,
+      backgroundColor: "rgba(59, 130, 246, 0.1)"
+    },
+    tap: { 
+      scale: 0.95,
+      backgroundColor: "rgba(59, 130, 246, 0.2)" 
+    }
+  };
+  
   return (
     <Layout>
       <motion.div 
-        className="flex flex-col items-center justify-center min-h-[80vh] space-y-10 py-8"
+        className="flex flex-col items-center justify-center min-h-[80vh] space-y-8 py-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <motion.div 
-          className="text-center space-y-4"
+          className="text-center space-y-3"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
         >
-          <div className="relative">
-            <Logo size="lg" animated={true} />
+          <div className="relative flex justify-center">
+            <Logo size="md" animated={true} />
           </div>
           <motion.h1 
-            className="text-3xl font-bold mt-6 bg-gradient-to-r from-banking-blue to-banking-darkBlue bg-clip-text text-transparent"
+            className="text-2xl font-bold bg-gradient-to-r from-banking-blue to-banking-darkBlue bg-clip-text text-transparent"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 0.5 }}
@@ -68,7 +84,7 @@ const HomeScreen: React.FC = () => {
             SuperApp
           </motion.h1>
           <motion.p 
-            className="text-muted-foreground"
+            className="text-muted-foreground text-sm"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
@@ -77,54 +93,65 @@ const HomeScreen: React.FC = () => {
           </motion.p>
         </motion.div>
 
-        <div className="space-y-4 w-full max-w-xs">
+        <div className="space-y-4 w-full max-w-xs px-4">
           <motion.div
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
           >
             <Button 
-              className="w-full shadow-lg bg-gradient-to-r from-banking-blue to-banking-darkBlue p-6"
+              className="w-full shadow-lg bg-gradient-to-r from-banking-blue to-banking-darkBlue p-5"
               size="lg" 
               onClick={handleRegistration}
             >
-              <div className="flex items-center justify-between w-full">
+              <motion.div 
+                className="flex items-center justify-between w-full"
+                whileHover={{ x: 3 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
                 <div className="flex items-center gap-2">
                   <User className="h-5 w-5" />
                   Register Now
                 </div>
-                <ArrowRight className="h-4 w-4 animate-pulse-soft" />
-              </div>
+                <ArrowRight className="h-4 w-4" />
+              </motion.div>
             </Button>
           </motion.div>
         </div>
 
         {/* Sign in section */}
         <motion.div 
-          className="w-full max-w-xs"
+          className="w-full max-w-xs px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <div className="text-center mb-4">
-            <p className="text-sm text-muted-foreground">Already have an account?</p>
+          <div className="text-center mb-3">
+            <p className="text-sm text-muted-foreground font-medium">Already have an account?</p>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <motion.div
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2"
-                onClick={handleLoginClick}
+                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2 shadow-sm"
+                onClick={() => handleLoginClick('face')}
               >
-                <div className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center">
+                <motion.div 
+                  className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  variants={iconButtonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                >
                   <Fingerprint className="h-5 w-5 text-banking-blue" />
-                </div>
-                <span className="text-xs">Face ID</span>
+                </motion.div>
+                <span className="text-xs font-medium">Face ID</span>
               </Button>
             </motion.div>
             
@@ -132,23 +159,29 @@ const HomeScreen: React.FC = () => {
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2"
-                onClick={handleLoginClick}
+                className="w-full flex flex-col h-auto py-4 items-center justify-center gap-2 shadow-sm"
+                onClick={() => handleLoginClick('touch')}
               >
-                <div className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center">
+                <motion.div 
+                  className="h-10 w-10 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  variants={iconButtonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                >
                   <Lock className="h-5 w-5 text-banking-blue" />
-                </div>
-                <span className="text-xs">Touch ID</span>
+                </motion.div>
+                <span className="text-xs font-medium">Touch ID</span>
               </Button>
             </motion.div>
           </div>
         </motion.div>
 
         <motion.div 
-          className="flex justify-center gap-8"
+          className="flex justify-center gap-8 mt-2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
@@ -156,33 +189,45 @@ const HomeScreen: React.FC = () => {
           <motion.button
             className="flex flex-col items-center text-muted-foreground text-xs"
             whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleUserGuideClick}
           >
-            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+            <motion.div 
+              className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+              whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+            >
               <BookOpen className="h-5 w-5" />
-            </div>
+            </motion.div>
             Guide
           </motion.button>
           
           <motion.button
             className="flex flex-col items-center text-muted-foreground text-xs"
             whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleSupportClick}
           >
-            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+            <motion.div 
+              className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+              whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+            >
               <HelpCircle className="h-5 w-5" />
-            </div>
+            </motion.div>
             Support
           </motion.button>
           
           <motion.button
             className="flex flex-col items-center text-muted-foreground text-xs"
             whileHover={{ scale: 1.1, color: "#3B82F6" }}
+            whileTap={{ scale: 0.95 }}
             onClick={handleFaqClick}
           >
-            <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all hover:bg-banking-blue/10">
+            <motion.div 
+              className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+              whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+            >
               <Info className="h-5 w-5" />
-            </div>
+            </motion.div>
             FAQ
           </motion.button>
         </motion.div>

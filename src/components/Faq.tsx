@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Info, ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardFooter, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { motion } from 'framer-motion';
 
 interface FaqItem {
   question: string;
@@ -89,35 +90,35 @@ const Faq: React.FC = () => {
           </Button>
         </div>
         
-        <div className="flex items-center gap-4 mb-6">
-          <div className="h-14 w-14 rounded-full bg-banking-lightGrey flex items-center justify-center">
-            <Info size={26} className="text-banking-blue" />
+        <div className="flex items-center gap-3 mb-5">
+          <div className="h-12 w-12 rounded-full bg-banking-lightGrey flex items-center justify-center">
+            <Info size={22} className="text-banking-blue" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Frequently Asked Questions</h1>
-            <p className="text-muted-foreground">Find answers to common questions</p>
+            <h1 className="text-xl font-bold">Frequently Asked Questions</h1>
+            <p className="text-xs text-muted-foreground">Find answers to common questions</p>
           </div>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-3.5 w-3.5" />
             <Input
               placeholder="Search FAQs..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
+              className="pl-8 text-xs py-1 h-8"
             />
           </div>
           
-          <div className="flex gap-2 overflow-x-auto pb-2">
+          <div className="flex gap-1.5 overflow-x-auto pb-2 scrollbar-none">
             {categories.map((category) => (
               <Button
                 key={category}
                 variant={activeCategory === category ? "default" : "outline"}
                 size="sm"
                 onClick={() => setActiveCategory(category)}
-                className="whitespace-nowrap"
+                className="whitespace-nowrap text-xs py-0 h-7 px-3"
               >
                 {category}
               </Button>
@@ -128,23 +129,23 @@ const Faq: React.FC = () => {
             filteredFaqs.map((faq, index) => (
               <Card key={index} className="overflow-hidden">
                 <CardHeader 
-                  className="p-4 cursor-pointer"
+                  className="p-3 cursor-pointer"
                   onClick={() => toggleQuestion(index)}
                 >
-                  <CardTitle className="text-lg flex items-center justify-between">
+                  <CardTitle className="text-sm flex items-center justify-between">
                     <span>{faq.question}</span>
                     {expandedQuestions.has(index) ? (
-                      <ChevronUp size={18} className="text-muted-foreground" />
+                      <ChevronUp size={16} className="text-muted-foreground" />
                     ) : (
-                      <ChevronDown size={18} className="text-muted-foreground" />
+                      <ChevronDown size={16} className="text-muted-foreground" />
                     )}
                   </CardTitle>
                 </CardHeader>
                 {expandedQuestions.has(index) && (
-                  <CardContent className="p-4 pt-0 bg-muted/20">
-                    <p>{faq.answer}</p>
+                  <CardContent className="p-3 pt-0 bg-muted/20">
+                    <p className="text-xs">{faq.answer}</p>
                     <div className="mt-2">
-                      <span className="inline-block px-2 py-1 bg-muted text-xs rounded-full">
+                      <span className="inline-block px-2 py-0.5 bg-muted text-[10px] rounded-full">
                         {faq.category}
                       </span>
                     </div>
@@ -153,25 +154,26 @@ const Faq: React.FC = () => {
               </Card>
             ))
           ) : (
-            <Card className="p-6 text-center">
-              <p className="text-muted-foreground">No matching FAQs found. Try adjusting your search.</p>
+            <Card className="p-4 text-center">
+              <p className="text-xs text-muted-foreground">No matching FAQs found. Try adjusting your search.</p>
             </Card>
           )}
         </div>
         
-        <Card className="mt-6">
-          <CardHeader className="p-4">
-            <CardTitle className="text-lg">Still have questions?</CardTitle>
+        <Card className="mt-5">
+          <CardHeader className="p-3">
+            <CardTitle className="text-base">Still have questions?</CardTitle>
           </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <p className="text-muted-foreground">
+          <CardContent className="p-3 pt-0">
+            <p className="text-xs text-muted-foreground">
               If you couldn't find the answer you were looking for, our support team is ready to help.
             </p>
           </CardContent>
-          <CardFooter className="p-4">
+          <CardFooter className="p-3">
             <Button 
               onClick={() => navigate('/support')}
-              className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue"
+              className="w-full bg-gradient-to-r from-banking-blue to-banking-darkBlue text-sm"
+              size="sm"
             >
               Contact Support
             </Button>

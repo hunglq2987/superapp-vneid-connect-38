@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
@@ -29,83 +28,56 @@ const DetailedRegistration: React.FC = () => {
   const location = useLocation();
   const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId } = location.state || {};
   
-  // Pre-fill data based on VNeID results
-  const getInitialUserData = () => {
-    // Case 1: New to bank, new national ID (0123456789)
-    if (phoneNumber === '0123456789' && nationalId === '444444444444') {
+  // Get user data based on phoneNumber
+  const getUserData = () => {
+    // Case 2: Existing customer with existing National ID
+    if (phoneNumber === '0223456789' || nationalId === '555555555555') {
       return {
-        nationalId: nationalId || '',
-        fullName: 'New User',  // Pre-filled from VNeID
-        dateOfBirth: '01/01/1995', // Pre-filled from VNeID
-        phone: phoneNumber || '',
-        email: '',
-        currentAddress: '',
-        permanentAddress: '',
-        accounts: []
-      };
-    }
-    // Case 2: New to bank, existing national ID (0223456789)
-    else if (phoneNumber === '0223456789' && nationalId === '555555555555') {
-      return {
-        nationalId: nationalId || '',
-        fullName: 'Nguyen Van A',
-        dateOfBirth: '01/01/1990',
-        phone: phoneNumber || '',
-        email: '',
-        currentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
-        permanentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
-        accounts: []
-      };
-    }
-    // Case 4: Existing user with biometric success (0423456789)
-    else if (phoneNumber === '0423456789' && nationalId === '777777777777') {
-      return {
-        nationalId: nationalId || '',
-        fullName: 'Nguyen Van A',
-        dateOfBirth: '01/01/1990',
-        phone: phoneNumber || '',
-        email: '',
-        currentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
-        permanentAddress: '123 Le Loi Street, Ward 1, District 1, Ho Chi Minh City',
+        nationalId: nationalId || '555555555555',
+        name: "Nguyen Van B",
+        dateOfBirth: "01/01/1992",
+        email: "",
+        livingAddress: "123 Nguyen Hue, District 1, HCMC",
+        permanentAddress: "123 Nguyen Hue, District 1, HCMC",
         accounts: [
-          { type: 'payment', name: 'Checking Account', balance: '10,000,000 VND' },
-          { type: 'deposit', name: 'Savings Account', balance: '50,000,000 VND' },
-          { type: 'credit', name: 'Credit Card', limit: '20,000,000 VND', balance: '5,000,000 VND' }
+          { type: "Payment", name: "Checking Account", balance: "10,000,000 VND", limit: "N/A" },
+          { type: "Deposit", name: "Savings Account", balance: "50,000,000 VND", limit: "N/A" },
+          { type: "Credit", name: "Credit Card", balance: "5,000,000 VND", limit: "30,000,000 VND" }
         ]
       };
     }
-    // Case 5: Existing user with no biometric data (0523456789)
-    else if (phoneNumber === '0523456789' && nationalId === '666666666666') {
+    
+    // Case 4, 5: Existing customer with biometric or without biometric
+    if (phoneNumber === '0423456789' || phoneNumber === '0523456789' || 
+        nationalId === '666666666666') {
       return {
-        nationalId: nationalId || '',
-        fullName: 'Nguyen Van B',
-        dateOfBirth: '01/01/1992',
-        phone: phoneNumber || '',
-        email: '',
-        currentAddress: '456 Nguyen Hue Street, Ward 2, District 3, Ho Chi Minh City',
-        permanentAddress: '456 Nguyen Hue Street, Ward 2, District 3, Ho Chi Minh City',
+        nationalId: nationalId || (phoneNumber === '0523456789' ? '666666666666' : '444444444444'),
+        name: phoneNumber === '0423456789' ? "Nguyen Van D" : "Nguyen Van E",
+        dateOfBirth: "01/01/1990",
+        email: "",
+        livingAddress: "456 Le Loi, District 1, HCMC",
+        permanentAddress: "456 Le Loi, District 1, HCMC",
         accounts: [
-          { type: 'payment', name: 'Checking Account', balance: '8,000,000 VND' },
-          { type: 'deposit', name: 'Savings Account', balance: '30,000,000 VND' }
+          { type: "Payment", name: "Checking Account", balance: "15,000,000 VND", limit: "N/A" },
+          { type: "Deposit", name: "Savings Account", balance: "75,000,000 VND", limit: "N/A" },
+          { type: "Credit", name: "Platinum Card", balance: "2,500,000 VND", limit: "50,000,000 VND" }
         ]
       };
     }
-    // Default case
-    else {
-      return {
-        nationalId: nationalId || '',
-        fullName: '',
-        dateOfBirth: '',
-        phone: phoneNumber || '',
-        email: '',
-        currentAddress: '',
-        permanentAddress: '',
-        accounts: []
-      };
-    }
+    
+    // Case 1: New customer with new National ID
+    return {
+      nationalId: nationalId || '444444444444',
+      name: "Nguyen Van A",
+      dateOfBirth: "01/01/1995",
+      email: "",
+      livingAddress: "",
+      permanentAddress: "",
+      accounts: []
+    };
   };
 
-  const [userData, setUserData] = useState<UserData>(getInitialUserData());
+  const [userData, setUserData] = useState<UserData>(getUserData());
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const handleChange = (field: keyof UserData, value: string) => {

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,6 +6,7 @@ import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stepper, StepperItem, StepperContent } from './ui/stepper';
+import { toast } from 'react-toastify';
 
 const NfcVerification: React.FC = () => {
   const navigate = useNavigate();
@@ -562,6 +562,25 @@ const NfcVerification: React.FC = () => {
       default:
         return null;
     }
+  };
+  
+  const processScanResult = () => {
+    // Show success message
+    toast.success("NFC Verification completed successfully!");
+    
+    // Navigate directly to OTP verification after NFC scan
+    setTimeout(() => {
+      navigate('/otp-verification', { 
+        state: { 
+          phoneNumber, 
+          nationalId,
+          isExistingCustomer,
+          isNewNationalId,
+          hasBiometric,
+          fromNfc: true
+        } 
+      });
+    }, 1500);
   };
   
   return (

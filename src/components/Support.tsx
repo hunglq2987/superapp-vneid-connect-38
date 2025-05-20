@@ -1,14 +1,13 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users, GitBranch, Phone, MessageSquare, Laptop, BarChart2, Share2 } from 'lucide-react';
+import { ArrowLeft, Users, GitBranch, Phone, MessageSquare, Laptop, BarChart2, Share2, HelpCircle } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from 'sonner';
 
-const Support = () => {
+const Support: React.FC = () => {
   const navigate = useNavigate();
   const [activeSupportTab, setActiveSupportTab] = useState('connect');
   const [isCoBrowsingActive, setIsCoBrowsingActive] = useState(false);
@@ -27,26 +26,34 @@ const Support = () => {
     setIsCoBrowsingActive(false);
   };
   
-  const handleGoBack = () => {
-    navigate(-1);
+  const handleBackToHome = () => {
+    navigate('/');
   };
 
   return (
     <Layout>
-      <div className="py-6">
-        <div className="flex items-center mb-6">
+      <div className="py-4">
+        <div className="flex items-center justify-between mb-4">
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={handleGoBack}
+            onClick={handleBackToHome}
             className="gap-1"
           >
             <ArrowLeft size={16} />
-            Back
+            Back to home
           </Button>
         </div>
-
-        <h1 className="text-2xl font-bold mb-6 text-center">Customer Support</h1>
+        
+        <div className="flex items-center gap-3 mb-5">
+          <div className="h-12 w-12 rounded-full bg-banking-lightGrey flex items-center justify-center">
+            <HelpCircle size={22} className="text-banking-blue" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold">Support</h1>
+            <p className="text-xs text-muted-foreground">How can we help you?</p>
+          </div>
+        </div>
 
         {isCoBrowsingActive && (
           <div className="bg-banking-yellow/20 border border-banking-yellow rounded-lg p-3 mb-6 animate-pulse-soft">
