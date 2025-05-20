@@ -61,13 +61,13 @@ const HomeScreen: React.FC = () => {
   return (
     <Layout>
       <motion.div 
-        className="flex flex-col items-center justify-center min-h-[80vh] space-y-8 py-6"
+        className="flex flex-col items-center justify-center min-h-[80vh] space-y-7 py-6"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <motion.div 
-          className="text-center space-y-2"
+          className="text-center space-y-1.5"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -120,14 +120,14 @@ const HomeScreen: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Sign in section */}
+        {/* Sign in section - reduced visual weight */}
         <motion.div 
           className="w-full max-w-xs px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <div className="text-center mb-2">
+          <div className="text-center mb-1.5">
             <p className="text-sm text-muted-foreground font-medium">Already have an account?</p>
           </div>
           
@@ -140,16 +140,16 @@ const HomeScreen: React.FC = () => {
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-3 items-center justify-center gap-1 shadow-sm"
+                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm"
                 onClick={() => handleLoginClick('face')}
               >
                 <motion.div 
-                  className="h-8 w-8 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  className="h-7 w-7 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
                   variants={iconButtonVariants}
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  <Fingerprint className="h-4 w-4 text-banking-blue" />
+                  <Fingerprint className="h-3.5 w-3.5 text-banking-blue" />
                 </motion.div>
                 <span className="text-xs font-medium">Face ID</span>
               </Button>
@@ -163,16 +163,16 @@ const HomeScreen: React.FC = () => {
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-3 items-center justify-center gap-1 shadow-sm"
+                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm"
                 onClick={() => handleLoginClick('touch')}
               >
                 <motion.div 
-                  className="h-8 w-8 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  className="h-7 w-7 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
                   variants={iconButtonVariants}
                   whileHover="hover"
                   whileTap="tap"
                 >
-                  <Lock className="h-4 w-4 text-banking-blue" />
+                  <Lock className="h-3.5 w-3.5 text-banking-blue" />
                 </motion.div>
                 <span className="text-xs font-medium">Touch ID</span>
               </Button>

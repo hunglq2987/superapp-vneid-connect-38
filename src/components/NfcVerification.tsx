@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -42,11 +43,11 @@ const NfcVerification: React.FC = () => {
       // Complete verification and navigate to OTP verification screen
       navigate('/otp-verification', { 
         state: { 
-          phoneNumber: phoneNumber || '', 
-          nationalId: nationalId || '',
-          isExistingCustomer: isExistingCustomer || false,
-          isNewNationalId: isNewNationalId || false,
-          hasBiometric: hasBiometric || false,
+          phoneNumber, 
+          nationalId,
+          isExistingCustomer,
+          isNewNationalId,
+          hasBiometric,
           fromNfc: true
         } 
       });
@@ -579,7 +580,7 @@ const NfcVerification: React.FC = () => {
     // Show success message
     toast.success("NFC Verification completed successfully!");
     
-    // Navigate directly to OTP verification after NFC scan
+    // Navigate to OTP verification after NFC scan
     navigate('/otp-verification', { 
       state: { 
         phoneNumber, 
