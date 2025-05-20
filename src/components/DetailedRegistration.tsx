@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
@@ -34,10 +35,11 @@ const DetailedRegistration: React.FC = () => {
     if (phoneNumber === '0223456789' || nationalId === '555555555555') {
       return {
         nationalId: nationalId || '555555555555',
-        name: "Nguyen Van B",
+        fullName: "Nguyen Van B",
         dateOfBirth: "01/01/1992",
+        phone: phoneNumber || '0223456789',
         email: "",
-        livingAddress: "123 Nguyen Hue, District 1, HCMC",
+        currentAddress: "123 Nguyen Hue, District 1, HCMC",
         permanentAddress: "123 Nguyen Hue, District 1, HCMC",
         accounts: [
           { type: "Payment", name: "Checking Account", balance: "10,000,000 VND", limit: "N/A" },
@@ -52,10 +54,11 @@ const DetailedRegistration: React.FC = () => {
         nationalId === '666666666666') {
       return {
         nationalId: nationalId || (phoneNumber === '0523456789' ? '666666666666' : '444444444444'),
-        name: phoneNumber === '0423456789' ? "Nguyen Van D" : "Nguyen Van E",
+        fullName: phoneNumber === '0423456789' ? "Nguyen Van D" : "Nguyen Van E",
         dateOfBirth: "01/01/1990",
+        phone: phoneNumber || (phoneNumber === '0423456789' ? '0423456789' : '0523456789'),
         email: "",
-        livingAddress: "456 Le Loi, District 1, HCMC",
+        currentAddress: "456 Le Loi, District 1, HCMC",
         permanentAddress: "456 Le Loi, District 1, HCMC",
         accounts: [
           { type: "Payment", name: "Checking Account", balance: "15,000,000 VND", limit: "N/A" },
@@ -68,10 +71,11 @@ const DetailedRegistration: React.FC = () => {
     // Case 1: New customer with new National ID
     return {
       nationalId: nationalId || '444444444444',
-      name: "Nguyen Van A",
+      fullName: "Nguyen Van A",
       dateOfBirth: "01/01/1995",
+      phone: phoneNumber || '0123456789',
       email: "",
-      livingAddress: "",
+      currentAddress: "",
       permanentAddress: "",
       accounts: []
     };

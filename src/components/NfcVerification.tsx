@@ -1,15 +1,18 @@
+
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Smartphone, CreditCard, Fingerprint, Camera, Check, X, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Smartphone, CreditCard, Fingerprint, Camera, Check, X, ArrowLeft } from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Stepper, StepperItem, StepperContent } from './ui/stepper';
-import { toast } from 'react-toastify';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Stepper, StepperItem } from './ui/stepper';
+import { toast } from 'sonner';
 
 const NfcVerification: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric } = location.state || {};
   const [currentStep, setCurrentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [captureMode, setCaptureMode] = useState<'front' | 'nfc' | 'selfie' | null>(null);
@@ -572,11 +575,11 @@ const NfcVerification: React.FC = () => {
     setTimeout(() => {
       navigate('/otp-verification', { 
         state: { 
-          phoneNumber, 
-          nationalId,
-          isExistingCustomer,
-          isNewNationalId,
-          hasBiometric,
+          phoneNumber: phoneNumber || '', 
+          nationalId: nationalId || '',
+          isExistingCustomer: isExistingCustomer || false,
+          isNewNationalId: isNewNationalId || false,
+          hasBiometric: hasBiometric || false,
           fromNfc: true
         } 
       });
