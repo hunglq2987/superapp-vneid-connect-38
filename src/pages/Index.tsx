@@ -19,6 +19,13 @@ const Index: React.FC = () => {
         description: "Your identity has been verified using your ID card."
       });
     }
+    
+    // Show biometric auth success message if redirected with biometricSuccess state
+    if (location.state?.biometricSuccess) {
+      toast.success(`${location.state.biometricMethod || 'Biometric'} authentication successful!`, {
+        description: "You have been securely authenticated."
+      });
+    }
   }, [location.state]);
 
   return <HomeScreen />;

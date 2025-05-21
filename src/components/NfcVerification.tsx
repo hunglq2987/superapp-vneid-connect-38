@@ -36,7 +36,7 @@ import {
 import { Progress } from './ui/progress';
 import { Separator } from './ui/separator';
 
-// Define steps for the NFC verification process - updated to exactly 6 steps
+// Define steps for the NFC verification process - 6 steps
 enum VerificationStep {
   INITIATE = 0,         // Step 1: Initiate verification
   CAPTURE_ID = 1,       // Step 2: Capture front of ID
@@ -87,27 +87,27 @@ const NfcVerification: React.FC = () => {
     setError(null);
   };
 
-  // Step 1: Initiate verification
+  // Step 1: Initiate verification - faster loading time (800ms)
   const startVerificationProcess = () => {
     setIsScanning(true);
     setCurrentStep(VerificationStep.INITIATE);
     setStatusMessage('Preparing for ID verification...');
     setScanProgress(10);
     
-    // Move to ID capture step after a delay
+    // Move to ID capture step after a shorter delay
     setTimeout(() => {
       setCurrentStep(VerificationStep.CAPTURE_ID);
       setStatusMessage('Please capture the front of your ID card');
       setScanProgress(20);
-    }, 1500);
+    }, 800); // Reduced from 1500ms to 800ms
   };
 
-  // Step 2: Capture front of ID
+  // Step 2: Capture front of ID - faster loading time (1200ms)
   const simulateIdCapture = () => {
     setStatusMessage('Processing ID image...');
     setScanProgress(30);
     
-    // Simulate ID capture processing
+    // Simulate ID capture processing faster
     setTimeout(() => {
       setIdImage('/placeholder.svg'); // Placeholder for captured ID
       
@@ -122,63 +122,63 @@ const NfcVerification: React.FC = () => {
       setCurrentStep(VerificationStep.NFC_SCAN);
       setStatusMessage('Now place your ID card near the back of your phone');
       setScanProgress(40);
-    }, 2000);
+    }, 1200); // Reduced from 2000ms to 1200ms
   };
   
-  // Step 3: NFC communication
+  // Step 3: NFC communication - faster loading times
   const simulateNfcScan = () => {
     setStatusMessage('Scanning NFC chip. Please hold your phone near your ID card...');
     setScanProgress(50);
     
-    // Simulate detecting NFC chip
+    // Simulate detecting NFC chip faster
     setTimeout(() => {
       setStatusMessage('ID card detected. Reading data from chip...');
       
-      // Simulate reading data
+      // Simulate reading data faster
       setTimeout(() => {
         setStatusMessage('Retrieving biometric data and personal information...');
         setScanProgress(60);
         setCurrentStep(VerificationStep.DATA_VERIFICATION);
         
-        // Move to data verification
+        // Move to data verification faster
         setTimeout(() => {
           setStatusMessage('Cross-checking chip information with declared data...');
           setScanProgress(70);
           
-          // Move to biometric comparison stage
+          // Move to biometric comparison stage faster
           setTimeout(() => {
             setCurrentStep(VerificationStep.BIOMETRIC_COMPARISON);
             setStatusMessage('Please take a selfie for biometric verification');
-          }, 2000);
-        }, 2000);
-      }, 2000);
-    }, 2000);
+          }, 1000); // Reduced from 2000ms to 1000ms
+        }, 1000); // Reduced from 2000ms to 1000ms
+      }, 1000); // Reduced from 2000ms to 1000ms
+    }, 1000); // Reduced from 2000ms to 1000ms
   };
 
-  // Step 5: Biometric comparison
+  // Step 5: Biometric comparison - faster loading time
   const simulateSelfieCapture = () => {
     setStatusMessage('Processing selfie for facial comparison...');
     setScanProgress(80);
     
-    // Simulate selfie processing
+    // Simulate selfie processing faster
     setTimeout(() => {
       setSelfieImage('/placeholder.svg'); // Placeholder for captured selfie
       setStatusMessage('Comparing your face with the ID photo using AI...');
       setScanProgress(90);
       
-      // Simulate biometric comparison
+      // Simulate biometric comparison faster
       setTimeout(() => {
         setStatusMessage('Biometric verification successful!');
         setCurrentStep(VerificationStep.COMPLETE);
         setScanProgress(100);
         setCardReadSuccess(true);
         
-        // Move to completion after a delay
+        // Move to completion after a shorter delay
         setTimeout(() => {
           handleVerificationSuccess();
-        }, 2000);
-      }, 2000);
-    }, 2000);
+        }, 1200); // Reduced from 2000ms to 1200ms
+      }, 1200); // Reduced from 2000ms to 1200ms
+    }, 1200); // Reduced from 2000ms to 1200ms
   };
 
   // Step 6: Complete verification
@@ -487,21 +487,33 @@ const NfcVerification: React.FC = () => {
             </div>
             <CardDescription>Verify your identity using your ID card's NFC chip</CardDescription>
             
-            {/* Step indicators */}
+            {/* Step indicators - with smoother transition */}
             <div className="mt-3">
               <div className="flex items-center justify-center gap-1">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div
+                  <motion.div
                     key={i}
-                    className={`h-1.5 ${i === currentStep ? 'w-6 bg-blue-500' : 'w-3 bg-muted'} rounded-full transition-all duration-300`}
+                    className={`h-1.5 rounded-full transition-all duration-500 ease-in-out ${i === currentStep ? 'bg-blue-500' : 'bg-muted'}`}
+                    initial={{ width: i === currentStep ? 3 : 12 }}
+                    animate={{ 
+                      width: i === currentStep ? 24 : 12,
+                      backgroundColor: i === currentStep ? '#3b82f6' : '#e5e7eb' 
+                    }}
+                    transition={{ duration: 0.4 }}
                   />
                 ))}
               </div>
-              <p className="text-xs text-center mt-2 text-muted-foreground">
+              <motion.p 
+                key={currentStep} // Force animation on step change
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="text-xs text-center mt-2 text-muted-foreground"
+              >
                 Step {currentStep + 1} of 6: {
                   ['Initiate Verification', 'Capture ID Front', 'NFC Communication', 'Data Verification', 'Biometric Comparison', 'Complete Verification'][currentStep]
                 }
-              </p>
+              </motion.p>
             </div>
           </CardHeader>
           
@@ -509,9 +521,9 @@ const NfcVerification: React.FC = () => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
               >
                 {renderStepContent()}

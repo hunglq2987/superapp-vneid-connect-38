@@ -21,7 +21,9 @@ const HomeScreen: React.FC = () => {
   const handleLoginClick = (method: 'face' | 'touch') => {
     setAuthInProgress(method);
     
-    // Simulate authentication process with animation
+    // Simulate authentication process with improved animation
+    const authTime = method === 'face' ? 2500 : 2000; // Face ID takes a bit longer than Touch ID
+    
     setTimeout(() => {
       // Simulate success
       toast.success(`${method === 'face' ? 'Face ID' : 'Touch ID'} authentication successful`);
@@ -33,7 +35,7 @@ const HomeScreen: React.FC = () => {
           nationalId: '111111111111'
         }
       });
-    }, 3000); // 3 seconds for authentication animation
+    }, authTime);
   };
   
   const handleSupportClick = () => {
@@ -80,78 +82,171 @@ const HomeScreen: React.FC = () => {
     }
   };
 
-  // Face ID scanning animation overlay
+  // Enhanced Face ID scanning animation overlay
   const renderFaceIdAnimation = () => {
     return (
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 flex items-center justify-center bg-black/70 z-50"
+        transition={{ duration: 0.4 }}
+        className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 backdrop-blur-sm"
       >
-        <motion.div className="bg-black/80 rounded-3xl h-40 w-40 flex flex-col items-center justify-center">
+        <motion.div 
+          className="bg-black/90 rounded-3xl h-48 w-48 flex flex-col items-center justify-center"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
           <motion.div 
-            className="border-2 border-blue-500 rounded-full h-24 w-24 mb-4 relative"
+            className="border-2 border-blue-500 rounded-full h-28 w-28 mb-4 relative"
             animate={{ 
-              borderColor: ['rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.5)'],
+              borderColor: ['rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.9)', 'rgba(59, 130, 246, 0.5)'],
+              boxShadow: ['0 0 0px rgba(59, 130, 246, 0)', '0 0 20px rgba(59, 130, 246, 0.5)', '0 0 0px rgba(59, 130, 246, 0)'],
             }}
+            transition={{ duration: 1.2, repeat: Infinity }}
+          >
+            {/* Horizontal scanning line */}
+            <motion.div 
+              className="absolute left-0 top-1/2 w-full h-0.5 bg-blue-500"
+              initial={{ scaleX: 0, translateY: "-50%", opacity: 0.6 }}
+              animate={{ 
+                scaleX: [0, 1, 0],
+                translateY: "-50%",
+                opacity: [0.6, 0.9, 0.6] 
+              }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+            />
+            
+            {/* Vertical scanning line */}
+            <motion.div 
+              className="absolute left-1/2 top-0 w-0.5 h-full bg-blue-500"
+              initial={{ scaleY: 0, translateX: "-50%", opacity: 0.6 }}
+              animate={{ 
+                scaleY: [0, 1, 0],
+                translateX: "-50%",
+                opacity: [0.6, 0.9, 0.6]
+              }}
+              transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop", delay: 0.2 }}
+            />
+            
+            {/* Face outline */}
+            <motion.div
+              className="absolute h-14 w-14 border-2 border-dashed border-blue-400 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+              animate={{ 
+                opacity: [0.4, 0.8, 0.4],
+                rotate: 360,
+                scale: [0.9, 1, 0.9]
+              }}
+              transition={{ 
+                opacity: { duration: 2, repeat: Infinity },
+                rotate: { duration: 8, repeat: Infinity, ease: "linear" },
+                scale: { duration: 2, repeat: Infinity }
+              }}
+            />
+            
+            {/* Points detection animation */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div 
+                key={i}
+                className="absolute h-1.5 w-1.5 bg-blue-400 rounded-full"
+                style={{ 
+                  top: `${30 + Math.sin(i / 8 * 2 * Math.PI) * 30}%`,
+                  left: `${30 + Math.cos(i / 8 * 2 * Math.PI) * 30}%`
+                }}
+                animate={{ 
+                  opacity: [0.2, 1, 0.2],
+                  scale: [0.8, 1.2, 0.8]
+                }}
+                transition={{ 
+                  duration: 1.2, 
+                  repeat: Infinity, 
+                  delay: i * 0.15 
+                }}
+              />
+            ))}
+          </motion.div>
+          <motion.p 
+            className="text-blue-400 text-sm font-medium"
+            animate={{ opacity: [0.7, 1, 0.7] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <motion.div 
-              className="absolute left-1/2 top-0 w-0.5 h-full bg-blue-500/50"
-              initial={{ scaleY: 0, translateX: "-50%" }}
-              animate={{ scaleY: 1 }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-            />
-            <motion.div 
-              className="absolute left-0 top-1/2 w-full h-0.5 bg-blue-500/50"
-              initial={{ scaleX: 0, translateY: "-50%" }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-            />
-            <motion.div
-              className="absolute inset-2 rounded-full border border-dashed border-blue-400"
-              animate={{ 
-                rotate: 360,
-              }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            />
-          </motion.div>
-          <p className="text-blue-400 text-sm">Face ID Scanning...</p>
+            Face ID Scanning...
+          </motion.p>
         </motion.div>
       </motion.div>
     );
   };
 
-  // Touch ID animation overlay
+  // Enhanced Touch ID animation overlay
   const renderTouchIdAnimation = () => {
     return (
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 flex items-center justify-center bg-black/70 z-50"
+        transition={{ duration: 0.4 }}
+        className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 backdrop-blur-sm"
       >
-        <motion.div className="bg-black/80 rounded-3xl h-40 w-40 flex flex-col items-center justify-center">
+        <motion.div 
+          className="bg-black/90 rounded-3xl h-48 w-48 flex flex-col items-center justify-center"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.3 }}
+        >
           <motion.div 
-            className="border-2 border-blue-500 rounded-full h-24 w-24 mb-4 flex items-center justify-center"
+            className="border-2 border-blue-500 rounded-full h-28 w-28 mb-4 flex items-center justify-center overflow-hidden"
             animate={{ 
-              borderColor: ['rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.5)'],
-              scale: [1, 1.05, 1],
+              borderColor: ['rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.9)', 'rgba(59, 130, 246, 0.5)'],
+              boxShadow: ['0 0 0px rgba(59, 130, 246, 0)', '0 0 20px rgba(59, 130, 246, 0.5)', '0 0 0px rgba(59, 130, 246, 0)'],
             }}
-            transition={{ duration: 1, repeat: Infinity }}
+            transition={{ duration: 1.2, repeat: Infinity }}
           >
             <motion.div 
-              className="bg-blue-400/30 rounded-full h-20 w-20 flex items-center justify-center"
-              animate={{ 
-                opacity: [0.5, 0.8, 0.5],
-              }}
-              transition={{ duration: 1.5, repeat: Infinity }}
+              className="relative h-24 w-24 flex items-center justify-center"
             >
-              <Fingerprint className="h-12 w-12 text-blue-400" />
+              {/* Fingerprint scan effect */}
+              <motion.div
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(59, 130, 246, 0) 70%)',
+                }}
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 0.8, 0.5],
+                }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              
+              {/* Fingerprint icon with pulsating effect */}
+              <motion.div
+                animate={{ 
+                  scale: [0.95, 1.05, 0.95],
+                }}
+                transition={{ duration: 1.2, repeat: Infinity }}
+              >
+                <Fingerprint className="h-16 w-16 text-blue-400" strokeWidth={1.5} />
+              </motion.div>
+              
+              {/* Scanning line animation */}
+              <motion.div
+                className="absolute w-full h-0.5 bg-blue-500"
+                initial={{ top: '0%', opacity: 0.7 }}
+                animate={{ 
+                  top: ['0%', '100%', '0%'],
+                  opacity: [0.7, 0.9, 0.7],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
             </motion.div>
           </motion.div>
-          <p className="text-blue-400 text-sm">Touch ID Scanning...</p>
+          <motion.p 
+            className="text-blue-400 text-sm font-medium"
+            animate={{ opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            Touch ID Scanning...
+          </motion.p>
         </motion.div>
       </motion.div>
     );
@@ -224,7 +319,7 @@ const HomeScreen: React.FC = () => {
           <Separator className="my-2 bg-gray-200" />
         </div>
 
-        {/* Sign in section - reduced visual weight */}
+        {/* Sign in section - with enhanced hover effects */}
         <motion.div 
           className="w-full max-w-xs px-4"
           initial={{ opacity: 0 }}
@@ -237,9 +332,8 @@ const HomeScreen: React.FC = () => {
           
           <div className="grid grid-cols-2 gap-2">
             <motion.div
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
               className="col-span-1"
             >
@@ -250,21 +344,22 @@ const HomeScreen: React.FC = () => {
                 disabled={authInProgress !== null}
               >
                 <motion.div 
-                  className="h-7 w-7 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
-                  variants={iconButtonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
+                  className="h-9 w-9 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  whileHover={{ 
+                    backgroundColor: "rgba(59, 130, 246, 0.15)",
+                    boxShadow: "0 0 8px rgba(59, 130, 246, 0.3)"
+                  }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <Fingerprint className="h-3.5 w-3.5 text-banking-blue" />
+                  <User className="h-4 w-4 text-banking-blue" />
                 </motion.div>
                 <span className="text-xs font-medium">Face ID</span>
               </Button>
             </motion.div>
             
             <motion.div
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
               className="col-span-1"
             >
@@ -275,12 +370,14 @@ const HomeScreen: React.FC = () => {
                 disabled={authInProgress !== null}
               >
                 <motion.div 
-                  className="h-7 w-7 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
-                  variants={iconButtonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
+                  className="h-9 w-9 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
+                  whileHover={{ 
+                    backgroundColor: "rgba(59, 130, 246, 0.15)",
+                    boxShadow: "0 0 8px rgba(59, 130, 246, 0.3)"
+                  }}
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <Lock className="h-3.5 w-3.5 text-banking-blue" />
+                  <Fingerprint className="h-4 w-4 text-banking-blue" />
                 </motion.div>
                 <span className="text-xs font-medium">Touch ID</span>
               </Button>
@@ -368,7 +465,7 @@ const HomeScreen: React.FC = () => {
         </motion.div>
       </motion.div>
       
-      {/* Authentication animation overlays */}
+      {/* Authentication animation overlays with enhanced animations */}
       <AnimatePresence>
         {authInProgress === 'face' && renderFaceIdAnimation()}
         {authInProgress === 'touch' && renderTouchIdAnimation()}
