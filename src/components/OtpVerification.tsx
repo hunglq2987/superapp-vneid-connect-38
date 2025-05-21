@@ -77,17 +77,43 @@ const OtpVerification: React.FC = () => {
       if (otp === '123456') {
         toast.success("OTP verification successful!");
         
-        // Navigate to detailed registration in both normal flow and after NFC
-        navigate('/detailed-registration', { 
-          state: { 
-            phoneNumber,
-            nationalId, 
-            isExistingCustomer,
-            isNewNationalId,
-            hasValidBiometric: true,
-            fromNfc
-          }
-        });
+        // Navigate based on the case scenarios
+        if (fromNfc) {
+          // If coming from NFC, go straight to detailed registration
+          navigate('/detailed-registration', { 
+            state: { 
+              phoneNumber,
+              nationalId, 
+              isExistingCustomer,
+              isNewNationalId,
+              hasValidBiometric: true,
+              fromNfc: true
+            }
+          });
+        } else if (isExistingCustomer && hasBiometric) {
+          // Case 3 & 4: Existing customer with biometric info
+          navigate('/biometric-auth', {
+            state: {
+              phoneNumber,
+              nationalId,
+              isExistingCustomer,
+              hasBiometric,
+              biometricSuccess
+            }
+          });
+        } else {
+          // Case 1, 2, & 5: Either new customer or existing without biometric
+          // Offer verification options (VNeID or NFC)
+          navigate('/verification-options', {
+            state: {
+              phoneNumber,
+              nationalId,
+              isExistingCustomer,
+              isNewNationalId,
+              hasBiometric
+            }
+          });
+        }
       } else {
         const newAttempts = attempts + 1;
         setAttempts(newAttempts);

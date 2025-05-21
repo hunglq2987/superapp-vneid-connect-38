@@ -1,272 +1,237 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Shield, UserCheck, Fingerprint } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
+import {
+  ArrowLeft,
+  Fingerprint,
+  ShieldCheck,
+  Scan,
+  X as XIcon,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 import Layout from './Layout';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const BiometricAuth: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [scanning, setScanning] = useState(false);
-  const [scanComplete, setScanComplete] = useState(false);
-  const { 
-    phoneNumber, 
-    nationalId, 
-    isExistingCustomer, 
-    hasBiometric, 
-    biometricSuccess, 
-    isLogin,
-    authMethod = 'face',
-    fromVNeID 
-  } = location.state || {};
+  const { phoneNumber, nationalId, isExistingCustomer, hasBiometric, biometricSuccess: biometricPreset } = 
+    location.state || {};
   
-  const isTouchId = authMethod === 'touch';
+  const [isScanning, setIsScanning] = useState<boolean>(false);
+  const [scanProgress, setScanProgress] = useState<number>(0);
+  const [scanCompleted, setScanCompleted] = useState<boolean>(false);
+  const [scanSuccess, setScanSuccess] = useState<boolean | null>(null);
   
   useEffect(() => {
-    // Don't auto-start scanning, wait for user to press button
-  }, []);
+    // Redirect to home if required data is missing
+    if (!phoneNumber) {
+      navigate('/');
+      toast.error('Missing required data. Please restart the registration process.');
+    }
+  }, [phoneNumber, navigate]);
   
-  const handleStartScan = () => {
-    setScanning(true);
+  const startBiometricScan = () => {
+    setIsScanning(true);
+    setScanProgress(0);
+    setScanSuccess(null);
     
-    // Simulate face/touch scanning process (3 seconds)
+    // Simulate the scan progress
+    const interval = setInterval(() => {
+      setScanProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          return 100;
+        }
+        return prev + 5;
+      });
+    }, 100);
+    
+    // Simulate biometric processing time
     setTimeout(() => {
-      setScanComplete(true);
-      setScanning(false);
+      setScanCompleted(true);
+      clearInterval(interval);
+      setScanProgress(100);
       
-      // Process scan result after a short delay
-      setTimeout(() => {
-        processBiometricResult();
-      }, 1000);
+      // Use the biometricSuccess from route state to determine success/failure
+      // This allows the component to be used for both success and failure flows
+      const success = biometricPreset !== undefined ? biometricPreset : Math.random() > 0.3;
+      setScanSuccess(success);
+      
+      if (success) {
+        toast.success("Biometric verification successful");
+        // For successful verification (Case 4), wait briefly then proceed to detailed registration
+        setTimeout(() => {
+          navigate('/detailed-registration', { 
+            state: { 
+              phoneNumber, 
+              nationalId,
+              isExistingCustomer,
+              hasValidBiometric: true
+            } 
+          });
+        }, 1500);
+      } else {
+        toast.error("Biometric verification failed");
+        // For failed verification (Case 3), wait briefly then go to verification failure screen
+        setTimeout(() => {
+          navigate('/verification-failure', {
+            state: {
+              phoneNumber,
+              nationalId
+            }
+          });
+        }, 1500);
+      }
     }, 3000);
   };
-  
-  const processBiometricResult = () => {
-    // For case 3: biometric verification fails
-    if (phoneNumber === '0323456789' || biometricSuccess === false) {
-      toast.error(`${isTouchId ? 'Fingerprint' : 'Facial'} verification failed`, {
-        duration: 4000,
-      });
-      
-      // Navigate to verification failure screen
-      setTimeout(() => {
-        navigate('/verification-failure', {
-          state: { authMethod }
-        });
-      }, 1500);
-      return;
-    }
-    
-    // For login flow
-    if (isLogin) {
-      toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
-      
-      // Navigate to profile management
-      setTimeout(() => {
-        navigate('/profile-management', { 
-          state: { 
-            nationalId: '777777777777', // Default login ID
-            fromLogin: true 
-          } 
-        });
-      }, 1500);
-      return;
-    }
-    
-    // For case 4: biometric verification succeeds
-    if (phoneNumber === '0423456789' || biometricSuccess === true) {
-      toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
-      
-      // Navigate to OTP verification
-      setTimeout(() => {
-        navigate('/otp-verification', {
-          state: {
-            phoneNumber,
-            nationalId,
-            isExistingCustomer,
-            hasBiometric: true,
-            biometricSuccess: true
-          }
-        });
-      }, 1500);
-      return;
-    }
-    
-    // Coming from VNeID flow, go to OTP
-    if (fromVNeID) {
-      toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
-      
-      setTimeout(() => {
-        navigate('/otp-verification', {
-          state: {
-            phoneNumber,
-            nationalId,
-            isExistingCustomer,
-            hasBiometric: true
-          }
-        });
-      }, 1500);
-      return;
-    }
-    
-    // Default case - navigate to OTP
-    toast.success(`${isTouchId ? 'Touch ID' : 'Face ID'} authentication successful!`);
-    
-    setTimeout(() => {
-      navigate('/otp-verification', { 
-        state: { 
-          phoneNumber, 
-          nationalId,
-          isExistingCustomer,
-          hasBiometric: true 
-        } 
-      });
-    }, 1500);
+
+  const cancelScan = () => {
+    setIsScanning(false);
+    setScanProgress(0);
+    setScanCompleted(false);
+    setScanSuccess(null);
   };
   
   const handleBack = () => {
     navigate(-1);
   };
   
-  const circleVariants = {
-    scanning: {
-      scale: [1, 1.05, 1],
-      opacity: [1, 0.8, 1],
-      boxShadow: [
-        "0 0 0 0 rgba(59, 130, 246, 0)",
-        "0 0 0 15px rgba(59, 130, 246, 0.3)",
-        "0 0 0 0 rgba(59, 130, 246, 0)",
-      ],
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        repeatType: "loop" as const
-      }
-    },
-    success: {
-      scale: [1, 1.2, 1],
-      backgroundColor: ["#3b82f6", "#10b981", "#10b981"],
-      transition: { duration: 0.5 }
-    },
-    error: {
-      scale: [1, 1.2, 1],
-      backgroundColor: ["#3b82f6", "#ef4444", "#ef4444"],
-      transition: { duration: 0.5 }
-    }
-  };
-  
-  const getCircleVariant = () => {
-    if (scanning) return "scanning";
-    if (scanComplete) {
-      if (phoneNumber === '0323456789' || biometricSuccess === false) {
-        return "error";
-      }
-      return "success";
-    }
-    return "";
-  };
-
   return (
-    <Layout>
+    <Layout showBackButton={true}>
       <div className="py-6">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={handleBack}
-          disabled={scanning}
-          className="mb-6 flex items-center gap-2"
-        >
-          <ArrowLeft size={16} />
-          Back
-        </Button>
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={handleBack}
+            disabled={isScanning}
+            className="gap-1"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </Button>
+        </div>
         
-        <div className="text-center space-y-6">
-          <h1 className="text-2xl font-bold">
-            {isTouchId ? 'Touch ID Authentication' : 'Facial Verification'}
-          </h1>
-          <p className="text-muted-foreground max-w-xs mx-auto">
-            {scanning 
-              ? isTouchId 
-                ? "Place your finger on the scanner" 
-                : "Please look at your camera"
-              : scanComplete 
-                ? "Verification complete" 
-                : isTouchId 
-                  ? "Prepare to scan your fingerprint"
-                  : "Prepare for facial scan"
-            }
-          </p>
-          
-          <div className="flex flex-col items-center justify-center py-10">
-            <motion.div
-              className="h-32 w-32 bg-banking-blue/20 rounded-full flex items-center justify-center"
-              variants={circleVariants}
-              animate={getCircleVariant()}
-            >
-              <div className="h-24 w-24 bg-banking-blue rounded-full flex items-center justify-center">
-                {scanComplete ? (
-                  phoneNumber === '0323456789' || biometricSuccess === false ? (
-                    <Shield className="h-12 w-12 text-white" />
-                  ) : (
-                    <UserCheck className="h-12 w-12 text-white" />
-                  )
-                ) : (
-                  isTouchId ? (
-                    <Fingerprint className="h-12 w-12 text-white" />
-                  ) : (
-                    <svg className="h-12 w-12 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M8 15C8.5 15.5 9.5 16 12 16C14.5 16 15.5 15.5 16 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      <circle cx="9" cy="10" r="1" fill="currentColor" />
-                      <circle cx="15" cy="10" r="1" fill="currentColor" />
-                      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                  )
-                )}
-              </div>
-            </motion.div>
-            
-            <div className="mt-10 max-w-xs mx-auto w-full">
-              {!scanning && !scanComplete && (
+        <h1 className="text-2xl font-bold mb-6 text-center">Biometric Verification</h1>
+        
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle className="text-xl text-center">Facial Recognition</CardTitle>
+            <CardDescription className="text-center">
+              Verify your identity using facial biometrics
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AnimatePresence mode="wait">
+              {!isScanning ? (
                 <motion.div
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
+                  key="start-scan"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col items-center py-6"
                 >
+                  <div className="mb-6 h-32 w-32 bg-muted/30 rounded-full flex items-center justify-center">
+                    <Scan className="h-16 w-16 text-muted-foreground" />
+                  </div>
+                  
+                  <p className="text-center mb-8 text-sm text-muted-foreground max-w-xs">
+                    Please make sure you're in a well-lit area and position your face within the frame
+                  </p>
+                  
                   <Button 
-                    className="w-full" 
-                    onClick={handleStartScan}
+                    className="w-full bg-banking-blue hover:bg-banking-darkBlue"
+                    onClick={startBiometricScan}
                   >
-                    Start {isTouchId ? 'Touch ID' : 'Face Scan'}
+                    <ShieldCheck className="mr-2 h-5 w-5" />
+                    Start Face Verification
                   </Button>
                 </motion.div>
-              )}
-              
-              {scanning && (
-                <div className="relative pt-1">
-                  <div className="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
-                    <motion.div 
-                      initial={{ width: "0%" }}
-                      animate={{ width: "100%" }}
-                      transition={{ duration: 3 }}
-                      className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-banking-blue"
-                    ></motion.div>
+              ) : (
+                <motion.div
+                  key="scanning"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="flex flex-col items-center py-6"
+                >
+                  <div className="relative mb-8">
+                    <div className="h-48 w-48 relative bg-muted/30 rounded-full flex items-center justify-center overflow-hidden">
+                      {scanCompleted ? (
+                        scanSuccess ? (
+                          <CheckCircle className="h-24 w-24 text-banking-green" />
+                        ) : (
+                          <AlertCircle className="h-24 w-24 text-banking-red" />
+                        )
+                      ) : (
+                        <>
+                          <Scan className="h-16 w-16 text-muted-foreground z-10" />
+                          <div className="absolute inset-0">
+                            <motion.div 
+                              className="absolute bottom-0 w-full bg-blue-400/30"
+                              initial={{ height: '0%' }}
+                              animate={{ height: `${scanProgress}%` }}
+                              transition={{ duration: 0.2 }}
+                            />
+                          </div>
+                          <motion.div
+                            className="absolute inset-0 border-4 border-transparent border-t-banking-blue rounded-full"
+                            animate={{ rotate: 360 }}
+                            transition={{
+                              duration: 1.5,
+                              repeat: Infinity,
+                              ease: "linear"
+                            }}
+                          />
+                        </>
+                      )}
+                    </div>
+                    
+                    {!scanCompleted && (
+                      <div className="mt-4 text-center">
+                        <p className="mb-1 font-medium">Scanning in progress...</p>
+                        <p className="text-sm text-muted-foreground">Please hold still</p>
+                      </div>
+                    )}
+                    
+                    {scanCompleted && (
+                      <div className="mt-4 text-center">
+                        <p className="mb-1 font-medium">
+                          {scanSuccess ? "Verification successful!" : "Verification failed"}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          {scanSuccess ? "Redirecting to registration details..." : "You will be redirected..."}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-sm text-center text-muted-foreground">Scanning in progress...</p>
-                </div>
+                  
+                  {!scanCompleted && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={cancelScan}
+                    >
+                      <XIcon className="mr-2 h-4 w-4" />
+                      Cancel
+                    </Button>
+                  )}
+                </motion.div>
               )}
-              
-              {scanComplete && (
-                <p className="text-sm text-center">
-                  {phoneNumber === '0323456789' || biometricSuccess === false ? 
-                    "Verification failed. Redirecting..." : 
-                    "Verification successful. Redirecting..."}
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
+            </AnimatePresence>
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );

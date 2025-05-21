@@ -27,16 +27,14 @@ const VerificationOptions: React.FC = () => {
   };
 
   const handleNFC = () => {
-    // Navigate to NFC verification
+    // Navigate to NFC verification - updated to go directly to detailed registration after NFC
     navigate('/nfc-verification', { 
       state: { 
         phoneNumber, 
         nationalId,
         isExistingCustomer,
         isNewNationalId,
-        hasBiometric,
-        // Add nextRoute to ensure NFC verification redirects to OTP
-        nextRoute: '/otp-verification'
+        hasBiometric
       } 
     });
   };

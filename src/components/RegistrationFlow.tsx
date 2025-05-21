@@ -114,7 +114,7 @@ const RegistrationFlow: React.FC = () => {
         };
     }
     
-    // Direct to OTP verification instead of verification options
+    // For all cases, direct to OTP verification first
     navigate('/otp-verification', { state: routeState });
   };
 
