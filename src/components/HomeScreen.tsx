@@ -13,20 +13,28 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
+  const [authInProgress, setAuthInProgress] = useState<'face' | 'touch' | null>(null);
 
   const handleRegistration = () => {
     navigate('/registration');
   };
 
   const handleLoginClick = (method: 'face' | 'touch') => {
-    // Go directly to profile management screen after login
-    // This simulates a successful biometric authentication
-    toast.success(`${method === 'face' ? 'Face ID' : 'Touch ID'} authentication successful`);
-    navigate('/profile-management', { 
-      state: { 
-        nationalId: '111111111111'
-      }
-    });
+    setAuthInProgress(method);
+    
+    // Simulate authentication process with animation
+    setTimeout(() => {
+      // Simulate success
+      toast.success(`${method === 'face' ? 'Face ID' : 'Touch ID'} authentication successful`);
+      setAuthInProgress(null);
+      
+      // Navigate to profile management after successful authentication
+      navigate('/profile-management', { 
+        state: { 
+          nationalId: '111111111111'
+        }
+      });
+    }, 3000); // 3 seconds for authentication animation
   };
   
   const handleSupportClick = () => {
@@ -71,6 +79,83 @@ const HomeScreen: React.FC = () => {
       repeat: Infinity,
       repeatType: "reverse" as const
     }
+  };
+
+  // Face ID scanning animation overlay
+  const renderFaceIdAnimation = () => {
+    return (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 flex items-center justify-center bg-black/70 z-50"
+      >
+        <motion.div className="bg-black/80 rounded-3xl h-40 w-40 flex flex-col items-center justify-center">
+          <motion.div 
+            className="border-2 border-blue-500 rounded-full h-24 w-24 mb-4 relative"
+            animate={{ 
+              borderColor: ['rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.5)'],
+            }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <motion.div 
+              className="absolute left-1/2 top-0 w-0.5 h-full bg-blue-500/50"
+              initial={{ scaleY: 0, translateX: "-50%" }}
+              animate={{ scaleY: 1 }}
+              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+            />
+            <motion.div 
+              className="absolute left-0 top-1/2 w-full h-0.5 bg-blue-500/50"
+              initial={{ scaleX: 0, translateY: "-50%" }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
+            />
+            <motion.div
+              className="absolute inset-2 rounded-full border border-dashed border-blue-400"
+              animate={{ 
+                rotate: 360,
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            />
+          </motion.div>
+          <p className="text-blue-400 text-sm">Face ID Scanning...</p>
+        </motion.div>
+      </motion.div>
+    );
+  };
+
+  // Touch ID animation overlay
+  const renderTouchIdAnimation = () => {
+    return (
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 flex items-center justify-center bg-black/70 z-50"
+      >
+        <motion.div className="bg-black/80 rounded-3xl h-40 w-40 flex flex-col items-center justify-center">
+          <motion.div 
+            className="border-2 border-blue-500 rounded-full h-24 w-24 mb-4 flex items-center justify-center"
+            animate={{ 
+              borderColor: ['rgba(59, 130, 246, 0.5)', 'rgba(59, 130, 246, 0.8)', 'rgba(59, 130, 246, 0.5)'],
+              scale: [1, 1.05, 1],
+            }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            <motion.div 
+              className="bg-blue-400/30 rounded-full h-20 w-20 flex items-center justify-center"
+              animate={{ 
+                opacity: [0.5, 0.8, 0.5],
+              }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              <Fingerprint className="h-12 w-12 text-blue-400" />
+            </motion.div>
+          </motion.div>
+          <p className="text-blue-400 text-sm">Touch ID Scanning...</p>
+        </motion.div>
+      </motion.div>
+    );
   };
   
   return (
@@ -163,6 +248,7 @@ const HomeScreen: React.FC = () => {
                 variant="outline"
                 className="w-full flex flex-col h-auto py-2 items-center justify-center gap-1 shadow-sm rounded-lg"
                 onClick={() => handleLoginClick('face')}
+                disabled={authInProgress !== null}
               >
                 <motion.div 
                   className="h-7 w-7 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
@@ -187,6 +273,7 @@ const HomeScreen: React.FC = () => {
                 variant="outline"
                 className="w-full flex flex-col h-auto py-2 items-center justify-center gap-1 shadow-sm rounded-lg"
                 onClick={() => handleLoginClick('touch')}
+                disabled={authInProgress !== null}
               >
                 <motion.div 
                   className="h-7 w-7 rounded-full bg-banking-lightGrey/20 backdrop-blur-md flex items-center justify-center"
@@ -281,6 +368,12 @@ const HomeScreen: React.FC = () => {
           </TooltipProvider>
         </motion.div>
       </motion.div>
+      
+      {/* Authentication animation overlays */}
+      <AnimatePresence>
+        {authInProgress === 'face' && renderFaceIdAnimation()}
+        {authInProgress === 'touch' && renderTouchIdAnimation()}
+      </AnimatePresence>
     </Layout>
   );
 };
