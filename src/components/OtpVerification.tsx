@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 const OtpVerification: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric, biometricSuccess } = location.state || {};
+  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric, biometricSuccess, fromNfc } = location.state || {};
   const [otp, setOtp] = useState<string>('');
   const [attempts, setAttempts] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(180); // 3 minutes
@@ -76,13 +76,16 @@ const OtpVerification: React.FC = () => {
     setTimeout(() => {
       if (otp === '123456') {
         toast.success("OTP verification successful!");
+        
+        // Navigate to detailed registration in both normal flow and after NFC
         navigate('/detailed-registration', { 
           state: { 
             phoneNumber,
             nationalId, 
             isExistingCustomer,
             isNewNationalId,
-            hasValidBiometric: true 
+            hasValidBiometric: true,
+            fromNfc
           }
         });
       } else {

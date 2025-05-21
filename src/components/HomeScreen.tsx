@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { User, ArrowRight, ChevronsRight, HelpCircle, BookOpen, Info, Fingerprint, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
@@ -57,17 +59,28 @@ const HomeScreen: React.FC = () => {
       backgroundColor: "rgba(59, 130, 246, 0.2)" 
     }
   };
+
+  // Animation for pulsating effect
+  const pulseAnimation = {
+    scale: [1, 1.02, 1],
+    opacity: [0.9, 1, 0.9],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      repeatType: "reverse" as const
+    }
+  };
   
   return (
     <Layout>
       <motion.div 
-        className="flex flex-col items-center justify-center min-h-[80vh] space-y-7 py-6"
+        className="flex flex-col items-center justify-center min-h-[80vh] space-y-9 py-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <motion.div 
-          className="text-center space-y-1.5"
+          className="text-center space-y-3"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -84,7 +97,7 @@ const HomeScreen: React.FC = () => {
             SuperApp
           </motion.h1>
           <motion.p 
-            className="text-muted-foreground text-sm"
+            className="text-sm text-muted-foreground"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.5 }}
@@ -98,10 +111,11 @@ const HomeScreen: React.FC = () => {
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
+            animate={pulseAnimation}
             transition={{ type: "spring", stiffness: 400, damping: 15 }}
           >
             <Button 
-              className="w-full shadow-lg bg-gradient-to-r from-banking-blue to-banking-darkBlue p-5"
+              className="w-full shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 p-5 rounded-xl hover:shadow-blue-200/50"
               size="lg" 
               onClick={handleRegistration}
             >
@@ -110,14 +124,18 @@ const HomeScreen: React.FC = () => {
                 whileHover={{ x: 3 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <div className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Register Now
+                <div className="flex items-center gap-2.5">
+                  <User className="h-5.5 w-5.5" />
+                  <span className="text-base">Register Now</span>
                 </div>
-                <ArrowRight className="h-4 w-4" />
+                <ArrowRight className="h-4.5 w-4.5" />
               </motion.div>
             </Button>
           </motion.div>
+        </div>
+
+        <div className="w-full max-w-xs px-4">
+          <Separator className="my-2 bg-gray-200" />
         </div>
 
         {/* Sign in section - reduced visual weight */}
@@ -131,16 +149,17 @@ const HomeScreen: React.FC = () => {
             <p className="text-sm text-muted-foreground font-medium">Already have an account?</p>
           </div>
           
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <motion.div
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className="sm:col-span-1"
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm"
+                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm rounded-lg"
                 onClick={() => handleLoginClick('face')}
               >
                 <motion.div 
@@ -160,10 +179,11 @@ const HomeScreen: React.FC = () => {
               whileHover="hover"
               whileTap="tap"
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className="sm:col-span-1"
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm"
+                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm rounded-lg"
                 onClick={() => handleLoginClick('touch')}
               >
                 <motion.div 
@@ -186,50 +206,77 @@ const HomeScreen: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}
         >
-          <motion.button
-            className="flex flex-col items-center text-muted-foreground text-xs"
-            whileHover={{ scale: 1.1, color: "#3B82F6" }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleUserGuideClick}
-          >
-            <motion.div 
-              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
-              whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
-            >
-              <BookOpen className="h-4 w-4" />
-            </motion.div>
-            Guide
-          </motion.button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.button
+                  className="flex flex-col items-center text-muted-foreground text-xs"
+                  whileHover={{ scale: 1.1, color: "#3B82F6" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleUserGuideClick}
+                >
+                  <motion.div 
+                    className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+                    whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+                  >
+                    <BookOpen className="h-4 w-4" />
+                  </motion.div>
+                  Guide
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View user guides and tutorials</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <motion.button
-            className="flex flex-col items-center text-muted-foreground text-xs"
-            whileHover={{ scale: 1.1, color: "#3B82F6" }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleSupportClick}
-          >
-            <motion.div 
-              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
-              whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
-            >
-              <HelpCircle className="h-4 w-4" />
-            </motion.div>
-            Support
-          </motion.button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.button
+                  className="flex flex-col items-center text-muted-foreground text-xs"
+                  whileHover={{ scale: 1.1, color: "#3B82F6" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleSupportClick}
+                >
+                  <motion.div 
+                    className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+                    whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+                  >
+                    <HelpCircle className="h-4 w-4" />
+                  </motion.div>
+                  Support
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Contact customer support</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <motion.button
-            className="flex flex-col items-center text-muted-foreground text-xs"
-            whileHover={{ scale: 1.1, color: "#3B82F6" }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleFaqClick}
-          >
-            <motion.div 
-              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
-              whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
-            >
-              <Info className="h-4 w-4" />
-            </motion.div>
-            FAQ
-          </motion.button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <motion.button
+                  className="flex flex-col items-center text-muted-foreground text-xs"
+                  whileHover={{ scale: 1.1, color: "#3B82F6" }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleFaqClick}
+                >
+                  <motion.div 
+                    className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center mb-1 transition-all"
+                    whileHover={{ backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+                  >
+                    <Info className="h-4 w-4" />
+                  </motion.div>
+                  FAQ
+                </motion.button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Frequently asked questions</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </motion.div>
       </motion.div>
     </Layout>

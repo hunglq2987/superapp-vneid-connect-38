@@ -53,64 +53,69 @@ const RegistrationFlow: React.FC = () => {
     
     setError('');
 
-    // Route to different flows based on Phone Number
+    // Prepare route state based on phone number
+    let routeState = {};
+    
     switch (phoneNumber) {
       case '0123456789':
         // Case 1: Phone number is not existing to bank, National ID from VNeID is new to bank
-        navigate('/verification-options', { state: { 
+        routeState = { 
           phoneNumber, 
           nationalId: '444444444444',
           isExistingCustomer: false,
           isNewNationalId: true
-        }});
+        };
         break;
       case '0223456789':
         // Case 2: Phone number is not existing to bank, National ID from VNeID is existing to bank
-        navigate('/verification-options', { state: { 
+        routeState = { 
           phoneNumber, 
           nationalId: '555555555555',
           isExistingCustomer: false,
           isNewNationalId: false
-        }});
+        };
         break;
       case '0323456789':
         // Case 3: Phone exists, has biometric but facial verification fails
-        navigate('/biometric-auth', { state: { 
+        routeState = { 
           phoneNumber, 
           nationalId: '666666666666',
           isExistingCustomer: true,
           hasBiometric: true,
           biometricSuccess: false
-        }});
+        };
         break;
       case '0423456789':
         // Case 4: Phone exists, has biometric and facial verification succeeds
-        navigate('/biometric-auth', { state: { 
+        routeState = { 
           phoneNumber, 
           nationalId: '777777777777',
           isExistingCustomer: true,
           hasBiometric: true,
           biometricSuccess: true
-        }});
+        };
         break;
       case '0523456789':
         // Case 5: Phone exists, no biometric data available
-        navigate('/verification-options', { state: { 
+        routeState = { 
           phoneNumber, 
           nationalId: '666666666666',
           isExistingCustomer: true,
           hasBiometric: false
-        }});
+        };
         break;
       default:
         // For demo purposes, default to Case 1
-        navigate('/verification-options', { state: { 
+        routeState = { 
           phoneNumber, 
           nationalId: '444444444444',
           isExistingCustomer: false,
           isNewNationalId: true
-        }});
+        };
     }
+    
+    // Direct to OTP verification instead of verification options
+    navigate('/otp-verification', { state: routeState });
   };
 
   const handleBackToHome = () => {
