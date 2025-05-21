@@ -13,7 +13,7 @@ const VerificationFailure: React.FC = () => {
   const { phoneNumber, nationalId } = location.state || {};
   
   useEffect(() => {
-    // Redirect to home after 5 seconds
+    // Redirect to home after 10 seconds
     const timer = setTimeout(() => {
       navigate('/');
     }, 10000); // 10 seconds
@@ -35,9 +35,31 @@ const VerificationFailure: React.FC = () => {
           className="text-center mb-6"
         >
           <div className="mb-4 flex justify-center">
-            <div className="h-24 w-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
-              <AlertCircle size={48} className="text-red-600 dark:text-red-400" />
-            </div>
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ 
+                type: "spring",
+                stiffness: 200, 
+                damping: 15,
+                duration: 0.8
+              }}
+              className="h-24 w-24 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center"
+            >
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  opacity: [1, 0.8, 1]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                <AlertCircle size={48} className="text-red-600 dark:text-red-400" />
+              </motion.div>
+            </motion.div>
           </div>
           <h1 className="text-2xl font-bold mb-2">Verification Failed</h1>
           <p className="text-muted-foreground">Facial verification was not matched</p>
@@ -61,18 +83,23 @@ const VerificationFailure: React.FC = () => {
               
               <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/30 rounded-lg">
                 <p className="text-sm text-amber-800 dark:text-amber-300">
-                  For security reasons, you will be redirected to the home screen.
+                  For security reasons, you will be redirected to the home screen in 10 seconds.
                 </p>
               </div>
               
-              <Button
-                variant="default"
-                className="w-full mt-2"
-                onClick={handleBackToHome}
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Return to Home
-              </Button>
+                <Button
+                  variant="default"
+                  className="w-full mt-2 bg-gradient-to-r from-blue-500 to-blue-700"
+                  onClick={handleBackToHome}
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Return to Home
+                </Button>
+              </motion.div>
             </CardContent>
           </Card>
         </motion.div>

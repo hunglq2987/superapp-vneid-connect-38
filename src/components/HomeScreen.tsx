@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import Layout from './Layout';
 import Logo from './ui/Logo';
 import { Button } from '@/components/ui/button';
@@ -18,11 +19,12 @@ const HomeScreen: React.FC = () => {
   };
 
   const handleLoginClick = (method: 'face' | 'touch') => {
-    // Go directly to biometric authentication for login with the specific method
-    navigate('/biometric-auth', { 
+    // Go directly to profile management screen after login
+    // This simulates a successful biometric authentication
+    toast.success(`${method === 'face' ? 'Face ID' : 'Touch ID'} authentication successful`);
+    navigate('/profile-management', { 
       state: { 
-        isLogin: true,
-        authMethod: method 
+        nationalId: '111111111111'
       }
     });
   };
@@ -80,7 +82,7 @@ const HomeScreen: React.FC = () => {
         transition={{ duration: 0.6 }}
       >
         <motion.div 
-          className="text-center space-y-3"
+          className="text-center space-y-4"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -149,17 +151,17 @@ const HomeScreen: React.FC = () => {
             <p className="text-sm text-muted-foreground font-medium">Already have an account?</p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <motion.div
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              className="sm:col-span-1"
+              className="col-span-1"
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm rounded-lg"
+                className="w-full flex flex-col h-auto py-2 items-center justify-center gap-1 shadow-sm rounded-lg"
                 onClick={() => handleLoginClick('face')}
               >
                 <motion.div 
@@ -179,11 +181,11 @@ const HomeScreen: React.FC = () => {
               whileHover="hover"
               whileTap="tap"
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
-              className="sm:col-span-1"
+              className="col-span-1"
             >
               <Button
                 variant="outline"
-                className="w-full flex flex-col h-auto py-2.5 items-center justify-center gap-1 shadow-sm rounded-lg"
+                className="w-full flex flex-col h-auto py-2 items-center justify-center gap-1 shadow-sm rounded-lg"
                 onClick={() => handleLoginClick('touch')}
               >
                 <motion.div 
