@@ -17,29 +17,18 @@ const EmailRegistration: React.FC = () => {
   const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric } = location.state || {};
 
   const [email, setEmail] = useState('');
-  const [confirmEmail, setConfirmEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
-    validateEmail(e.target.value, confirmEmail);
+    validateEmail(e.target.value);
   };
 
-  const handleConfirmEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setConfirmEmail(e.target.value);
-    validateEmail(email, e.target.value);
-  };
-
-  const validateEmail = (email: string, confirmEmail: string) => {
+  const validateEmail = (email: string) => {
     if (email && !(/^\S+@\S+\.\S+$/.test(email))) {
       setEmailError('Please enter a valid email address');
-      return false;
-    }
-    
-    if (confirmEmail && email !== confirmEmail) {
-      setEmailError('Email addresses do not match');
       return false;
     }
     
@@ -48,7 +37,7 @@ const EmailRegistration: React.FC = () => {
   };
 
   const handleSubmit = () => {
-    if (email && !validateEmail(email, confirmEmail)) {
+    if (email && !validateEmail(email)) {
       return;
     }
 
@@ -137,17 +126,6 @@ const EmailRegistration: React.FC = () => {
                 onChange={handleEmailChange}
                 placeholder="Enter your email address"
               />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="confirmEmail">Confirm Email Address</Label>
-              <Input 
-                id="confirmEmail" 
-                type="email" 
-                value={confirmEmail} 
-                onChange={handleConfirmEmailChange}
-                placeholder="Confirm your email address"
-              />
               {emailError && (
                 <p className="text-red-500 text-xs mt-1 flex items-center">
                   <AlertCircle size={12} className="mr-1" /> {emailError}
@@ -186,18 +164,23 @@ const EmailRegistration: React.FC = () => {
         </div>
         
         <div className="mt-auto space-y-3 mx-auto w-full max-w-md">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Button 
-              onClick={handleSubmit} 
-              className="w-full"
-              disabled={isSubmitting || (!!email && (!confirmEmail || !!emailError))}
+          {email && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {isSubmitting ? 'Registering...' : 'Register Email'}
-            </Button>
-          </motion.div>
+              <Button 
+                onClick={handleSubmit} 
+                className="w-full"
+                disabled={isSubmitting || !!emailError}
+              >
+                {isSubmitting ? 'Registering...' : 'Register Email'}
+              </Button>
+            </motion.div>
+          )}
           
           <motion.div
             whileHover={{ scale: 1.02 }}
@@ -219,3 +202,4 @@ const EmailRegistration: React.FC = () => {
 };
 
 export default EmailRegistration;
+
