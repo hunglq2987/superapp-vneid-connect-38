@@ -61,6 +61,7 @@ const NfcVerification: React.FC = () => {
   const [idImage, setIdImage] = useState<string | null>(null);
   const [selfieImage, setSelfieImage] = useState<string | null>(null);
   const [extractedData, setExtractedData] = useState<any>(null);
+  const [showPulse, setShowPulse] = useState<boolean>(false);
   
   useEffect(() => {
     // Redirect to home if required data is missing
@@ -87,28 +88,30 @@ const NfcVerification: React.FC = () => {
     setError(null);
   };
 
-  // Step 1: Initiate verification - faster loading time (800ms)
+  // Step 1: Initiate verification - much faster loading time (500ms)
   const startVerificationProcess = () => {
     setIsScanning(true);
     setCurrentStep(VerificationStep.INITIATE);
     setStatusMessage('Preparing for ID verification...');
     setScanProgress(10);
     
-    // Move to ID capture step after a shorter delay
+    // Much faster transition to next step (500ms)
     setTimeout(() => {
       setCurrentStep(VerificationStep.CAPTURE_ID);
       setStatusMessage('Please capture the front of your ID card');
       setScanProgress(20);
-    }, 800); // Reduced from 1500ms to 800ms
+    }, 500); 
   };
 
-  // Step 2: Capture front of ID - faster loading time (1200ms)
+  // Step 2: Capture front of ID - faster loading time (800ms)
   const simulateIdCapture = () => {
+    setShowPulse(true);
     setStatusMessage('Processing ID image...');
     setScanProgress(30);
     
-    // Simulate ID capture processing faster
+    // Simulate camera flash effect
     setTimeout(() => {
+      setShowPulse(false);
       setIdImage('/placeholder.svg'); // Placeholder for captured ID
       
       // Simulate extracted data
@@ -122,7 +125,7 @@ const NfcVerification: React.FC = () => {
       setCurrentStep(VerificationStep.NFC_SCAN);
       setStatusMessage('Now place your ID card near the back of your phone');
       setScanProgress(40);
-    }, 1200); // Reduced from 2000ms to 1200ms
+    }, 800);
   };
   
   // Step 3: NFC communication - faster loading times
@@ -130,7 +133,7 @@ const NfcVerification: React.FC = () => {
     setStatusMessage('Scanning NFC chip. Please hold your phone near your ID card...');
     setScanProgress(50);
     
-    // Simulate detecting NFC chip faster
+    // Simulate detecting NFC chip even faster
     setTimeout(() => {
       setStatusMessage('ID card detected. Reading data from chip...');
       
@@ -140,45 +143,47 @@ const NfcVerification: React.FC = () => {
         setScanProgress(60);
         setCurrentStep(VerificationStep.DATA_VERIFICATION);
         
-        // Move to data verification faster
+        // Move to data verification faster (800ms)
         setTimeout(() => {
           setStatusMessage('Cross-checking chip information with declared data...');
           setScanProgress(70);
           
-          // Move to biometric comparison stage faster
+          // Move to biometric comparison stage faster (600ms)
           setTimeout(() => {
             setCurrentStep(VerificationStep.BIOMETRIC_COMPARISON);
             setStatusMessage('Please take a selfie for biometric verification');
-          }, 1000); // Reduced from 2000ms to 1000ms
-        }, 1000); // Reduced from 2000ms to 1000ms
-      }, 1000); // Reduced from 2000ms to 1000ms
-    }, 1000); // Reduced from 2000ms to 1000ms
+          }, 600);
+        }, 800);
+      }, 800);
+    }, 700);
   };
 
-  // Step 5: Biometric comparison - faster loading time
+  // Step 5: Biometric comparison - even faster loading time (800ms)
   const simulateSelfieCapture = () => {
+    setShowPulse(true);
     setStatusMessage('Processing selfie for facial comparison...');
     setScanProgress(80);
     
-    // Simulate selfie processing faster
+    // Simulate selfie capture with camera flash effect
     setTimeout(() => {
+      setShowPulse(false);
       setSelfieImage('/placeholder.svg'); // Placeholder for captured selfie
       setStatusMessage('Comparing your face with the ID photo using AI...');
       setScanProgress(90);
       
-      // Simulate biometric comparison faster
+      // Simulate biometric comparison faster (800ms)
       setTimeout(() => {
         setStatusMessage('Biometric verification successful!');
         setCurrentStep(VerificationStep.COMPLETE);
         setScanProgress(100);
         setCardReadSuccess(true);
         
-        // Move to completion after a shorter delay
+        // Move to completion after a shorter delay (800ms)
         setTimeout(() => {
           handleVerificationSuccess();
-        }, 1200); // Reduced from 2000ms to 1200ms
-      }, 1200); // Reduced from 2000ms to 1200ms
-    }, 1200); // Reduced from 2000ms to 1200ms
+        }, 800);
+      }, 800);
+    }, 800);
   };
 
   // Step 6: Complete verification
@@ -206,9 +211,16 @@ const NfcVerification: React.FC = () => {
       case VerificationStep.INITIATE:
         return (
           <div className="flex flex-col items-center py-6">
-            <div className="mb-6 bg-muted/50 h-32 w-32 rounded-full flex items-center justify-center">
-              <CreditCard size={64} className="text-muted-foreground" />
-            </div>
+            <motion.div
+              animate={{ 
+                scale: [1, 1.05, 1],
+                y: [0, -5, 0]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="mb-6 bg-blue-50 dark:bg-blue-900/20 h-32 w-32 rounded-full flex items-center justify-center"
+            >
+              <CreditCard size={64} className="text-blue-500" />
+            </motion.div>
             
             <h3 className="text-lg font-medium mb-2">Step 1: Initiate Verification</h3>
             
@@ -216,22 +228,41 @@ const NfcVerification: React.FC = () => {
               Please prepare your ID card and ensure NFC is enabled on your device
             </p>
             
-            <Button 
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="w-full"
-              onClick={startVerificationProcess}
             >
-              <Wifi className="mr-2 h-5 w-5" />
-              Start NFC Verification
-            </Button>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                onClick={startVerificationProcess}
+              >
+                <Wifi className="mr-2 h-5 w-5" />
+                Start NFC Verification
+              </Button>
+            </motion.div>
           </div>
         );
         
       case VerificationStep.CAPTURE_ID:
         return (
           <div className="flex flex-col items-center py-6">
-            <div className="mb-6 bg-muted/50 h-32 w-32 rounded-full flex items-center justify-center">
-              <Camera size={48} className="text-muted-foreground" />
-            </div>
+            <motion.div 
+              className="mb-6 relative"
+              animate={showPulse ? { 
+                scale: [1, 1.1, 1],
+                boxShadow: [
+                  '0 0 0 0 rgba(59, 130, 246, 0)',
+                  '0 0 0 20px rgba(59, 130, 246, 0.3)',
+                  '0 0 0 0 rgba(59, 130, 246, 0)'
+                ]
+              } : {}}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="h-32 w-32 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <Camera size={48} className="text-blue-500" />
+              </div>
+            </motion.div>
             
             <h3 className="text-lg font-medium mb-2">Step 2: Capture ID Front</h3>
             
@@ -254,13 +285,19 @@ const NfcVerification: React.FC = () => {
               </li>
             </ul>
             
-            <Button 
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="w-full"
-              onClick={simulateIdCapture}
             >
-              <Camera className="mr-2 h-5 w-5" />
-              Capture ID
-            </Button>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                onClick={simulateIdCapture}
+              >
+                <Camera className="mr-2 h-5 w-5" />
+                Capture ID
+              </Button>
+            </motion.div>
           </div>
         );
         
@@ -283,9 +320,10 @@ const NfcVerification: React.FC = () => {
               <motion.div
                 className="absolute inset-0 bg-blue-200 dark:bg-blue-800/30"
                 animate={{
-                  opacity: [0.5, 0.8, 0.5],
+                  opacity: [0.3, 0.8, 0.3],
+                  scale: [1, 1.2, 1]
                 }}
-                transition={{ duration: 1.5, repeat: Infinity }}
+                transition={{ duration: 1.2, repeat: Infinity }}
               />
             </div>
             
@@ -308,13 +346,19 @@ const NfcVerification: React.FC = () => {
               </li>
             </ul>
             
-            <Button 
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="w-full"
-              onClick={simulateNfcScan}
             >
-              <Wifi className="mr-2 h-5 w-5" />
-              Start NFC Scan
-            </Button>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                onClick={simulateNfcScan}
+              >
+                <Wifi className="mr-2 h-5 w-5" />
+                Start NFC Scan
+              </Button>
+            </motion.div>
           </div>
         );
         
@@ -323,18 +367,21 @@ const NfcVerification: React.FC = () => {
           <div className="flex flex-col items-center py-6">
             <h3 className="text-lg font-medium mb-2">Step 4: Data Verification</h3>
             
-            <div className="mb-6 relative">
-              <div className="h-32 w-32 rounded-full flex items-center justify-center overflow-hidden">
-                <motion.div
-                  className="w-full h-full absolute"
-                  animate={{
-                    background: ['rgba(59, 130, 246, 0.1)', 'rgba(59, 130, 246, 0.3)', 'rgba(59, 130, 246, 0.1)']
-                  }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
-                <CheckCircle size={48} className="text-blue-600 dark:text-blue-400 z-10" />
+            <motion.div 
+              className="mb-6 relative"
+              animate={{
+                rotateY: [0, 360]
+              }}
+              transition={{ 
+                duration: 3, 
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <div className="h-32 w-32 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
+                <CheckCircle size={48} className="text-blue-600 dark:text-blue-400" />
               </div>
-            </div>
+            </motion.div>
             
             <p className="text-center mb-4 text-sm text-muted-foreground">
               Cross-checking chip information with declared data
@@ -368,18 +415,23 @@ const NfcVerification: React.FC = () => {
               <motion.div
                 className="h-full bg-blue-500"
                 style={{ width: `${scanProgress}%` }}
+                animate={{ width: `${scanProgress}%` }}
+                transition={{ duration: 0.3 }}
               />
             </div>
             
             <div className="flex gap-2 flex-wrap justify-center mb-4">
               {['Personal Info', 'Digital Signature', 'Security Features'].map((item, index) => (
-                <div 
+                <motion.div
                   key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.2 }}
                   className="px-3 py-1 bg-green-50 dark:bg-green-900/20 rounded-full text-xs text-green-700 dark:text-green-400 flex items-center"
                 >
                   <CheckCircle size={12} className="mr-1 text-green-500" />
                   {item}
-                </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -390,9 +442,22 @@ const NfcVerification: React.FC = () => {
           <div className="flex flex-col items-center py-6">
             <h3 className="text-lg font-medium mb-2">Step 5: Biometric Comparison</h3>
             
-            <div className="mb-6 bg-muted/50 h-32 w-32 rounded-full flex items-center justify-center">
-              <User size={48} className="text-muted-foreground" />
-            </div>
+            <motion.div 
+              className="mb-6 relative"
+              animate={showPulse ? { 
+                scale: [1, 1.1, 1],
+                boxShadow: [
+                  '0 0 0 0 rgba(59, 130, 246, 0)',
+                  '0 0 0 20px rgba(59, 130, 246, 0.3)',
+                  '0 0 0 0 rgba(59, 130, 246, 0)'
+                ]
+              } : {}}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="h-32 w-32 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                <User size={48} className="text-blue-500" />
+              </div>
+            </motion.div>
             
             <p className="text-center mb-4 text-sm text-muted-foreground">
               Take a selfie for facial comparison with your ID photo using AI/ML
@@ -402,13 +467,19 @@ const NfcVerification: React.FC = () => {
               Your face will be compared with the photo stored in your ID's chip
             </p>
             
-            <Button 
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               className="w-full"
-              onClick={simulateSelfieCapture}
             >
-              <Camera className="mr-2 h-5 w-5" />
-              Take Selfie
-            </Button>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700"
+                onClick={simulateSelfieCapture}
+              >
+                <Camera className="mr-2 h-5 w-5" />
+                Take Selfie
+              </Button>
+            </motion.div>
           </div>
         );
         
@@ -417,9 +488,16 @@ const NfcVerification: React.FC = () => {
           <div className="flex flex-col items-center py-6">
             <h3 className="text-lg font-medium mb-2">Step 6: Complete Verification</h3>
             
-            <div className="mb-6 bg-green-100 dark:bg-green-900/20 h-32 w-32 rounded-full flex items-center justify-center">
+            <motion.div
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 10, 0, -10, 0]
+              }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="mb-6 bg-green-100 dark:bg-green-900/20 h-32 w-32 rounded-full flex items-center justify-center"
+            >
               <CheckCircle size={64} className="text-green-600 dark:text-green-400" />
-            </div>
+            </motion.div>
             
             <p className="text-center mb-2 font-medium text-xl">Verification Complete!</p>
             <p className="text-center mb-6 text-sm text-muted-foreground">
@@ -440,13 +518,19 @@ const NfcVerification: React.FC = () => {
               </ul>
             </div>
             
-            <Button 
-              className="w-full bg-green-600 hover:bg-green-700"
-              onClick={handleVerificationSuccess}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full"
             >
-              <CheckCircle className="mr-2 h-5 w-5" />
-              Continue
-            </Button>
+              <Button 
+                className="w-full bg-green-600 hover:bg-green-700"
+                onClick={handleVerificationSuccess}
+              >
+                <CheckCircle className="mr-2 h-5 w-5" />
+                Continue
+              </Button>
+            </motion.div>
           </div>
         );
     }
@@ -493,13 +577,13 @@ const NfcVerification: React.FC = () => {
                 {Array.from({ length: 6 }).map((_, i) => (
                   <motion.div
                     key={i}
-                    className={`h-1.5 rounded-full transition-all duration-500 ease-in-out ${i === currentStep ? 'bg-blue-500' : 'bg-muted'}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ease-in-out ${i === currentStep ? 'bg-blue-500' : i < currentStep ? 'bg-green-500' : 'bg-muted'}`}
                     initial={{ width: i === currentStep ? 3 : 12 }}
                     animate={{ 
                       width: i === currentStep ? 24 : 12,
-                      backgroundColor: i === currentStep ? '#3b82f6' : '#e5e7eb' 
+                      backgroundColor: i === currentStep ? '#3b82f6' : i < currentStep ? '#22c55e' : '#e5e7eb' 
                     }}
-                    transition={{ duration: 0.4 }}
+                    transition={{ duration: 0.3 }}
                   />
                 ))}
               </div>

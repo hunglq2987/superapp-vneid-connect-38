@@ -10,10 +10,22 @@ import { motion } from 'framer-motion';
 const RegistrationDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const nationalId = location.state?.nationalId;
+  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric } = location.state || {};
 
   const handleBack = () => {
     navigate('/profile-management', { state: { nationalId } });
+  };
+
+  const handleContinue = () => {
+    navigate('/email-registration', { 
+      state: { 
+        phoneNumber, 
+        nationalId,
+        isExistingCustomer,
+        isNewNationalId,
+        hasBiometric 
+      } 
+    });
   };
 
   return (
@@ -42,6 +54,15 @@ const RegistrationDetailsPage: React.FC = () => {
         </motion.div>
         
         <RegistrationDetails />
+
+        <motion.div className="mt-8" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+          <Button 
+            onClick={handleContinue}
+            className="w-full"
+          >
+            Continue
+          </Button>
+        </motion.div>
       </div>
     </Layout>
   );

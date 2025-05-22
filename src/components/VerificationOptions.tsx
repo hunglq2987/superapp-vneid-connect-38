@@ -27,7 +27,7 @@ const VerificationOptions: React.FC = () => {
   };
 
   const handleNFC = () => {
-    // Navigate to NFC verification - updated to go directly to detailed registration after NFC
+    // Navigate to NFC verification
     navigate('/nfc-verification', { 
       state: { 
         phoneNumber, 

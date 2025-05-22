@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
@@ -28,7 +27,7 @@ interface UserData {
 const DetailedRegistration: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId } = location.state || {};
+  const { phoneNumber, nationalId, isExistingCustomer, isNewNationalId, hasBiometric, fromVNeID, fromNfc } = location.state || {};
   
   // Get user data based on phoneNumber
   const getUserData = () => {
@@ -118,7 +117,17 @@ const DetailedRegistration: React.FC = () => {
   const handleConfirm = () => {
     if (validateForm()) {
       toast.success("Registration details confirmed successfully!");
-      navigate('/terms-conditions');
+      navigate('/email-registration', { 
+        state: { 
+          phoneNumber, 
+          nationalId,
+          isExistingCustomer,
+          isNewNationalId,
+          hasBiometric,
+          fromVNeID,
+          fromNfc
+        } 
+      });
     } else {
       toast.error("Please complete all required fields");
     }

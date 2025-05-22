@@ -22,7 +22,8 @@ const Index: React.FC = () => {
     
     // Show biometric auth success message if redirected with biometricSuccess state
     if (location.state?.biometricSuccess) {
-      toast.success(`${location.state.biometricMethod || 'Biometric'} authentication successful!`, {
+      const method = location.state.biometricMethod || 'Biometric';
+      toast.success(`${method} authentication successful!`, {
         description: "You have been securely authenticated."
       });
     }

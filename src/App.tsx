@@ -23,6 +23,7 @@ import Faq from "./components/Faq";
 import RegistrationDetailsPage from "./components/profile/RegistrationDetailsPage";
 import VerificationOptions from "./components/VerificationOptions";
 import VerificationFailure from "./components/VerificationFailure";
+import EmailRegistration from "./components/EmailRegistration";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/biometric-auth" element={<BiometricAuth />} />
           <Route path="/nfc-verification" element={<NfcVerification />} />
           <Route path="/detailed-registration" element={<DetailedRegistration />} />
+          <Route path="/email-registration" element={<EmailRegistration />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/registration-complete" element={<RegistrationComplete />} />
           <Route path="/profile-management" element={<ProfileManagement />} />
