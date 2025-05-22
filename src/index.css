@@ -101,12 +101,15 @@
     @apply text-base; /* 16pt base text size */
   }
 
-  .text-sm {
-    @apply text-sm; /* 14pt smaller text */
+  /* Removed circular dependency by using standard CSS */
+  .smaller-text {
+    font-size: 0.875rem; /* 14pt smaller text */
+    line-height: 1.25rem;
   }
 
-  .text-xs {
-    @apply text-xs; /* 12pt extra small text */
+  .extra-small-text {
+    font-size: 0.75rem; /* 12pt extra small text */
+    line-height: 1rem;
   }
 }
 
