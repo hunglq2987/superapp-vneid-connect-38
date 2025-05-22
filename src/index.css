@@ -76,20 +76,37 @@
     @apply bg-background text-foreground font-sans;
   }
 
+  /* Typography system with clear hierarchy */
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-medium tracking-tight;
   }
 
   h1 {
-    @apply text-2xl md:text-3xl;
+    @apply text-2xl md:text-3xl; /* 24pt on mobile, larger on desktop */
   }
 
   h2 {
-    @apply text-xl md:text-2xl;
+    @apply text-xl md:text-2xl; /* 18pt on mobile, larger on desktop */
   }
 
   h3 {
-    @apply text-lg md:text-xl;
+    @apply text-lg md:text-xl; /* 16pt on mobile, larger on desktop */
+  }
+
+  h4, h5, h6 {
+    @apply text-base md:text-lg; /* 14pt on mobile, larger on desktop */
+  }
+
+  p {
+    @apply text-base; /* 16pt base text size */
+  }
+
+  .text-sm {
+    @apply text-sm; /* 14pt smaller text */
+  }
+
+  .text-xs {
+    @apply text-xs; /* 12pt extra small text */
   }
 }
 
