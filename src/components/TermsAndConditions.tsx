@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
@@ -21,14 +20,9 @@ const TermsAndConditions: React.FC = () => {
       return;
     }
     
-    toast.success("Registration completed successfully!");
-    
-    // Navigate to a "Registration Complete" page
-    navigate('/registration-complete', { 
-      state: { 
-        ...userData,
-        registrationComplete: true 
-      } 
+    // Navigate to Email Registration after accepting terms and conditions
+    navigate('/email-registration', { 
+      state: userData
     });
   };
   

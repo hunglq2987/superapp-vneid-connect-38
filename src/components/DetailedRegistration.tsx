@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Layout from './Layout';
@@ -117,7 +118,8 @@ const DetailedRegistration: React.FC = () => {
   const handleConfirm = () => {
     if (validateForm()) {
       toast.success("Registration details confirmed successfully!");
-      navigate('/email-registration', { 
+      // Navigate to Terms and Conditions page instead of Email Registration
+      navigate('/terms-conditions', { 
         state: { 
           phoneNumber, 
           nationalId,
@@ -125,7 +127,8 @@ const DetailedRegistration: React.FC = () => {
           isNewNationalId,
           hasBiometric,
           fromVNeID,
-          fromNfc
+          fromNfc,
+          userData // Pass user data to the Terms and Conditions page
         } 
       });
     } else {
