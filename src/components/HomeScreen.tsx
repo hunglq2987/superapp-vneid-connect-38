@@ -296,7 +296,7 @@ const HomeScreen: React.FC = () => {
             transition={{ type: "spring", stiffness: 400, damping: 15 }}
           >
             <Button 
-              className="w-full shadow-lg bg-gradient-to-r from-blue-500 to-blue-700 p-5 rounded-xl hover:shadow-blue-200/50"
+              className="w-full shadow-lg bg-gradient-to-r from-red-500 to-red-700 p-5 rounded-xl hover:shadow-red-200/50"
               size="lg" 
               onClick={handleRegistration}
             >
