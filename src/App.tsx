@@ -24,6 +24,7 @@ import RegistrationDetailsPage from "./components/profile/RegistrationDetailsPag
 import VerificationOptions from "./components/VerificationOptions";
 import VerificationFailure from "./components/VerificationFailure";
 import EmailRegistration from "./components/EmailRegistration";
+import BRDViewer from "./components/BRDViewer";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
           <Route path="/faq" element={<Faq />} />
           <Route path="/verification-options" element={<VerificationOptions />} />
           <Route path="/verification-failure" element={<VerificationFailure />} />
+          <Route path="/brd" element={<BRDViewer />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>

@@ -5,7 +5,7 @@ import Layout from './Layout';
 import Logo from './ui/Logo';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { User, ArrowRight, ChevronsRight, HelpCircle, BookOpen, Info, Fingerprint, Lock } from 'lucide-react';
+import { User, ArrowRight, ChevronsRight, HelpCircle, BookOpen, Info, Fingerprint, Lock, FileText } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
@@ -48,6 +48,10 @@ const HomeScreen: React.FC = () => {
   
   const handleFaqClick = () => {
     navigate('/faq');
+  };
+  
+  const handleBRDClick = () => {
+    navigate('/brd');
   };
   
   const buttonVariants = {
@@ -260,6 +264,7 @@ const HomeScreen: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Logo and title section */}
         <motion.div 
           className="text-center space-y-4"
           initial={{ scale: 0.9, opacity: 0 }}
@@ -287,6 +292,7 @@ const HomeScreen: React.FC = () => {
           </motion.p>
         </motion.div>
 
+        {/* Register button */}
         <div className="space-y-4 w-full max-w-xs px-4">
           <motion.div
             variants={buttonVariants}
@@ -310,6 +316,33 @@ const HomeScreen: React.FC = () => {
                   <span className="text-base">Register Now</span>
                 </div>
                 <ArrowRight className="h-4.5 w-4.5" />
+              </motion.div>
+            </Button>
+          </motion.div>
+
+          {/* BRD Button */}
+          <motion.div
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+          >
+            <Button 
+              variant="outline"
+              className="w-full shadow-lg p-5 rounded-xl border-blue-200 hover:bg-blue-50"
+              size="lg" 
+              onClick={handleBRDClick}
+            >
+              <motion.div 
+                className="flex items-center justify-between w-full"
+                whileHover={{ x: 3 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <FileText className="h-5.5 w-5.5 text-blue-600" />
+                  <span className="text-base text-blue-600">View BRD</span>
+                </div>
+                <ArrowRight className="h-4.5 w-4.5 text-blue-600" />
               </motion.div>
             </Button>
           </motion.div>
@@ -385,6 +418,7 @@ const HomeScreen: React.FC = () => {
           </div>
         </motion.div>
 
+        {/* Support menu */}
         <motion.div 
           className="flex justify-center gap-8 mt-1"
           initial={{ opacity: 0, y: 20 }}
